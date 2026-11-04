@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Menu, X, Sparkles, ArrowRight } from 'lucide-react';
+import { Menu, X, Sparkles, ArrowRight, Crown } from 'lucide-react';
 
 interface NavbarProps {
   onNavigateToStudio: () => void;
@@ -14,7 +14,8 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigateToStudio }) => {
     { label: 'Materi', href: '#materi' },
     { label: 'Prompt Lab', href: '#prompt-lab' },
     { label: 'Game Studio', href: '#game-studio' },
-    { label: 'Generator Media', href: '#generator-media' }
+    { label: 'Generator Media', href: '#generator-media' },
+    { label: 'GURITA PRO', href: '#gurita-pro', isPro: true }
   ];
 
   const handleLinkClick = (href: string) => {
@@ -51,21 +52,46 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigateToStudio }) => {
         </a>
 
         {/* Zone 2: Navigation Links (Single-line, quiet hover underline) */}
-        <nav className="hidden lg:flex items-center gap-6 text-sm font-medium text-slate-300">
-          {navLinks.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              onClick={(e) => {
-                e.preventDefault();
-                handleLinkClick(link.href);
-              }}
-              className="hover:text-[#00E5FF] transition-colors whitespace-nowrap shrink-0 py-1 relative group focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#00E5FF]"
-            >
-              {link.label}
-              <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#00E5FF] group-hover:w-full transition-all duration-200" />
-            </a>
-          ))}
+        {/* Zone 2: Navigation Links (Single-line, quiet hover underline + distinctive PRO badge) */}
+        <nav className="hidden lg:flex items-center gap-5 xl:gap-6 text-sm font-medium text-slate-300">
+          {navLinks.map((link) => {
+            if (link.isPro) {
+              return (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleLinkClick(link.href);
+                  }}
+                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-bold text-white bg-gradient-to-r from-[#FFD166]/15 via-[#8B5CF6]/15 to-[#00E5FF]/15 border border-[#FFD166]/40 hover:border-[#FFD166] rounded-xl shadow-sm hover:shadow-[#FFD166]/20 transition-all whitespace-nowrap shrink-0 group focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#FFD166]"
+                >
+                  <Crown className="w-3.5 h-3.5 text-[#FFD166] group-hover:rotate-12 transition-transform" />
+                  <span className="bg-gradient-to-r from-[#FFD166] via-white to-[#00E5FF] bg-clip-text text-transparent">
+                    {link.label}
+                  </span>
+                  <span className="px-1.5 py-0.2 text-[9px] font-black uppercase rounded bg-[#FFD166] text-[#071426] tracking-wider ml-0.5 shadow-sm">
+                    SOON
+                  </span>
+                </a>
+              );
+            }
+
+            return (
+              <a
+                key={link.label}
+                href={link.href}
+                onClick={(e) => {
+                  e.preventDefault();
+                  handleLinkClick(link.href);
+                }}
+                className="hover:text-[#00E5FF] transition-colors whitespace-nowrap shrink-0 py-1 relative group focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[#00E5FF]"
+              >
+                {link.label}
+                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#00E5FF] group-hover:w-full transition-all duration-200" />
+              </a>
+            );
+          })}
         </nav>
 
         {/* Zone 3: 1 Primary Action */}
@@ -96,19 +122,45 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigateToStudio }) => {
       {mobileMenuOpen && (
         <div className="lg:hidden border-b border-[#2979FF]/20 bg-[#071426]/95 backdrop-blur-xl px-4 pt-3 pb-6 space-y-3">
           <nav className="flex flex-col space-y-2">
-            {navLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleLinkClick(link.href);
-                }}
-                className="px-3 py-2 text-base font-medium text-slate-200 hover:text-[#00E5FF] hover:bg-[#0E223D]/50 rounded-lg transition-colors"
-              >
-                {link.label}
-              </a>
-            ))}
+            {navLinks.map((link) => {
+              if (link.isPro) {
+                return (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleLinkClick(link.href);
+                    }}
+                    className="flex items-center justify-between px-3.5 py-2.5 text-base font-bold text-white bg-gradient-to-r from-[#FFD166]/15 via-[#8B5CF6]/15 to-[#00E5FF]/15 border border-[#FFD166]/40 rounded-xl"
+                  >
+                    <div className="flex items-center gap-2">
+                      <Crown className="w-4 h-4 text-[#FFD166]" />
+                      <span className="bg-gradient-to-r from-[#FFD166] via-white to-[#00E5FF] bg-clip-text text-transparent">
+                        {link.label}
+                      </span>
+                    </div>
+                    <span className="px-2 py-0.5 text-[10px] font-black uppercase rounded bg-[#FFD166] text-[#071426]">
+                      SOON
+                    </span>
+                  </a>
+                );
+              }
+
+              return (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleLinkClick(link.href);
+                  }}
+                  className="px-3 py-2 text-base font-medium text-slate-200 hover:text-[#00E5FF] hover:bg-[#0E223D]/50 rounded-lg transition-colors"
+                >
+                  {link.label}
+                </a>
+              );
+            })}
           </nav>
           <div className="pt-2">
             <button

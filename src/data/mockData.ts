@@ -27,6 +27,58 @@ export const INITIAL_SAMPLE_QUESTIONS: QuizQuestion[] = [
   }
 ];
 
+export const MATHEMATICS_SAMPLE_QUESTIONS: QuizQuestion[] = [
+  {
+    id: 'mq1',
+    question: 'Tentukan nilai x yang memenuhi persamaan linear: 4x + 12 = 36!',
+    options: ['x = 4', 'x = 5', 'x = 6', 'x = 8'],
+    correctIndex: 2,
+    explanation: 'Kurangkan kedua ruas dengan 12: 4x = 36 - 12 = 24. Bagi kedua ruas dengan 4: x = 24 / 4 = 6. Pembuktian: 4(6) + 12 = 36.',
+    funFact: 'Persamaan linear satu variabel selalu memiliki tepat satu solusi tunggal di bilangan real!'
+  },
+  {
+    id: 'mq2',
+    question: 'Sebuah wadah berbentuk balok memiliki ukuran p = 10 cm, l = 6 cm, dan t = 4 cm. Berapakah volume wadah tersebut?',
+    options: ['200 cm³', '240 cm³', '280 cm³', '320 cm³'],
+    correctIndex: 1,
+    explanation: 'Rumus volume balok: V = p × l × t. Substitusi angka: V = 10 cm × 6 cm × 4 cm = 240 cm³.',
+    funFact: 'Jika seluruh rusuk balok diperbesar 2 kali lipat, volumenya akan membesar 2³ = 8 kali lipat!'
+  }
+];
+
+export const PHYSICS_SAMPLE_QUESTIONS: QuizQuestion[] = [
+  {
+    id: 'pq1',
+    question: 'Sebuah kendaraan menempuh jarak 150 km dalam waktu 2,5 jam. Berapakah kecepatan rata-ratanya dalam Satuan Internasional (m/s)?',
+    options: ['12,50 m/s', '16,67 m/s', '20,00 m/s', '25,00 m/s'],
+    correctIndex: 1,
+    explanation: 'Kecepatan v = s / t = 150 km / 2,5 jam = 60 km/jam. Konversi ke SI: 60 ÷ 3,6 = 16,67 m/s.',
+    funFact: 'Angka 3,6 berasal dari rasio konversi 1.000 meter dibagi 3.600 detik (sekon)!'
+  }
+];
+
+export const CHEMISTRY_SAMPLE_QUESTIONS: QuizQuestion[] = [
+  {
+    id: 'cq1',
+    question: 'Berapakah jumlah mol zat yang terkandung di dalam 36 gram air (H₂O) jika diketahui Ar H = 1 dan Ar O = 16?',
+    options: ['1,0 mol', '2,0 mol', '3,0 mol', '4,0 mol'],
+    correctIndex: 1,
+    explanation: 'Massa molekul relatif Mr H₂O = (2 × 1) + 16 = 18 g/mol. Jumlah mol n = m / Mr = 36 / 18 = 2,0 mol.',
+    funFact: '2 mol air mengandung 2 × 6,022 × 10²³ = 1,2044 × 10²⁴ molekul air!'
+  }
+];
+
+export const DKV_SAMPLE_QUESTIONS: QuizQuestion[] = [
+  {
+    id: 'dq1',
+    question: 'Dalam anatomi tipografi, garis maya horizontal tempat bertumpunya bagian bawah sebagian besar badan huruf kecil disebut...',
+    options: ['Baseline', 'Cap Height', 'X-Height', 'Mean Line'],
+    correctIndex: 0,
+    explanation: 'Baseline adalah garis dasar tumpuan huruf. Bagian huruf yang memanjang ke bawah garis ini (seperti huruf p, q, y) disebut descender.',
+    funFact: 'Jarak antara baseline ke mean line disebut x-height, patokan visual tinggi huruf kecil seperti x, u, dan o!'
+  }
+];
+
 export const SHOWCASE_PROJECTS: ShowcaseProject[] = [
   {
     id: 'showcase-1',

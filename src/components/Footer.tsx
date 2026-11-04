@@ -59,10 +59,11 @@ export const Footer: React.FC = () => {
                 Tentang GURITA
               </button>
               <button
-                onClick={() => scrollTo('eksplorasi')}
-                className="hover:text-[#00E5FF] transition-colors cursor-pointer text-left text-xs text-slate-400 hover:underline"
+                onClick={() => scrollTo('gurita-pro')}
+                className="hover:text-[#FFD166] transition-colors cursor-pointer text-left text-xs text-[#FFD166] font-semibold hover:underline flex items-center gap-1"
               >
-                Eksplorasi AI
+                <span>GURITA PRO</span>
+                <span className="px-1 py-0.2 text-[9px] font-black rounded bg-[#FFD166] text-[#071426]">SOON</span>
               </button>
               <button
                 onClick={() => scrollTo('materi')}

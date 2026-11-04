@@ -8,7 +8,15 @@ import {
   GameDesignTheme,
   QuizQuestion
 } from '../types';
-import { INITIAL_SAMPLE_QUESTIONS } from '../data/mockData';
+import {
+  INITIAL_SAMPLE_QUESTIONS,
+  MATHEMATICS_SAMPLE_QUESTIONS,
+  PHYSICS_SAMPLE_QUESTIONS,
+  CHEMISTRY_SAMPLE_QUESTIONS,
+  DKV_SAMPLE_QUESTIONS
+} from '../data/mockData';
+import { classifySubject } from '../utils/subjectClassifier';
+import { MixedMathText } from './MathRenderer';
 import {
   Gamepad2,
   Sparkles,
@@ -106,6 +114,7 @@ export const GameStudioSection: React.FC = () => {
   const [promptHistory, setPromptHistory] = useState<PromptHistoryItem[]>([]);
 
   // Playtest Arena Interactive State
+  const [playtestPack, setPlaytestPack] = useState<'auto' | 'math' | 'physics' | 'chemistry' | 'dkv' | 'biology'>('auto');
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [score, setScore] = useState<number>(0);
@@ -332,8 +341,33 @@ ${specificGameInstructions}
 - Bantuan / Petunjuk: ${config.enableHints ? 'Ya, tombol petunjuk yang memberikan kata kunci penalaran.' : 'Tidak'}
 - Rekap Hasil Akhir: ${config.enableResultsRecap ? 'Ya, layar game-over menampilkan total skor, persentase kebenaran, bintang apresiasi (1-3), dan tombol main lagi.' : 'Tidak'}
 
+${(() => {
+  const analysis = classifySubject(config.subject, config.gameName, config.topic, config.learningGoal);
+  if (analysis.isQuantitative) {
+    return `==================================================
+5. STANDAR KHUSUS MATERI NUMERIK, RUMUS & DATA (${analysis.domainNameId.toUpperCase()}):
 ==================================================
-5. STANDAR KUALITAS KODE (GEMINI CANVAS & CANVA AI)
+1. Akurasi Perhitungan & Kunci Jawaban Matematis:
+   - Seluruh butir soal kalkulasi wajib memiliki kunci jawaban yang 100% tepat dan teruji secara matematis.
+   - Sediakan pembahasan bertahap (step-by-step math solution) yang muncul pada umpan balik langsung (instant feedback) saat pemain menjawab.
+2. Penulisan Rumus, Simbol & Notasi:
+   - Tampilkan rumus dengan rapi menggunakan tag HTML (sup/sub) atau teks bersih (misal cm³, m/s, x², H₂O, NaCl, dll).
+3. Input Angka & Validasi Permainan:
+   - Sediakan pilihan jawaban dengan angka distraktor yang realistis dan mendidik (bukan angka acak tak berdasar).
+   - Pastikan logika penambahan skor, hitung mundur timer, dan rekap hasil akhir tidak mengalami pembulatan keliru.`;
+  }
+  if (analysis.domain === 'HUMANITIES_ARTS_LANGUAGE') {
+    return `==================================================
+5. STANDAR KHUSUS SENI, DKV & HUMANIORA (NON-NUMERIK):
+==================================================
+- Game berfokus pada kepekaan estetika, hierarki visual, anatomi tipografi, atau analisis makna konseptual.
+- JANGAN memaksakan soal rumus matematika atau angka hitungan pada materi ini.`;
+  }
+  return '';
+})()}
+
+==================================================
+6. STANDAR KUALITAS KODE (GEMINI CANVAS & CANVA AI)
 ==================================================
 1. Tulis seluruh kode dalam format satu kesatuan:
    - Bagian HTML: Elemen game, layar awal (start screen), kanvas permainan (game arena), dan layar rekap (game over).
@@ -458,9 +492,35 @@ Mohon hasilkan sekarang kode lengkap yang dapat saya jalankan dan mainkan di Gem
     }, 50);
   };
 
-  // Playtest Arena logic
-  const sampleQuestions = INITIAL_SAMPLE_QUESTIONS;
+  // Playtest Arena logic with Subject-Aware question packs
+  const getSubjectQuestions = (): QuizQuestion[] => {
+    if (playtestPack === 'math') return MATHEMATICS_SAMPLE_QUESTIONS;
+    if (playtestPack === 'physics') return PHYSICS_SAMPLE_QUESTIONS;
+    if (playtestPack === 'chemistry') return CHEMISTRY_SAMPLE_QUESTIONS;
+    if (playtestPack === 'dkv') return DKV_SAMPLE_QUESTIONS;
+    if (playtestPack === 'biology') return INITIAL_SAMPLE_QUESTIONS;
+
+    // 'auto' mode: automatically inspect config
+    const classification = classifySubject(config.subject, config.topic);
+    if (classification.domain === 'MATHEMATICS') return MATHEMATICS_SAMPLE_QUESTIONS;
+    if (classification.domain === 'PHYSICS') return PHYSICS_SAMPLE_QUESTIONS;
+    if (classification.domain === 'CHEMISTRY') return CHEMISTRY_SAMPLE_QUESTIONS;
+    if (classification.domain === 'HUMANITIES_ARTS_LANGUAGE') return DKV_SAMPLE_QUESTIONS;
+    return INITIAL_SAMPLE_QUESTIONS;
+  };
+
+  const sampleQuestions = getSubjectQuestions();
   const currentQ = sampleQuestions[currentQuestionIndex] || sampleQuestions[0];
+
+  const handleSwitchPack = (pack: 'auto' | 'math' | 'physics' | 'chemistry' | 'dkv' | 'biology') => {
+    setPlaytestPack(pack);
+    setCurrentQuestionIndex(0);
+    setSelectedOption(null);
+    setScore(0);
+    setLives(3);
+    setShowFeedback(false);
+    setGameFinished(false);
+  };
 
   const handleSelectOption = (index: number) => {
     if (showFeedback || gameFinished) return;
@@ -1068,12 +1128,48 @@ Mohon hasilkan sekarang kode lengkap yang dapat saya jalankan dan mainkan di Gem
 
         {/* SUB-TAB 2: PLAYTEST ARENA INTERACTIVE DEMO */}
         {activeTab === 'playtest' && (
-          <div className="max-w-2xl mx-auto p-8 rounded-3xl bg-[#0B1B31] border border-[#2979FF]/40 shadow-2xl space-y-6 animate-fade-in">
+          <div className="max-w-2xl mx-auto p-6 sm:p-8 rounded-3xl bg-[#0B1B31] border border-[#2979FF]/40 shadow-2xl space-y-6 animate-fade-in">
+            {/* Subject Pack Switcher */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-mono uppercase text-slate-400 font-semibold tracking-wider">
+                  Pilih Paket Soal Playtest Subjek:
+                </span>
+                <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#00E5FF]/10 text-[#00E5FF] font-mono border border-[#00E5FF]/20">
+                  Didukung KaTeX Math
+                </span>
+              </div>
+              <div className="flex flex-wrap gap-1.5 p-1 rounded-2xl bg-[#071426] border border-slate-800">
+                {[
+                  { id: 'auto', label: '🔄 Otomatis (Subjek Form)' },
+                  { id: 'math', label: '📐 Matematika (SPLSV & Luas)' },
+                  { id: 'physics', label: '⚡ Fisika (GLB)' },
+                  { id: 'chemistry', label: '🧪 Kimia (Mol)' },
+                  { id: 'dkv', label: '🎨 DKV & Tipografi (Non-Numerik)' },
+                  { id: 'biology', label: '🌊 Ekosistem Laut' }
+                ].map((pack) => (
+                  <button
+                    key={pack.id}
+                    onClick={() => handleSwitchPack(pack.id as any)}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                      playtestPack === pack.id
+                        ? 'bg-gradient-to-r from-[#2979FF] to-[#00E5FF] text-white shadow-md'
+                        : 'text-slate-400 hover:text-slate-200 hover:bg-[#122A4E]/50'
+                    }`}
+                  >
+                    {pack.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
             {/* Top Bar Status */}
             <div className="flex items-center justify-between border-b border-slate-800 pb-4">
               <div className="flex items-center gap-2 text-xs font-mono font-bold text-[#00E5FF]">
                 <Gamepad2 className="w-4 h-4" />
-                <span>Playtest Arena Cepat: {config.gameName}</span>
+                <span className="truncate max-w-[200px] sm:max-w-none">
+                  {playtestPack === 'auto' ? config.gameName : `Playtest: Paket ${playtestPack.toUpperCase()}`}
+                </span>
               </div>
               <div className="flex items-center gap-3 text-xs font-mono">
                 <span className="text-slate-400">Soal {currentQuestionIndex + 1}/{sampleQuestions.length}</span>
@@ -1084,9 +1180,9 @@ Mohon hasilkan sekarang kode lengkap yang dapat saya jalankan dan mainkan di Gem
 
             {!gameFinished ? (
               <div className="space-y-6">
-                <h3 className="text-lg sm:text-xl font-bold text-white leading-snug">
-                  {currentQ.question}
-                </h3>
+                <div className="text-base sm:text-lg font-bold text-white leading-relaxed">
+                  <MixedMathText content={currentQ.question} />
+                </div>
 
                 {/* Options Grid */}
                 <div className="space-y-2.5">
@@ -1109,9 +1205,9 @@ Mohon hasilkan sekarang kode lengkap yang dapat saya jalankan dan mainkan di Gem
                         disabled={showFeedback}
                         className={`w-full p-4 rounded-2xl border text-left text-xs sm:text-sm font-medium transition-all flex items-center justify-between cursor-pointer ${btnStyle}`}
                       >
-                        <span>{option}</span>
+                        <MixedMathText content={option} />
                         {showFeedback && idx === currentQ.correctIndex && (
-                          <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                          <Check className="w-4 h-4 text-emerald-400 shrink-0 ml-2" />
                         )}
                       </button>
                     );
@@ -1122,13 +1218,15 @@ Mohon hasilkan sekarang kode lengkap yang dapat saya jalankan dan mainkan di Gem
                 {showFeedback && (
                   <div className="p-4 rounded-2xl bg-[#071426] border border-[#00E5FF]/30 space-y-2 text-xs animate-fade-in">
                     <span className="font-bold text-[#00E5FF] uppercase font-mono block">
-                      Pembahasan Pedagogis:
+                      Pembahasan Pedagogis Terstruktur:
                     </span>
-                    <p className="text-slate-300">{currentQ.explanation}</p>
+                    <div className="text-slate-300 leading-relaxed">
+                      <MixedMathText content={currentQ.explanation} />
+                    </div>
                     <div className="pt-3 flex justify-end">
                       <button
                         onClick={handleNextPlaytest}
-                        className="px-5 py-2 rounded-xl bg-gradient-to-r from-[#2979FF] to-[#00E5FF] text-white font-bold text-xs cursor-pointer"
+                        className="px-5 py-2 rounded-xl bg-gradient-to-r from-[#2979FF] to-[#00E5FF] text-white font-bold text-xs cursor-pointer hover:shadow-lg hover:shadow-[#00E5FF]/20 transition-all"
                       >
                         Lanjutkan Tantangan →
                       </button>

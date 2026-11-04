@@ -11,6 +11,7 @@ import { MateriSection } from './components/MateriSection';
 import { PromptLabSection } from './components/PromptLabSection';
 import { GameStudioSection } from './components/GameStudioSection';
 import { MediaGeneratorSection } from './components/MediaGeneratorSection';
+import { GuritaProSection } from './components/GuritaProSection';
 import { ClosingCtaSection } from './components/ClosingCtaSection';
 import { Footer } from './components/Footer';
 
@@ -49,6 +50,9 @@ export default function App() {
 
         {/* 5. GENERATOR MEDIA PEMBELAJARAN (Prompt Desain AI Siap Pakai untuk ChatGPT) */}
         <MediaGeneratorSection />
+
+        {/* 6. GURITA PRO: SUITE FITUR LANJUTAN MASA DEPAN (SOON) */}
+        <GuritaProSection />
 
         {/* 7. SECTION PENUTUP */}
         <ClosingCtaSection onStartExploration={() => scrollTo('tentang')} />

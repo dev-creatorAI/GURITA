@@ -316,4 +316,6 @@ export interface ModulAjarDocument {
     namaPenyusun: string;
     nipPenyusun?: string;
   };
+  // DUKUNGAN SUBJECT-AWARE OUTPUT (MATEMATIKA, RUMUS, DATA, SIMBOL, DAN KODE)
+  subjectAwareAnalysis?: any;
 }

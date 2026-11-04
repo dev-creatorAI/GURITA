@@ -212,6 +212,93 @@ export async function exportModulToWord(doc: ModulAjarDocument): Promise<void> {
     })
   );
 
+  // DUKUNGAN SUBJECT-AWARE OUTPUT (RUMUS, CONTOH SOAL, TABEL NUMERIK, ATAU PRINSIP DKV)
+  if (doc.subjectAwareAnalysis) {
+    const sa = doc.subjectAwareAnalysis;
+    sectionsChildren.push(
+      makeHeading(
+        `REPRESENTASI MATERI KHUSUS: ${(sa.domainNameId || 'Subject-Aware Output').toUpperCase()}`,
+        HeadingLevel.HEADING_1
+      )
+    );
+
+    if (sa.isQuantitative) {
+      if (sa.coreFormulas && sa.coreFormulas.length > 0) {
+        sectionsChildren.push(makeHeading('Rumus & Persamaan Inti:', HeadingLevel.HEADING_2));
+        sa.coreFormulas.forEach((f: any) => {
+          sectionsChildren.push(makePara(`• ${f.name}: ${f.textFallback}`, true));
+          if (f.variables) {
+            f.variables.forEach((v: any) => {
+              sectionsChildren.push(makeBullet(`${v.symbol} = ${v.meaning}${v.unit ? ` (${v.unit})` : ''}`));
+            });
+          }
+        });
+      }
+
+      if (sa.workedExample) {
+        sectionsChildren.push(
+          makeHeading(`Contoh Soal & Penyelesaian Terstruktur:`, HeadingLevel.HEADING_2)
+        );
+        sectionsChildren.push(makePara(`Soal: ${sa.workedExample.problemStatement}`, true));
+        if (sa.workedExample.given) {
+          sa.workedExample.given.forEach((g: string) =>
+            sectionsChildren.push(makeBullet(`Diketahui: ${g}`))
+          );
+        }
+        sa.workedExample.steps.forEach((st: any) => {
+          sectionsChildren.push(makePara(`Langkah ${st.stepNumber}: ${st.description}`));
+          sectionsChildren.push(makePara(`   => ${st.mathExpression}`, true));
+        });
+        sectionsChildren.push(makePara(`Jawaban Akhir: ${sa.workedExample.finalAnswer}`, true));
+        if (sa.workedExample.verificationOrNote) {
+          sectionsChildren.push(makePara(`Verifikasi: ${sa.workedExample.verificationOrNote}`));
+        }
+      }
+
+      if (sa.specializedTable) {
+        sectionsChildren.push(makeHeading(sa.specializedTable.title, HeadingLevel.HEADING_2));
+        const stHeaders = new TableRow({
+          children: sa.specializedTable.headers.map(
+            (h: string) =>
+              new TableCell({
+                children: [makePara(h, true)],
+                shading: { fill: 'E8F0FE' }
+              })
+          )
+        });
+        const stRows = sa.specializedTable.rows.map(
+          (row: string[]) =>
+            new TableRow({
+              children: row.map((cell: string) => new TableCell({ children: [makePara(cell)] }))
+            })
+        );
+        sectionsChildren.push(
+          new Table({
+            rows: [stHeaders, ...stRows],
+            width: { size: 100, type: WidthType.PERCENTAGE }
+          })
+        );
+        if (sa.specializedTable.summaryOrInsight) {
+          sectionsChildren.push(makePara(`Catatan: ${sa.specializedTable.summaryOrInsight}`));
+        }
+      }
+
+      if (sa.codeOrPseudocode) {
+        sectionsChildren.push(makeHeading(sa.codeOrPseudocode.title, HeadingLevel.HEADING_2));
+        sectionsChildren.push(makePara(sa.codeOrPseudocode.code));
+        sectionsChildren.push(makePara(`Keterangan: ${sa.codeOrPseudocode.explanation}`));
+      }
+    } else if (sa.nonNumericGuidance) {
+      sectionsChildren.push(
+        makeHeading('Prinsip Komunikasi Visual & Anatomi Desain (Non-Numerik):', HeadingLevel.HEADING_2)
+      );
+      sectionsChildren.push(makePara(sa.nonNumericGuidance.conceptualFramework));
+      sa.nonNumericGuidance.artisticPrinciples.forEach((ap: string) =>
+        sectionsChildren.push(makeBullet(ap))
+      );
+    }
+  }
+
   // BAGIAN IV. ASESMEN PEMBELAJARAN
   sectionsChildren.push(makeHeading('ASESMEN PEMBELAJARAN', HeadingLevel.HEADING_1));
   sectionsChildren.push(makePara(`1. Asesmen Awal: ${doc.asesmen.asesmenAwal.tujuan}. Teknik: ${doc.asesmen.asesmenAwal.teknik}`));

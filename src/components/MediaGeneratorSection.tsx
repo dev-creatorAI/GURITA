@@ -8,6 +8,7 @@ import {
   IllustrationStyle,
   MediaGeneratorConfig
 } from '../types/mediaGenerator';
+import { classifySubject } from '../utils/subjectClassifier';
 import {
   FileText,
   PieChart,
@@ -373,9 +374,46 @@ ${getLayoutGuidance(config.mediaType, config.orientation, config.pageSize)}
       ? 'Sertakan karakter/maskot gurita edukasi yang ramah dan inspiratif sesuai permintaan spesifik pengguna.'
       : `Fokuskan ilustrasi dan aset visual secara eksklusif pada objek/konsep materi "${config.topic}". PENTING: JANGAN menambahkan maskot gurita, karakter hewan kartun, atau elemen logo yang tidak diminta secara eksplisit oleh pengguna.`
   }
+${(() => {
+  const analysis = classifySubject(
+    config.subject,
+    config.title,
+    config.topic,
+    `${config.learningGoal} ${config.contentPoints}`
+  );
+
+  if (analysis.isQuantitative) {
+    return `
+==================================================
+5. AKURASI SIMBOL, RUMUS & DATA NUMERIK KHUSUS (${analysis.domainNameId.toUpperCase()})
+==================================================
+- Ketepatan Rumus & Notasi:
+  * Wajib menuliskan rumus, persamaan, dan simbol ilmiah secara 100% akurat tanpa mengubah notasi atau variabel resmi.
+${analysis.coreFormulas ? analysis.coreFormulas.map(f => `  * Rumus Utama: ${f.name} -> ${f.textFallback} (LaTeX: ${f.latex})`).join('\n') : ''}
+- Visualisasi Pendukung:
+  * Sediakan diagram skematis, grafik koordinat/relasi variabel, atau tabel data numerik yang rapi dengan label satuan internasional (SI) yang konsisten.
+  * Pastikan seluruh angka, eksponen/pangkat, indeks subskrip (misal H₂O, CO₂, m/s, cm³), dan tanda operasi matematika terbaca tajam dan tidak kabur.
+- Integritas Data & Anti-Halusinasi:
+  * Jangan mengarang angka atau rumus fiktif; seluruh operasi hitung dan pembuktian langkah kalkulasi harus konsisten secara matematis dan ilmiah.`;
+  }
+
+  if (analysis.domain === 'HUMANITIES_ARTS_LANGUAGE') {
+    return `
+==================================================
+5. PANDUAN TIPOGRAFI & EKSPLORASI ESTETIKA KHUSUS (${analysis.domainNameId.toUpperCase()})
+==================================================
+- Pendekatan Non-Numerik:
+  * Materi ini berfokus pada kekuatan komunikasi visual, pesan estetika, dan ekspresi kreatif. JANGAN memaksakan rumus atau angka hitungan buatan yang tidak relevan dengan esensi materi seni/desain.
+- Anatomi Tipografi & Komposisi:
+  * Terapkan prinsip hierarki visual (headline, subhead, body), keterbacaan (legibility), kerning, leading, dan tracking yang proporsional.
+  * Padukan kontras warna dan ruang kosong (negative space) untuk menonjolkan pesan utama secara elegan.`;
+  }
+
+  return '';
+})()}
 
 ==================================================
-5. INSTRUKSI EKSEKUSI UNTUK CHATGPT
+6. INSTRUKSI EKSEKUSI UNTUK CHATGPT
 ==================================================
 1. JIKA ANDA MEMILIKI FITUR PEMBUATAN GAMBAR (DALL-E / IMAGE GENERATION TOOL):
    Tolong buatkan visual desain utama sesuai seluruh spesifikasi, gaya visual "${config.designStyle}", dan palet warna "${config.colorTheme}" di atas sekarang juga dengan resolusi tinggi, rasio aspek ${config.pageSize} ${ratioMap[config.orientation]}, bebas typo, dan komposisi yang seimbang antara teks dengan visual pendukung.
