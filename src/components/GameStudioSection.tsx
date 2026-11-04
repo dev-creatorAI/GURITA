@@ -1022,20 +1022,11 @@ Mohon hasilkan sekarang kode lengkap yang dapat saya jalankan dan mainkan di Gem
                     </div>
 
                     <ol className="space-y-2 text-xs text-slate-300 list-decimal list-inside leading-relaxed">
-                      <li>Isi seluruh pengaturan game di Game Studio GURITA.</li>
-                      <li>Klik tombol <strong>"Buat Prompt Game"</strong>.</li>
-                      <li>Periksa kembali prompt yang dihasilkan.</li>
-                      <li>Klik tombol <strong>"Salin Prompt"</strong>.</li>
-                      <li>Klik tombol <strong>"Buka Gemini Canvas"</strong>.</li>
-                      <li>Setelah halaman Gemini terbuka, masuk ke fitur Canvas atau lingkungan pembuatan aplikasi yang tersedia pada akun pengguna.</li>
-                      <li>Buat percakapan atau proyek baru jika diperlukan.</li>
-                      <li>Tempelkan prompt yang sudah disalin ke kolom instruksi Gemini.</li>
-                      <li>Kirim prompt dan tunggu hingga Gemini membuat game.</li>
-                      <li>Jalankan game yang dihasilkan untuk menguji mekanismenya.</li>
-                      <li>Jika ada tombol atau fitur yang tidak berfungsi, berikan instruksi perbaikan kepada Gemini.</li>
-                      <li>Periksa kebenaran soal dan kunci jawaban sebelum game digunakan dalam pembelajaran.</li>
+                      <li><strong>Atur & Buat:</strong> Isi pengaturan game di Game Studio GURITA, lalu klik <strong>"Buat Prompt Game"</strong>.</li>
+                      <li><strong>Salin:</strong> Periksa hasil prompt, klik <strong>"Salin Prompt"</strong>, lalu klik <strong>"Buka Gemini Canvas"</strong>.</li>
+                      <li><strong>Tempel & Generate:</strong> Buat percakapan/proyek baru di Gemini, tempelkan prompt ke kolom instruksi, lalu kirim.</li>
+                      <li><strong>Uji & Perbaiki:</strong> Jalankan game untuk menguji mekanisme dan ketepatan soal/kunci jawaban. Berikan instruksi perbaikan jika ada kendala.</li>
                     </ol>
-
                     <div className="p-3.5 rounded-2xl bg-[#071426] border border-slate-800 text-[11px] text-slate-400 leading-relaxed">
                       <span className="font-semibold text-[#00E5FF] block mb-1">Catatan Penting:</span>
                       Game Studio GURITA menghasilkan prompt yang siap digunakan. Pengguna perlu menyalin prompt dan menempelkannya secara manual ke Gemini. Hasil akhir bergantung pada kemampuan platform AI dan perlu diuji sebelum digunakan.
@@ -1058,9 +1049,7 @@ Mohon hasilkan sekarang kode lengkap yang dapat saya jalankan dan mainkan di Gem
                       <li>Klik <strong>"Buat Prompt Game"</strong>.</li>
                       <li>Klik <strong>"Salin Prompt"</strong>.</li>
                       <li>Klik tombol <strong>"Buka Canva AI"</strong>.</li>
-                      <li>Setelah Canva terbuka, masuk ke fitur AI yang sesuai dan tersedia pada akun pengguna.</li>
                       <li>Tempelkan prompt yang telah disalin.</li>
-                      <li>Jika Canva tidak mendukung pembuatan game interaktif lengkap melalui prompt tersebut, gunakan prompt untuk membuat prototipe visual, desain permainan, presentasi interaktif, atau media pembelajaran yang sesuai dengan fitur Canva.</li>
                       <li>Periksa dan sesuaikan hasil desain.</li>
                       <li>Uji tautan, tombol, dan navigasi apabila membuat presentasi interaktif.</li>
                       <li>Bagikan atau unduh hasil sesuai kebutuhan.</li>
