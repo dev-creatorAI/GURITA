@@ -1,0 +1,6 @@
+{
+  "name": "GURITA - Guru Riang dengan Teknologi AI",
+  "description": "Platform eksplorasi teknologi AI interaktif bagi guru untuk belajar, berkreasi, dan menciptakan media serta game edukasi inspiratif.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

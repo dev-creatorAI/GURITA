@@ -1,0 +1,952 @@
+Saya ingin melakukan pengembangan besar pada website GURITA (Guru Riang dengan Teknologi AI) yang sudah ada.
+
+PENTING:
+- Jangan membuat proyek atau website baru.
+- Edit dan kembangkan proyek yang sedang terbuka.
+- Pertahankan nama GURITA, logo, maskot gurita 3D, identitas visual, warna, dan gaya futuristik yang sudah ada.
+- Pertahankan desain premium EdTech dengan warna midnight navy, neon cyan, biru elektrik, ungu, serta aksen kuning.
+- Pertahankan desain responsif untuk desktop, tablet, dan ponsel.
+- Pertahankan seluruh fitur yang masih berfungsi.
+- Jangan hanya membuat tampilan atau tombol. Implementasikan fungsi nyata yang dapat digunakan.
+- Semua teks antarmuka dan hasil utama menggunakan bahasa Indonesia yang baik dan benar.
+- Jangan menghapus menu Prompt Lab, Game Studio, dan Showcase.
+- Setelah perubahan selesai, periksa kembali seluruh navigasi, tombol, formulir, dan fitur unduhan agar berfungsi dengan baik.
+
+==================================================
+BAGIAN 1 — PERUBAHAN NAVIGASI DAN MENU
+==================================================
+
+1. Ubah semua tulisan tombol atau menu yang sebelumnya bernama "Misi Workshop" menjadi "Materi".
+
+2. Hapus menu Timeline dari navigasi utama.
+
+3. Hapus tombol Timeline yang tampil di bagian lain website, termasuk tombol atau tautan yang hanya digunakan untuk menuju bagian Timeline.
+
+4. Pastikan tidak ada tautan rusak setelah menu Timeline dihapus.
+
+5. Menu navigasi utama yang dipertahankan:
+- Beranda
+- Tentang GURITA
+- Eksplorasi AI
+- Materi
+- Prompt Lab
+- Game Studio
+- Showcase
+
+Sesuaikan nama menu jika struktur proyek saat ini sedikit berbeda, tetapi jangan menambahkan kembali menu Timeline.
+
+==================================================
+BAGIAN 2 — MENU MATERI WORKSHOP
+==================================================
+
+Ubah bagian Misi Workshop menjadi Materi Workshop.
+
+Jadikan bagian ini sebagai pusat materi pelatihan yang lengkap, terstruktur, menarik, dan mudah dipelajari oleh guru SMP.
+
+Buat dua materi utama:
+
+MATERI 1: MENGENAL ARTIFICIAL INTELLIGENCE (AI)
+
+Materi ini harus disajikan secara lengkap, sistematis, dengan contoh konkret dalam dunia pendidikan.
+
+A. Pengertian Artificial Intelligence
+
+Jelaskan:
+- Pengertian AI dengan bahasa sederhana.
+- Pengertian AI secara lebih teknis.
+- Bagaimana AI memproses masukan dan menghasilkan keluaran.
+- Perbedaan AI, machine learning, dan generative AI.
+- Perbedaan AI tradisional dan AI generatif.
+- Contoh AI yang sudah digunakan dalam kehidupan sehari-hari.
+- Contoh AI yang relevan dengan profesi guru.
+
+B. Cara Kerja AI
+
+Jelaskan:
+- Data sebagai bahan pembelajaran sistem AI.
+- Pola dan hubungan yang dipelajari AI.
+- Peran model AI dalam menghasilkan prediksi atau keluaran.
+- Bagaimana AI generatif menghasilkan teks, gambar, audio, dan materi lainnya.
+- Mengapa hasil AI dapat keliru meskipun tampak meyakinkan.
+- Perbedaan antara menghasilkan jawaban berdasarkan pola dan melakukan verifikasi fakta.
+
+Gunakan ilustrasi sederhana, diagram alur, atau kartu visual jika sesuai.
+
+C. Penerapan AI dalam Kegiatan Pembelajaran
+
+Berikan contoh penerapan yang realistis untuk guru SMP, meliputi:
+- Menyusun modul ajar.
+- Menyusun tujuan pembelajaran.
+- Mengembangkan bahan ajar.
+- Membuat presentasi.
+- Membuat poster dan infografis pendidikan.
+- Mengembangkan soal dan asesmen.
+- Membuat rubrik penilaian.
+- Menyusun LKPD.
+- Membuat cerita, simulasi, dan permainan edukasi.
+- Mengembangkan pembelajaran berdiferensiasi.
+- Memberikan alternatif penjelasan sesuai kebutuhan peserta didik.
+- Membantu refleksi guru dan evaluasi pembelajaran.
+
+Untuk setiap penerapan, berikan:
+1. Permasalahan yang dihadapi guru.
+2. Cara memanfaatkan AI.
+3. Contoh instruksi atau prompt.
+4. Contoh hasil yang diharapkan.
+5. Hal yang tetap harus diperiksa oleh guru.
+
+D. Peluang Pemanfaatan AI
+
+Jelaskan peluang AI untuk:
+- Meningkatkan efisiensi pekerjaan guru.
+- Meningkatkan kreativitas pembelajaran.
+- Mengembangkan media interaktif.
+- Membantu personalisasi pembelajaran.
+- Mendorong pembelajaran aktif dan berpusat pada peserta didik.
+- Mengembangkan literasi digital dan keterampilan abad ke-21.
+- Membantu guru menghasilkan berbagai alternatif strategi pembelajaran.
+
+Tekankan bahwa AI merupakan alat bantu profesional, bukan pengganti tanggung jawab dan pertimbangan pedagogis guru.
+
+E. Keterbatasan dan Risiko AI
+
+Jelaskan secara objektif:
+- Halusinasi AI atau informasi yang dibuat-buat.
+- Kesalahan fakta, angka, kutipan, dan referensi.
+- Bias pada data atau keluaran.
+- Informasi yang sudah tidak mutakhir.
+- Kesalahan konteks dan pemahaman instruksi.
+- Risiko privasi dan keamanan data.
+- Hak cipta dan penggunaan karya orang lain.
+- Ketergantungan berlebihan pada AI.
+- Risiko berkurangnya proses berpikir kritis apabila AI digunakan tanpa pendampingan.
+- Perbedaan kemampuan dan batas penggunaan setiap aplikasi AI.
+
+Berikan contoh kasus pendidikan dan cara mengantisipasinya.
+
+F. Verifikasi Informasi yang Dihasilkan AI
+
+Buat prosedur praktis verifikasi hasil AI dengan langkah:
+
+1. Identifikasi klaim atau informasi penting.
+2. Periksa sumber primer dan sumber resmi.
+3. Bandingkan dengan setidaknya satu sumber tepercaya lainnya.
+4. Periksa tanggal, konteks, angka, dan kutipan.
+5. Uji kesesuaian informasi dengan kurikulum dan kebutuhan peserta didik.
+6. Koreksi atau hapus informasi yang tidak dapat diverifikasi.
+7. Dokumentasikan sumber apabila diperlukan.
+
+Berikan contoh latihan membedakan jawaban AI yang akurat, meragukan, dan keliru.
+
+G. Etika Penggunaan AI dalam Pendidikan
+
+Bahas:
+- Kejujuran akademik.
+- Transparansi ketika menggunakan AI.
+- Perlindungan data pribadi guru dan peserta didik.
+- Larangan mengunggah data sensitif ke layanan AI tanpa dasar dan perlindungan yang sesuai.
+- Hak cipta dan atribusi.
+- Keadilan dan inklusivitas.
+- Pengawasan manusia terhadap keputusan penting.
+- Penggunaan AI yang bertanggung jawab dan sesuai kebijakan sekolah.
+- Peran guru dalam memeriksa dan bertanggung jawab atas materi yang digunakan.
+
+H. Aktivitas Praktik
+
+Tambahkan latihan interaktif:
+- Kuis pemahaman tentang AI.
+- Studi kasus pemanfaatan AI di kelas.
+- Latihan memverifikasi informasi.
+- Refleksi etika penggunaan AI.
+- Pertanyaan refleksi yang dapat dijawab peserta.
+
+Berikan umpan balik setelah peserta menjawab kuis. Bedakan jawaban benar dan salah dengan penjelasan singkat.
+
+MATERI 2: PROMPT ENGINEERING
+
+Judul:
+"Prompt Engineering: Seni Memberikan Instruksi yang Efektif kepada AI"
+
+Susun materi secara lengkap.
+
+A. Pengertian Prompt Engineering
+
+Jelaskan pengertian prompt, prompt engineering, dan pentingnya memberikan instruksi yang jelas kepada AI.
+
+B. Anatomi Prompt yang Baik
+
+Jelaskan komponen:
+1. Peran atau persona AI.
+2. Konteks.
+3. Tujuan atau tugas.
+4. Data atau informasi masukan.
+5. Instruksi dan batasan.
+6. Format keluaran.
+7. Kriteria kualitas.
+8. Contoh atau referensi jika diperlukan.
+
+Buat contoh prompt sederhana dan prompt lengkap.
+
+C. Rumus Prompt
+
+Gunakan rumus praktis:
+
+PERAN + KONTEKS + TUGAS + DATA + BATASAN + FORMAT OUTPUT + KRITERIA KUALITAS.
+
+Jelaskan bahwa tidak semua prompt harus menggunakan semua komponen, tetapi kelengkapan komponen disesuaikan dengan kompleksitas tugas.
+
+D. Contoh Prompt Buruk dan Prompt yang Diperbaiki
+
+Berikan minimal lima pasangan contoh dalam konteks pekerjaan guru:
+- Membuat modul ajar.
+- Membuat soal.
+- Membuat presentasi.
+- Membuat media pembelajaran.
+- Membuat permainan edukasi.
+
+Untuk setiap pasangan, jelaskan mengapa prompt pertama kurang efektif dan bagaimana prompt yang diperbaiki menghasilkan keluaran yang lebih terarah.
+
+E. Teknik Menyusun Prompt
+
+Bahas:
+- Menentukan tujuan sebelum menulis prompt.
+- Memberikan konteks yang cukup.
+- Menggunakan instruksi spesifik.
+- Menentukan format output.
+- Memberikan batasan yang jelas.
+- Memecah tugas kompleks menjadi beberapa tahapan.
+- Melakukan iterasi atau penyempurnaan prompt.
+- Meminta AI mengevaluasi dan memperbaiki hasil.
+- Memeriksa kembali fakta dan kesesuaian hasil.
+
+F. Praktik Langsung
+
+Buat aktivitas:
+1. Peserta menerima prompt yang masih terlalu umum.
+2. Peserta mengidentifikasi kekurangannya.
+3. Peserta memperbaiki prompt.
+4. Peserta membandingkan hasil.
+5. Peserta melakukan refleksi.
+
+Tambahkan tantangan menyusun prompt untuk menghasilkan modul ajar dan game edukasi.
+
+DESAIN MENU MATERI
+
+Gunakan kartu materi modern dengan:
+- Nomor dan judul materi.
+- Ringkasan tujuan belajar.
+- Estimasi waktu.
+- Indikator kemajuan.
+- Tombol "Pelajari Materi".
+- Tombol "Mulai Latihan".
+
+Ketika kartu dibuka, tampilkan materi secara lengkap dalam halaman atau panel yang nyaman dibaca.
+
+Tambahkan navigasi materi sebelumnya dan berikutnya, daftar isi, indikator kemajuan, dan kuis interaktif.
+
+Jangan menyajikan seluruh materi hanya sebagai teks pendek di kartu. Materi lengkap harus dapat dibuka dan dibaca.
+
+==================================================
+BAGIAN 3 — PENGEMBANGAN GAME STUDIO
+==================================================
+
+Kembangkan menu Game Studio menjadi generator prompt untuk membuat game edukasi menggunakan Gemini Canvas.
+
+PENTING:
+Fitur ini harus benar-benar menghasilkan prompt lengkap yang siap disalin dan ditempelkan ke Gemini Canvas. Jangan mengklaim game otomatis dibuat di Gemini apabila pengguna masih harus menyalin prompt ke Gemini.
+
+A. FORMULIR PENGATURAN GAME
+
+Sediakan formulir dengan parameter berikut:
+
+1. Nama game.
+2. Mata pelajaran.
+3. Fase atau kelas.
+4. Topik atau materi.
+5. Tujuan pembelajaran.
+6. Jumlah soal atau tantangan.
+7. Tingkat kesulitan:
+   - Mudah.
+   - Sedang.
+   - Sulit.
+8. Jenis permainan:
+   - Kuis interaktif.
+   - Spin the Wheel atau roda keberuntungan.
+   - Ular Tangga.
+   - Drag and Drop.
+   - Memory Matching.
+   - Tebak Gambar.
+   - Susun Kata.
+   - Word Search.
+   - Petualangan atau Adventure.
+   - Escape Room.
+   - Trivia Battle.
+   - Board Game.
+   - Puzzle.
+   - Game berbasis cerita.
+   - Pilihan jenis lain yang dapat dikembangkan.
+9. Mode permainan:
+   - Individu.
+   - Tim.
+10. Jumlah pemain atau tim.
+11. Nama tim, jika mode tim dipilih.
+12. Durasi permainan.
+13. Sistem skor.
+14. Aturan menang dan kalah.
+15. Gaya visual:
+   - Futuristik.
+   - Kerajaan Fantasi.
+   - Kartun.
+   - Minimalis.
+   - Pixel Art.
+   - Luar Angkasa.
+   - Petualangan.
+   - Pilihan lainnya.
+16. Bahasa permainan.
+17. Pilihan fitur tambahan:
+   - Timer.
+   - Papan skor.
+   - Nyawa atau energi.
+   - Efek suara.
+   - Animasi.
+   - Umpan balik jawaban.
+   - Tombol mulai ulang.
+   - Petunjuk.
+   - Rekap hasil permainan.
+
+Gunakan conditional form. Contohnya:
+- Pengaturan jumlah tim hanya muncul ketika mode tim dipilih.
+- Pengaturan timer muncul jika timer diaktifkan.
+- Pengaturan jumlah pasangan muncul untuk Memory Matching.
+- Pengaturan kategori dan hadiah muncul untuk Spin the Wheel.
+- Pengaturan papan dan jumlah kotak muncul untuk Ular Tangga.
+- Pengaturan item, target, dan zona jawaban muncul untuk Drag and Drop.
+
+B. GENERATOR PROMPT GEMINI CANVAS
+
+Setelah pengguna mengisi formulir dan menekan tombol "Buat Prompt Game", sistem harus menghasilkan prompt lengkap yang disesuaikan dengan semua parameter.
+
+Prompt yang dihasilkan harus meminta Gemini Canvas membuat game edukasi berbasis web yang benar-benar interaktif dan dapat dimainkan.
+
+Instruksi di dalam prompt hasil generator minimal mencakup:
+
+1. Identitas dan tujuan game.
+2. Target pemain.
+3. Tujuan pembelajaran.
+4. Aturan permainan.
+5. Alur permainan dari awal hingga selesai.
+6. Mekanisme permainan sesuai jenis yang dipilih.
+7. Pertanyaan, tantangan, atau aktivitas sesuai materi.
+8. Sistem skor.
+9. Sistem kemenangan dan kekalahan jika relevan.
+10. Umpan balik langsung.
+11. Tampilan visual yang menarik dan konsisten.
+12. Animasi dan efek suara jika diaktifkan.
+13. Responsivitas desktop dan ponsel.
+14. Tombol mulai, jeda jika diperlukan, dan mulai ulang.
+15. Papan skor.
+16. Pengelolaan giliran pemain atau tim.
+17. Rekap hasil akhir.
+18. Validasi agar semua tombol dan mekanisme berfungsi.
+19. Penanganan kondisi permainan selesai.
+20. Data permainan contoh yang cukup untuk langsung diuji.
+
+Untuk mode tim, instruksikan Gemini Canvas agar membuat mekanisme giliran, pencatatan skor setiap tim, dan penentuan pemenang berdasarkan aturan yang ditentukan.
+
+Untuk mode individu, instruksikan agar skor dan kemajuan setiap pemain tercatat secara terpisah.
+
+Untuk game Drag and Drop, instruksikan agar item dapat dipindahkan dengan mouse maupun sentuhan pada layar. Sediakan alternatif interaksi apabila drag-and-drop tidak didukung perangkat.
+
+Untuk game Spin the Wheel, pastikan roda berputar secara visual, berhenti pada hasil tertentu, dan hasilnya terhubung dengan tantangan atau pertanyaan.
+
+Untuk game Ular Tangga, pastikan dadu, pergerakan pion, aturan tangga dan ular, giliran pemain, serta kondisi kemenangan berfungsi.
+
+Untuk semua jenis game, jangan hanya membuat mockup atau gambar permainan. Instruksikan pembuatan logika permainan yang berfungsi.
+
+Jika pengguna tidak memasukkan soal, minta Gemini Canvas membuat soal yang sesuai dengan materi dan tingkat kelas. Soal serta kunci jawaban harus diperiksa guru sebelum digunakan dalam pembelajaran.
+
+C. OUTPUT GENERATOR
+
+Setelah prompt dibuat, tampilkan:
+
+- Nama game.
+- Ringkasan konfigurasi.
+- Jenis permainan.
+- Mode individu atau tim.
+- Prompt lengkap dalam kotak teks yang mudah dibaca.
+- Tombol "Salin Prompt".
+- Tombol "Edit Prompt".
+- Tombol "Buat Ulang Prompt".
+- Tombol "Kosongkan Formulir".
+- Petunjuk penggunaan prompt di Gemini Canvas.
+
+Tombol "Salin Prompt" harus benar-benar menyalin seluruh prompt ke clipboard. Berikan notifikasi setelah berhasil.
+
+Tambahkan tombol "Buka Gemini Canvas" yang menuju halaman Gemini yang relevan jika alamat resminya tersedia dan sesuai. Jangan menjanjikan bahwa parameter game otomatis terkirim ke Gemini. Pengguna tetap perlu menempelkan prompt jika tidak tersedia integrasi langsung.
+
+Buat tombol "Prompt Contoh" yang mengisi formulir dengan konfigurasi contoh, misalnya game Ular Tangga untuk pembelajaran IPA SMP.
+
+Sediakan area riwayat prompt yang dihasilkan selama sesi berlangsung jika memungkinkan.
+
+Jangan mewajibkan API key hanya untuk menghasilkan prompt. Generator prompt dasar harus dapat bekerja langsung di website.
+
+==================================================
+BAGIAN 4 — PENGEMBANGAN PROMPT LAB
+==================================================
+
+Ubah Prompt Lab menjadi:
+
+"PROMPT LAB — GENERATOR MODUL AJAR KURIKULUM MENDALAM"
+
+Tujuan:
+Membantu guru menghasilkan draf modul ajar yang terstruktur, lengkap, dapat diedit, dan dapat diunduh dalam format Microsoft Word (.docx) serta PDF (.pdf).
+
+Gunakan antarmuka profesional, mudah digunakan guru, dan responsif.
+
+PENTING:
+Hasil harus berupa modul ajar lengkap, bukan hanya prompt, ringkasan, atau kerangka modul.
+
+Implementasikan alur:
+Formulir parameter → Generate Modul → Pratinjau Modul → Edit → Unduh Word atau PDF.
+
+A. PARAMETER INPUT
+
+Buat formulir input berikut:
+
+IDENTITAS SEKOLAH DAN PENYUSUN
+
+1. Nama sekolah.
+2. Nama kepala sekolah.
+3. Nama penyusun atau guru.
+4. Mata pelajaran.
+5. Materi.
+6. Topik pembelajaran.
+7. Capaian Pembelajaran (CP).
+8. Elemen.
+9. Fase atau kelas.
+10. Semester.
+11. Alokasi waktu.
+
+PRAKTIK PEDAGOGIS
+
+Sediakan dropdown praktik pedagogis dengan pilihan:
+
+- Problem Based Learning (PBL).
+- Project Based Learning (PjBL).
+- Discovery Learning.
+- Inquiry Based Learning.
+- Cooperative Learning.
+- Contextual Teaching and Learning (CTL).
+- Pembelajaran Berdiferensiasi.
+- Direct Instruction atau Pembelajaran Langsung.
+- Game Based Learning.
+- Design Thinking.
+- Pembelajaran Berbasis Studi Kasus.
+- Praktik pedagogis lainnya.
+
+Jika "Lainnya" dipilih, tampilkan input teks untuk menuliskan praktik pedagogis yang diinginkan.
+
+Tambahkan input opsional:
+- Karakteristik peserta didik.
+- Pengetahuan awal peserta didik.
+- Sarana dan prasarana.
+- Kebutuhan khusus atau kebutuhan belajar yang relevan tanpa meminta data pribadi sensitif.
+- Pendekatan pembelajaran yang diinginkan.
+- Catatan tambahan dari guru.
+
+B. TOMBOL DAN VALIDASI FORMULIR
+
+Sediakan:
+- Tombol "Buat Modul Ajar".
+- Tombol "Isi Contoh".
+- Tombol "Reset".
+- Indikator proses pembuatan.
+- Pesan kesalahan jika parameter wajib belum diisi.
+- Penjelasan parameter yang perlu dilengkapi.
+
+Parameter wajib minimal:
+Nama sekolah, nama kepala sekolah, nama penyusun, mata pelajaran, materi, topik, capaian pembelajaran, praktik pedagogis, elemen, fase atau kelas, semester, dan alokasi waktu.
+
+Jangan mengarang identitas sekolah, nama kepala sekolah, atau nama penyusun. Gunakan persis data yang dimasukkan pengguna.
+
+Jangan mengarang CP resmi. Gunakan CP yang dimasukkan pengguna sebagai sumber utama.
+
+==================================================
+BAGIAN 5 — STRUKTUR OUTPUT MODUL AJAR
+==================================================
+
+Generator wajib menyusun dokumen dengan struktur berikut.
+
+BAGIAN I. INFORMASI UMUM
+
+Tampilkan:
+- Nama sekolah.
+- Mata pelajaran.
+- Materi.
+- Topik pembelajaran.
+- Fase atau kelas.
+- Semester.
+- Alokasi waktu.
+- Nama penyusun.
+
+Pada bagian Informasi Umum, jangan menampilkan Elemen, Praktik Pedagogis, atau Capaian Pembelajaran sebagai kolom identitas. Ketiganya dibahas pada bagian desain pembelajaran.
+
+BAGIAN II. IDENTIFIKASI DAN DESAIN PEMBELAJARAN
+
+1. Identifikasi Peserta Didik
+
+Jelaskan karakteristik peserta didik yang relevan:
+- Pengetahuan awal.
+- Minat dan motivasi.
+- Kesiapan belajar.
+- Kebutuhan belajar.
+- Potensi miskonsepsi.
+- Kebutuhan dukungan dan diferensiasi.
+
+Gunakan input tambahan apabila tersedia. Jika tidak tersedia, buat analisis awal yang bersifat umum dan tandai sebagai asumsi yang perlu dikonfirmasi guru.
+
+2. Identifikasi Mata Pelajaran
+
+Tampilkan:
+- Mata pelajaran.
+- Materi.
+- Topik.
+- Elemen.
+- Fase atau kelas.
+- Semester.
+- Alokasi waktu.
+- Relevansi materi dengan kehidupan nyata.
+
+3. Dimensi Profil Lulusan
+
+Identifikasi dimensi profil lulusan yang relevan dengan tujuan pembelajaran.
+
+Pertimbangkan dimensi berikut:
+- Keimanan dan ketakwaan terhadap Tuhan Yang Maha Esa.
+- Kewargaan.
+- Penalaran kritis.
+- Kreativitas.
+- Kolaborasi.
+- Kemandirian.
+- Kesehatan.
+- Komunikasi.
+
+Pilih dimensi yang benar-benar relevan dengan pembelajaran. Berikan alasan singkat dan contoh perilaku yang dapat diamati.
+
+Jangan sekadar mencantumkan semua dimensi tanpa hubungan yang jelas dengan kegiatan belajar.
+
+4. Capaian Pembelajaran
+
+Tampilkan Capaian Pembelajaran persis sesuai input pengguna.
+
+Jangan mengganti, mengarang, atau mengubah substansi CP yang dimasukkan.
+
+5. Lintas Disiplin Ilmu
+
+Jelaskan keterkaitan topik dengan mata pelajaran atau bidang ilmu lainnya jika relevan.
+
+Sertakan alasan dan contoh penerapannya.
+
+6. Tujuan Pembelajaran
+
+Turunkan tujuan pembelajaran dari CP yang diinputkan dengan mempertimbangkan topik, fase atau kelas, dan alokasi waktu.
+
+Kelompokkan tujuan pembelajaran ke dalam tiga pengalaman belajar:
+
+A. Memahami
+Tujuan untuk membangun pemahaman konsep, fakta, prinsip, dan hubungan antarkonsep.
+
+B. Mengaplikasi
+Tujuan untuk menerapkan pengetahuan dan keterampilan dalam menyelesaikan masalah, membuat produk, melakukan praktik, atau mengerjakan tugas kontekstual.
+
+C. Merefleksi
+Tujuan untuk mengevaluasi proses dan hasil belajar, mengidentifikasi kekuatan dan kesulitan, serta menentukan tindak lanjut.
+
+Gunakan kata kerja operasional yang sesuai.
+
+Setiap tujuan harus:
+- Spesifik.
+- Dapat diamati atau diukur.
+- Relevan dengan CP.
+- Sesuai dengan fase atau kelas.
+- Realistis dicapai dalam alokasi waktu.
+
+Jangan memaksakan ketiga pengalaman belajar menjadi tiga tujuan yang terpisah apabila lebih tepat disusun sebagai tahapan pengalaman belajar. Namun, ketiga pengalaman tersebut harus tetap terwakili secara jelas dalam desain pembelajaran.
+
+7. Praktik Pedagogis
+
+Tampilkan praktik pedagogis sesuai pilihan pengguna.
+
+Jelaskan:
+- Alasan pemilihan.
+- Karakteristik pendekatan.
+- Peran guru.
+- Peran peserta didik.
+- Sintaks atau tahapan yang sesuai dengan pendekatan tersebut.
+- Hubungan tahapan dengan tujuan pembelajaran.
+
+Jangan menggunakan sintaks PBL apabila pengguna memilih PjBL atau pendekatan lainnya.
+
+Untuk praktik pedagogis yang memiliki tahapan baku, gunakan tahapan yang sesuai dan terapkan secara konsisten pada langkah pembelajaran.
+
+8. Mitra Pembelajaran
+
+Jelaskan mitra yang mungkin terlibat, misalnya:
+- Guru mata pelajaran lain.
+- Wali kelas.
+- Pustakawan.
+- Orang tua atau keluarga.
+- Praktisi atau narasumber.
+- Komunitas sekitar.
+
+Pilih yang relevan. Jika tidak ada mitra eksternal, jelaskan kolaborasi internal yang memungkinkan.
+
+9. Lingkungan Pembelajaran
+
+Jelaskan pengaturan lingkungan:
+- Fisik.
+- Sosial.
+- Digital.
+
+Sesuaikan dengan konteks sekolah dan materi.
+
+10. Pemanfaatan Digital
+
+Jelaskan pemanfaatan teknologi atau platform digital yang relevan.
+
+Jika tidak ada informasi tentang fasilitas sekolah, jangan mengasumsikan bahwa semua peserta didik memiliki perangkat pribadi atau akses internet stabil.
+
+Sediakan alternatif aktivitas luring jika diperlukan.
+
+BAGIAN III. LANGKAH-LANGKAH PEMBELAJARAN
+
+Buat tabel pembelajaran yang terstruktur.
+
+Tabel wajib memiliki lima kolom:
+
+1. Aktivitas Pembelajaran.
+2. Alokasi Waktu.
+3. Prinsip Pembelajaran.
+4. Pengalaman Belajar.
+5. Sumber dan Media Belajar.
+
+Kolom Aktivitas Pembelajaran memuat tiga bagian:
+
+A. Kegiatan Awal
+
+Berisi:
+- Pembukaan.
+- Pengondisian kelas.
+- Kegiatan awal yang relevan dengan konteks sekolah.
+- Apersepsi.
+- Pertanyaan pemantik.
+- Penyampaian tujuan pembelajaran.
+- Motivasi dan pengaitan dengan kehidupan nyata.
+
+B. Kegiatan Inti
+
+Susun kegiatan inti sesuai praktik pedagogis yang dipilih.
+
+Pastikan aktivitas mencakup pengalaman belajar:
+- Memahami.
+- Mengaplikasi.
+- Merefleksi.
+
+Sesuaikan urutan dan proporsinya dengan kebutuhan materi.
+
+Aktivitas harus konkret, terperinci, dan dapat langsung digunakan guru, bukan hanya berupa kalimat umum.
+
+Pada setiap tahapan, jelaskan:
+- Apa yang dilakukan guru.
+- Apa yang dilakukan peserta didik.
+- Pertanyaan atau instruksi yang digunakan.
+- Produk atau bukti belajar yang dihasilkan jika relevan.
+- Dukungan atau diferensiasi yang diperlukan.
+- Cara guru mengamati proses belajar.
+
+C. Kegiatan Penutup
+
+Berisi:
+- Penyimpulan pembelajaran.
+- Refleksi peserta didik.
+- Umpan balik guru.
+- Asesmen singkat jika sesuai.
+- Tindak lanjut.
+- Informasi kegiatan berikutnya.
+
+PENGATURAN ALOKASI WAKTU
+
+- Jumlah seluruh waktu harus sesuai dengan alokasi waktu yang dimasukkan pengguna.
+- Hitung alokasi waktu setiap kegiatan secara realistis.
+- Tampilkan jumlah waktu pada setiap bagian.
+- Tampilkan total alokasi waktu.
+- Validasi agar jumlah seluruh waktu tidak melebihi atau kurang dari alokasi waktu yang ditentukan.
+- Jika alokasi waktu menggunakan JP, konversikan ke menit hanya jika durasi satu JP telah ditentukan atau diasumsikan secara eksplisit.
+- Jika konversi dilakukan berdasarkan asumsi, tampilkan asumsi tersebut agar dapat diedit oleh guru.
+
+PRINSIP PEMBELAJARAN
+
+Pada kolom Prinsip Pembelajaran, gunakan satu atau lebih prinsip berikut:
+- Berkesadaran.
+- Bermakna.
+- Menggembirakan.
+
+Berikan alasan singkat mengenai bagaimana aktivitas mencerminkan prinsip yang dipilih.
+
+PENGALAMAN BELAJAR
+
+Pada kolom Pengalaman Belajar, beri label yang jelas:
+- Memahami.
+- Mengaplikasi.
+- Merefleksi.
+
+Hubungkan setiap kegiatan dengan pengalaman belajar yang sesuai.
+
+SUMBER DAN MEDIA BELAJAR
+
+Cantumkan sumber dan media yang benar-benar relevan dengan aktivitas, misalnya:
+- Buku atau bahan ajar.
+- LKPD.
+- Lembar observasi.
+- Alat praktik.
+- Media presentasi.
+- Perangkat digital.
+- Sumber resmi yang relevan.
+
+Jangan mengarang judul buku, nama penulis, URL sumber, atau referensi yang tidak dapat dipastikan.
+
+Jika sumber tertentu perlu ditentukan oleh guru, beri penanda bahwa sumber tersebut perlu dilengkapi.
+
+BAGIAN IV. ASESMEN PEMBELAJARAN
+
+Susun asesmen secara lengkap.
+
+1. Asesmen Awal
+
+Jelaskan:
+- Tujuan.
+- Teknik.
+- Contoh pertanyaan atau tugas.
+- Cara menggunakan hasil untuk menyesuaikan pembelajaran.
+
+2. Asesmen Formatif
+
+Jelaskan:
+- Teknik asesmen.
+- Waktu pelaksanaan.
+- Indikator yang diamati.
+- Instrumen.
+- Kriteria keberhasilan.
+- Bentuk umpan balik.
+
+3. Asesmen Sumatif
+
+Sesuaikan dengan tujuan pembelajaran dan materi.
+
+Bentuknya dapat berupa tes, praktik, proyek, presentasi, produk, atau bentuk lain yang relevan.
+
+Sertakan contoh soal atau tugas dan kunci jawaban apabila relevan.
+
+4. Rubrik Penilaian
+
+Buat rubrik yang memuat:
+- Aspek yang dinilai.
+- Indikator.
+- Tingkat pencapaian.
+- Deskripsi kinerja setiap tingkat.
+- Skor.
+
+Gunakan skala yang konsisten, misalnya 1–4, dengan deskripsi yang jelas.
+
+5. Pengolahan Hasil dan Tindak Lanjut
+
+Jelaskan cara membaca hasil asesmen serta tindak lanjut:
+- Remedial atau dukungan tambahan.
+- Pengayaan.
+- Umpan balik.
+- Refleksi guru.
+
+Jangan menetapkan batas ketuntasan yang seolah-olah merupakan kebijakan resmi sekolah apabila pengguna tidak memasukkannya.
+
+BAGIAN V. ALAT DAN SUMBER BELAJAR
+
+Cantumkan:
+- Alat dan bahan.
+- Media pembelajaran.
+- Buku atau bahan referensi.
+- Sumber digital.
+- Perangkat yang dibutuhkan.
+- Alternatif sumber belajar apabila fasilitas terbatas.
+
+Bedakan antara sumber yang sudah diketahui dan sumber yang masih perlu diverifikasi oleh guru.
+
+BAGIAN VI. REFLEKSI
+
+Sediakan refleksi guru dan peserta didik.
+
+Refleksi peserta didik dapat berisi:
+- Apa yang saya pahami?
+- Apa yang sudah dapat saya lakukan?
+- Bagian mana yang masih sulit?
+- Apa yang akan saya lakukan selanjutnya?
+
+Refleksi guru dapat berisi:
+- Apakah tujuan pembelajaran tercapai?
+- Aktivitas apa yang paling efektif?
+- Siapa yang membutuhkan dukungan tambahan?
+- Apa yang perlu diperbaiki pada pembelajaran berikutnya?
+
+BAGIAN VII. PENGESAHAN
+
+Buat format tanda tangan yang rapi di bagian akhir dokumen.
+
+Format contoh:
+
+Mengetahui,
+Kepala Sekolah
+
+(tanda tangan)
+
+[Nama Kepala Sekolah]
+
+[Tanggal pengesahan]
+
+Penyusun,
+
+(tanda tangan)
+
+[Nama Penyusun]
+
+Gunakan nama kepala sekolah dan penyusun sesuai input.
+
+Jangan menambahkan gelar, NIP, stempel, atau tanda tangan digital palsu. Sediakan ruang kosong untuk tanda tangan asli dan kolom NIP opsional jika diperlukan.
+
+==================================================
+BAGIAN 6 — PRATINJAU DAN EDIT MODUL
+==================================================
+
+Setelah pengguna menekan "Buat Modul Ajar":
+
+1. Tampilkan indikator proses.
+2. Tampilkan modul lengkap dalam pratinjau.
+3. Kelompokkan dokumen berdasarkan bagian.
+4. Sediakan daftar isi atau navigasi antarbagiannya.
+5. Gunakan tata letak seperti dokumen profesional.
+6. Izinkan pengguna mengedit hasil sebelum mengunduh.
+7. Sediakan tombol untuk membuat ulang bagian tertentu tanpa harus membuat seluruh modul dari awal.
+8. Sediakan tombol "Salin Modul" jika memungkinkan.
+9. Sediakan tombol "Unduh Word".
+10. Sediakan tombol "Unduh PDF".
+
+Jika pembuatan modul menggunakan model AI, gunakan mekanisme pemanggilan model yang memang tersedia dan sesuai dengan konfigurasi proyek. Jangan membuat fungsi AI palsu atau hanya menampilkan teks loading tanpa menghasilkan dokumen.
+
+Jika API AI belum dikonfigurasi, berikan penjelasan yang jelas dan jangan berpura-pura bahwa proses generasi telah berhasil.
+
+==================================================
+BAGIAN 7 — EKSPOR WORD DAN PDF
+==================================================
+
+Implementasikan ekspor dokumen sungguhan.
+
+WORD:
+- Gunakan format Microsoft Word .docx yang valid.
+- Pertahankan judul, subjudul, paragraf, daftar, dan tabel.
+- Pertahankan struktur modul.
+- Buat tabel langkah pembelajaran dengan lima kolom.
+- Sertakan bagian pengesahan.
+- Gunakan margin, ukuran kertas, tipografi, dan spasi yang profesional.
+- Gunakan orientasi halaman yang sesuai untuk tabel lebar.
+- Pastikan dokumen dapat dibuka dan diedit di Microsoft Word atau aplikasi kompatibel.
+
+PDF:
+- Gunakan PDF yang valid dan dapat dibuka.
+- Pertahankan struktur judul, subjudul, paragraf, tabel, dan pengesahan.
+- Atur pemenggalan halaman agar tabel dan paragraf mudah dibaca.
+- Hindari teks terpotong, tabel keluar dari halaman, atau halaman kosong yang tidak perlu.
+- Pastikan karakter bahasa Indonesia ditampilkan dengan benar.
+
+Gunakan pustaka yang sesuai dan benar-benar tersedia dalam proyek.
+
+Jika tabel terlalu lebar untuk halaman potret, gunakan orientasi lanskap pada halaman terkait jika implementasinya memungkinkan. Jika tidak, sesuaikan ukuran kolom dan tata letak agar tetap terbaca.
+
+Nama file otomatis dibuat dari mata pelajaran, topik, dan kelas, dengan karakter nama file yang aman.
+
+Contoh:
+Modul_Ajar_Informatika_Berpikir_Komputasional_X.docx
+Modul_Ajar_Informatika_Berpikir_Komputasional_X.pdf
+
+Jangan hanya mengganti ekstensi file HTML menjadi .docx atau .pdf. File yang diunduh harus merupakan dokumen Word atau PDF yang valid.
+
+==================================================
+BAGIAN 8 — KUALITAS DAN KEANDALAN HASIL
+==================================================
+
+Terapkan aturan berikut:
+
+1. Hasil modul harus terperinci dan relevan dengan parameter pengguna.
+2. Jangan menghasilkan teks berulang hanya untuk membuat dokumen tampak panjang.
+3. Jangan mengarang data identitas sekolah.
+4. Pertahankan teks CP sesuai input.
+5. Selaraskan tujuan, kegiatan, pengalaman belajar, asesmen, dan rubrik.
+6. Sesuaikan sintaks pembelajaran dengan praktik pedagogis yang dipilih.
+7. Pastikan jumlah alokasi waktu konsisten.
+8. Tandai asumsi yang masih perlu dikonfirmasi guru.
+9. Gunakan bahasa Indonesia profesional dan mudah dipahami.
+10. Hindari referensi palsu.
+11. Jangan mengklaim dokumen sudah sesuai dengan regulasi terbaru tanpa verifikasi.
+12. Tempatkan guru sebagai pengambil keputusan akhir terhadap isi modul.
+
+==================================================
+BAGIAN 9 — UJI SELURUH FITUR
+==================================================
+
+Setelah implementasi, lakukan pemeriksaan terhadap:
+
+A. Navigasi
+- Menu Materi tampil dengan benar.
+- Menu Timeline telah dihapus.
+- Prompt Lab tetap dapat dibuka.
+- Game Studio tetap dapat dibuka.
+- Showcase tetap dapat dibuka.
+
+B. Materi
+- Materi AI dapat dibaca lengkap.
+- Materi Prompt Engineering dapat dibaca lengkap.
+- Kuis dapat dijalankan.
+- Umpan balik jawaban muncul.
+- Navigasi materi berfungsi.
+
+C. Game Studio
+- Formulir dapat diisi.
+- Dropdown jenis permainan berfungsi.
+- Mode individu dan tim dapat dipilih.
+- Parameter tambahan muncul sesuai jenis permainan.
+- Generator menghasilkan prompt sesuai konfigurasi.
+- Tombol salin berfungsi.
+- Pengguna dapat mengedit prompt.
+- Prompt dapat ditempelkan ke Gemini Canvas.
+
+D. Prompt Lab
+- Semua parameter dapat diisi.
+- Validasi input bekerja.
+- CP dipertahankan sesuai input.
+- Modul memiliki semua bagian yang diminta.
+- Tabel langkah pembelajaran memiliki lima kolom.
+- Total alokasi waktu konsisten.
+- Praktik pedagogis sesuai pilihan.
+- Pratinjau dapat ditampilkan.
+- Pengguna dapat mengedit modul.
+- File Word dapat diunduh dan dibuka.
+- File PDF dapat diunduh dan dibuka.
+
+E. Responsivitas
+- Periksa tampilan desktop dan ponsel.
+- Pastikan formulir tidak terpotong.
+- Pastikan tabel dapat dibaca pada layar kecil.
+- Sediakan horizontal scrolling untuk tabel lebar jika diperlukan.
+
+Jangan menghapus fitur yang sudah bekerja hanya karena perubahan desain.
+
+Prioritaskan implementasi fungsional, konsistensi data, dan pengalaman pengguna.
+
+Mulai dengan memeriksa struktur proyek yang ada, kemudian lakukan perubahan pada komponen terkait. Setelah selesai, laporkan fitur yang berhasil diimplementasikan dan fitur yang masih membutuhkan konfigurasi tambahan.

@@ -1,0 +1,48 @@
+@import "tailwindcss";
+
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    background-color: #071426;
+    color: #F8FAFC;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+  }
+
+  code, pre, .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+/* Custom glow and backdrop effects */
+.glass-panel {
+  background: rgba(11, 27, 49, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(41, 121, 255, 0.15);
+}
+
+.glass-panel-hover:hover {
+  background: rgba(14, 34, 61, 0.85);
+  border-color: rgba(0, 229, 255, 0.35);
+}
+
+.glow-blue {
+  box-shadow: 0 0 25px -5px rgba(41, 121, 255, 0.25);
+}
+
+.glow-cyan {
+  box-shadow: 0 0 25px -5px rgba(0, 229, 255, 0.25);
+}
+
+.glow-violet {
+  box-shadow: 0 0 25px -5px rgba(139, 92, 246, 0.25);
+}
+
+/* Subtle futuristic grid pattern background */
+.bg-tech-grid {
+  background-image: radial-gradient(rgba(41, 121, 255, 0.1) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
