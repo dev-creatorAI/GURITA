@@ -14,6 +14,7 @@ import { MediaGeneratorSection } from './components/MediaGeneratorSection';
 import { GuritaProSection } from './components/GuritaProSection';
 import { ClosingCtaSection } from './components/ClosingCtaSection';
 import { Footer } from './components/Footer';
+import { LearningDataProvider } from './context/LearningDataContext';
 
 export default function App() {
   const scrollTo = (id: string) => {
@@ -24,7 +25,8 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-[#071426] text-[#F8FAFC] flex flex-col font-sans selection:bg-[#2979FF]/40 selection:text-[#00E5FF]">
+    <LearningDataProvider>
+      <div className="min-h-screen bg-[#071426] text-[#F8FAFC] flex flex-col font-sans selection:bg-[#2979FF]/40 selection:text-[#00E5FF]">
       {/* Top Navigation Bar */}
       <Navbar onNavigateToStudio={() => scrollTo('game-studio')} />
 
@@ -61,5 +63,6 @@ export default function App() {
       {/* FOOTER */}
       <Footer />
     </div>
+    </LearningDataProvider>
   );
 }

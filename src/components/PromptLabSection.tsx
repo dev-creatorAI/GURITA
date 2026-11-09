@@ -27,9 +27,13 @@ import {
   Zap,
   Info,
   CheckSquare,
-  ArrowRight
+  ArrowRight,
+  Gamepad2,
+  Loader2
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { useLearningData } from '../context/LearningDataContext';
+import { buildStructuredLearningData } from '../types/sharedLearningData';
 
 export const PromptLabSection: React.FC = () => {
   // Input parameters state
@@ -68,6 +72,27 @@ export const PromptLabSection: React.FC = () => {
   const [copied, setCopied] = useState<boolean>(false);
   const [codeCopied, setCodeCopied] = useState<boolean>(false);
   const [isExportingWord, setIsExportingWord] = useState<boolean>(false);
+  const [transferStatus, setTransferStatus] = useState<string>('');
+
+  const { transferToGameStudio, transferToMediaGenerator } = useLearningData();
+
+  const handleCreateGameFromModul = () => {
+    if (!generatedDoc) return;
+    const structuredData = buildStructuredLearningData(formInput, generatedDoc);
+    transferToGameStudio(structuredData);
+    setTransferStatus('Data modul ajar berhasil diteruskan ke Game Studio!');
+    confetti({ particleCount: 35, spread: 60, origin: { y: 0.6 } });
+    setTimeout(() => setTransferStatus(''), 3500);
+  };
+
+  const handleCreateMediaFromModul = () => {
+    if (!generatedDoc) return;
+    const structuredData = buildStructuredLearningData(formInput, generatedDoc);
+    transferToMediaGenerator(structuredData);
+    setTransferStatus('Data modul ajar berhasil diteruskan ke Generator Media!');
+    confetti({ particleCount: 35, spread: 60, origin: { y: 0.6 } });
+    setTimeout(() => setTransferStatus(''), 3500);
+  };
 
   // 8 Mandatory Testing Scenarios Presets
   const handleScenarioPreset = (scenario: string) => {
@@ -715,12 +740,93 @@ export const PromptLabSection: React.FC = () => {
                     <button
                       onClick={handleExportWord}
                       disabled={isExportingWord}
-                      className="px-3.5 py-1.5 text-xs font-semibold text-white bg-[#2979FF] hover:bg-[#1D63D8] rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer shadow-md"
-                      title="Unduh File Word .docx Lengkap dengan Rumus & Tabel"
+                      className="px-3.5 py-1.5 text-xs font-semibold text-white bg-[#2979FF] hover:bg-[#1D63D8] rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer shadow-md disabled:opacity-50"
+                      title="Unduh File Word .docx Standar Resmi Pembelajaran Mendalam"
                     >
-                      <Download className="w-3.5 h-3.5" />
-                      <span>{isExportingWord ? 'Menyiapkan...' : 'Unduh Word (.docx)'}</span>
+                      {isExportingWord ? (
+                        <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
+                      ) : (
+                        <Download className="w-3.5 h-3.5" />
+                      )}
+                      <span>{isExportingWord ? 'Menyiapkan Word...' : 'Unduh Word (.docx)'}</span>
                     </button>
+                  </div>
+                </div>
+
+                {/* LANJUTKAN PENGEMBANGAN PEMBELAJARAN */}
+                <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-[#0C1F38] via-[#0E223D] to-[#071426] border-2 border-[#00E5FF]/40 shadow-xl space-y-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#2979FF]/20 pb-2.5">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-8 h-8 rounded-xl bg-[#00E5FF]/20 border border-[#00E5FF]/40 flex items-center justify-center text-[#00E5FF] shadow-inner">
+                        <Zap className="w-4 h-4 text-[#FFD166]" />
+                      </div>
+                      <div>
+                        <h4 className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-white flex items-center gap-2">
+                          <span>LANJUTKAN PENGEMBANGAN PEMBELAJARAN</span>
+                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800 font-semibold">
+                            Integrasi Otomatis
+                          </span>
+                        </h4>
+                        <p className="text-[11px] text-slate-300">
+                          Satu modul ajar menjadi sumber data untuk Game Studio dan Generator Media tanpa perlu mengisi ulang parameter.
+                        </p>
+                      </div>
+                    </div>
+
+                    {transferStatus && (
+                      <span className="text-xs text-emerald-300 font-semibold flex items-center gap-1.5 animate-pulse bg-emerald-950/70 px-3 py-1 rounded-lg border border-emerald-700">
+                        <Check className="w-3.5 h-3.5 text-emerald-400" />
+                        {transferStatus}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                    {/* Tombol 1: Buat Game dari Modul Ini */}
+                    <div className="p-3.5 rounded-xl bg-[#071426]/90 border border-[#2979FF]/40 hover:border-[#00E5FF] transition-all flex flex-col justify-between space-y-2.5 group shadow-sm">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2 text-white font-bold text-xs sm:text-sm">
+                          <Gamepad2 className="w-4 h-4 text-[#00E5FF] group-hover:scale-110 transition-transform" />
+                          <span>1. Game Studio (Gemini Canvas)</span>
+                        </div>
+                        <p className="text-[11px] text-slate-300 leading-relaxed">
+                          Teruskan otomatis: mata pelajaran <strong>{formInput.subject}</strong>, topik <em>"{formInput.topic}"</em>, kelas, dan tujuan pembelajaran ke formulir Game Studio.
+                        </p>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={handleCreateGameFromModul}
+                        className="w-full py-2.5 px-3 rounded-lg font-bold text-xs bg-gradient-to-r from-[#00E5FF] to-[#2979FF] text-[#071426] hover:brightness-110 shadow-lg shadow-[#00E5FF]/20 flex items-center justify-center gap-2 transition-all cursor-pointer"
+                      >
+                        <Gamepad2 className="w-4 h-4" />
+                        <span>Buat Game dari Modul Ini</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+
+                    {/* Tombol 2: Buat Media dari Modul Ini */}
+                    <div className="p-3.5 rounded-xl bg-[#071426]/90 border border-[#8B5CF6]/40 hover:border-[#8B5CF6] transition-all flex flex-col justify-between space-y-2.5 group shadow-sm">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2 text-white font-bold text-xs sm:text-sm">
+                          <Sparkles className="w-4 h-4 text-[#FFD166] group-hover:scale-110 transition-transform" />
+                          <span>2. Generator Media (ChatGPT)</span>
+                        </div>
+                        <p className="text-[11px] text-slate-300 leading-relaxed">
+                          Teruskan otomatis: judul, topik <em>"{formInput.topic}"</em>, jenjang, dan identitas sekolah ke perancang poster, infografis & LKPD siap pakai.
+                        </p>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={handleCreateMediaFromModul}
+                        className="w-full py-2.5 px-3 rounded-lg font-bold text-xs bg-gradient-to-r from-[#10B981] to-[#00E5FF] text-[#071426] hover:brightness-110 shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 transition-all cursor-pointer"
+                      >
+                        <Sparkles className="w-4 h-4" />
+                        <span>Buat Media dari Modul Ini</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
                 </div>
 
@@ -1316,6 +1422,33 @@ export const PromptLabSection: React.FC = () => {
                       )}
                     </div>
                   )}
+
+                  {/* BOTTOM ACTION BAR FOR WORD EXPORT */}
+                  <div className="mt-8 pt-5 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 bg-[#071426]/90 p-4 rounded-2xl border border-slate-700/60 shadow-lg">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-[#2979FF] shrink-0">
+                        <FileCheck className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-white">Dokumen Siap Dicetak & Digunakan</p>
+                        <p className="text-[11px] text-slate-400">
+                          Format resmi Microsoft Word (.docx) • Kertas A4 • Margin 3 cm / 2,5 cm • Halaman Sampul & Rubrik 5 Kolom
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      onClick={handleExportWord}
+                      disabled={isExportingWord}
+                      className="w-full sm:w-auto px-4 py-2 text-xs font-bold text-white bg-gradient-to-r from-[#2979FF] to-[#00E5FF] hover:from-[#1D63D8] hover:to-[#00B4D8] rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-blue-500/20 disabled:opacity-50 shrink-0"
+                    >
+                      {isExportingWord ? (
+                        <Loader2 className="w-4 h-4 animate-spin text-white" />
+                      ) : (
+                        <Download className="w-4 h-4 text-white" />
+                      )}
+                      <span>{isExportingWord ? 'Menyusun Dokumen Word...' : 'Unduh Modul Ajar (Word .docx)'}</span>
+                    </button>
+                  </div>
                 </div>
               </div>
             ) : (

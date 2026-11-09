@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   GameStudioConfig,
   GameDifficulty,
@@ -41,9 +41,11 @@ import {
   HelpCircle,
   CheckCircle2,
   AlertCircle,
-  Lightbulb
+  Lightbulb,
+  Edit3
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { useLearningData } from '../context/LearningDataContext';
 
 interface PromptHistoryItem {
   id: string;
@@ -53,59 +55,96 @@ interface PromptHistoryItem {
   prompt: string;
 }
 
+const DEFAULT_GAME_STUDIO_CONFIG: GameStudioConfig = {
+  gameName: 'Misi Penjelajah Samudra: Misteri Ekosistem Laut',
+  subject: 'IPA & Literasi Sains',
+  gradeLevel: 'Semua Jenjang (Dapat Disesuaikan: PAUD, SD, SMP, SMA, SMK)',
+  topic: 'Rantai Makanan & Pelestarian Terumbu Karang',
+  learningGoal: 'Peserta didik dapat menganalisis peran produsen, konsumen, dan dekomposer dalam ekosistem laut serta mengidentifikasi ancaman pemutihan karang.',
+  questionCount: 5,
+  difficulty: 'Sedang',
+  gameType: 'Kuis Interaktif',
+  customGameTypeDescription: '',
+  mode: 'Individu',
+  individualPlayerCount: 1,
+  individualScoreSystem: '+100 poin per jawaban tepat, bonus kecepatan +20 poin',
+  individualRecapDetails: 'Tampilkan persentase ketepatan, predikat gelar peneliti, dan rekomendasi materi yang perlu dipelajari kembali.',
+  teamCount: 4,
+  teamNames: 'Tim Lumba-Lumba, Tim Hiu Cepat, Tim Penyu Bijak, Tim Paus Perkasa',
+  membersPerTeam: 4,
+  turnMechanism: 'Bergantian menjawab per soal secara melingkar (Round Robin)',
+  teamScoreboardFormat: 'Papan peringkat real-time dengan animasi trofi emas, perak, dan perunggu',
+  winnerDetermination: 'Tim dengan akumulasi poin tertinggi di akhir sesi',
+  durationMinutes: 10,
+  scoreSystem: '+100 poin per jawaban tepat, bonus combo kecepatan +20 poin',
+  winLoseRule: 'Mencapai minimal 400 poin untuk memenangkan lencana Peneliti Laut Kehormatan',
+  colorTheme: 'Biru dan cyan futuristik',
+  customColorHex: '#00E5FF',
+  designTheme: 'Cyber Arena',
+  customDesignDescription: '',
+  characterStyle: 'Karakter penjelajah ilmiah adaptif ramah anak',
+  backgroundStyle: 'Ruang kendali kapal selam eksplorasi laut dengan aksen grid digital',
+  buttonShape: 'Rounded Modern dengan efek Glow',
+  visualEffects: 'Partikel gelembung bio-luminescence neon cyan',
+  animationStyle: 'Halus dan Responsif (Motion 60 FPS)',
+  soundEffects: 'Modern Synth Nada Edukatif Halus',
+  language: 'Bahasa Indonesia',
+  enableTimer: true,
+  enableScoreboard: true,
+  enableLivesOrEnergy: true,
+  enableSoundEffects: true,
+  enableAnimations: true,
+  enableInstantFeedback: true,
+  enableRestartButton: true,
+  enableHints: true,
+  enableResultsRecap: true,
+  memoryPairCount: 8,
+  wheelSegments: 'Rantai Makanan (+100), Pemutihan Karang (+150), Zona Palung (+200), Putar Ulang, Zonasi Ikan (+120), Teka-Teki Plankton (+80)',
+  boardGridSize: '8x8 (64 Kotak)',
+  dragDropItems: 'Fitoplankton -> Produsen, Zooplankton -> Konsumen I, Ikan Badut -> Konsumen II, Hiu Karang -> Konsumen Puncak'
+};
+
 export const GameStudioSection: React.FC = () => {
   // Active sub-tab: 'generator' | 'playtest'
   const [activeTab, setActiveTab] = useState<'generator' | 'playtest'>('generator');
 
+  // Shared Learning Data Context
+  const { activeLearningData, importedForGame, clearGameStudioData, scrollToSection } = useLearningData();
+  const lastAppliedModulId = useRef<string | null>(null);
+
   // Form Configuration State
-  const [config, setConfig] = useState<GameStudioConfig>({
-    gameName: 'Misi Penjelajah Samudra: Misteri Ekosistem Laut',
-    subject: 'IPA & Literasi Sains',
-    gradeLevel: 'Semua Jenjang (Dapat Disesuaikan: PAUD, SD, SMP, SMA, SMK)',
-    topic: 'Rantai Makanan & Pelestarian Terumbu Karang',
-    learningGoal: 'Peserta didik dapat menganalisis peran produsen, konsumen, dan dekomposer dalam ekosistem laut serta mengidentifikasi ancaman pemutihan karang.',
-    questionCount: 5,
-    difficulty: 'Sedang',
-    gameType: 'Kuis Interaktif',
-    customGameTypeDescription: '',
-    mode: 'Individu',
-    individualPlayerCount: 1,
-    individualScoreSystem: '+100 poin per jawaban tepat, bonus kecepatan +20 poin',
-    individualRecapDetails: 'Tampilkan persentase ketepatan, predikat gelar peneliti, dan rekomendasi materi yang perlu dipelajari kembali.',
-    teamCount: 4,
-    teamNames: 'Tim Lumba-Lumba, Tim Hiu Cepat, Tim Penyu Bijak, Tim Paus Perkasa',
-    membersPerTeam: 4,
-    turnMechanism: 'Bergantian menjawab per soal secara melingkar (Round Robin)',
-    teamScoreboardFormat: 'Papan peringkat real-time dengan animasi trofi emas, perak, dan perunggu',
-    winnerDetermination: 'Tim dengan akumulasi poin tertinggi di akhir sesi',
-    durationMinutes: 10,
-    scoreSystem: '+100 poin per jawaban tepat, bonus combo kecepatan +20 poin',
-    winLoseRule: 'Mencapai minimal 400 poin untuk memenangkan lencana Peneliti Laut Kehormatan',
-    colorTheme: 'Biru dan cyan futuristik',
-    customColorHex: '#00E5FF',
-    designTheme: 'Cyber Arena',
-    customDesignDescription: '',
-    characterStyle: 'Karakter penjelajah ilmiah adaptif ramah anak',
-    backgroundStyle: 'Ruang kendali kapal selam eksplorasi laut dengan aksen grid digital',
-    buttonShape: 'Rounded Modern dengan efek Glow',
-    visualEffects: 'Partikel gelembung bio-luminescence neon cyan',
-    animationStyle: 'Halus dan Responsif (Motion 60 FPS)',
-    soundEffects: 'Modern Synth Nada Edukatif Halus',
-    language: 'Bahasa Indonesia',
-    enableTimer: true,
-    enableScoreboard: true,
-    enableLivesOrEnergy: true,
-    enableSoundEffects: true,
-    enableAnimations: true,
-    enableInstantFeedback: true,
-    enableRestartButton: true,
-    enableHints: true,
-    enableResultsRecap: true,
-    memoryPairCount: 8,
-    wheelSegments: 'Rantai Makanan (+100), Pemutihan Karang (+150), Zona Palung (+200), Putar Ulang, Zonasi Ikan (+120), Teka-Teki Plankton (+80)',
-    boardGridSize: '8x8 (64 Kotak)',
-    dragDropItems: 'Fitoplankton -> Produsen, Zooplankton -> Konsumen I, Ikan Badut -> Konsumen II, Hiu Karang -> Konsumen Puncak'
-  });
+  const [config, setConfig] = useState<GameStudioConfig>(DEFAULT_GAME_STUDIO_CONFIG);
+
+  // Sync data when transferred from Prompt Lab
+  useEffect(() => {
+    if (importedForGame && activeLearningData && lastAppliedModulId.current !== activeLearningData.id) {
+      lastAppliedModulId.current = activeLearningData.id;
+      const { inputAsli, hasilModul } = activeLearningData;
+
+      setConfig((prev) => ({
+        ...prev,
+        gameName: `Misi Edukasi: ${inputAsli.topic || inputAsli.materi}`,
+        subject: inputAsli.subject,
+        gradeLevel: inputAsli.gradeLevel,
+        topic: inputAsli.topic ? `${inputAsli.materi} — ${inputAsli.topic}` : inputAsli.materi,
+        learningGoal: hasilModul.tujuanPembelajaranRingkasan || inputAsli.learningOutcomeCP,
+        customDesignDescription: hasilModul.konsepMateri
+          ? `Konsep Materi: ${hasilModul.konsepMateri}. ${hasilModul.aktivitasPembelajaranRingkas.length > 0 ? `Aktivitas: ${hasilModul.aktivitasPembelajaranRingkas[0]}` : ''}`
+          : prev.customDesignDescription
+      }));
+      setGeneratedPrompt('');
+      setActiveTab('generator');
+    }
+  }, [importedForGame, activeLearningData]);
+
+  const handleClearModulData = () => {
+    lastAppliedModulId.current = null;
+    clearGameStudioData();
+    setConfig(DEFAULT_GAME_STUDIO_CONFIG);
+    setGeneratedPrompt('');
+    setCopyFeedback('Data modul telah dibersihkan. Formulir kembali ke pengaturan default.');
+    setTimeout(() => setCopyFeedback(''), 3000);
+  };
 
   const [generatedPrompt, setGeneratedPrompt] = useState<string>('');
   const [isEditingPrompt, setIsEditingPrompt] = useState<boolean>(false);
@@ -294,6 +333,29 @@ Pastikan seluruh kode HTML, CSS, dan JavaScript dibuat dalam SATU FILE LENGKAP y
 - Topik / Materi Pembelajaran: ${config.topic}
 - Tujuan Pembelajaran: ${config.learningGoal}
 - Bahasa Antarmuka: ${config.language}
+${
+  importedForGame && activeLearningData
+    ? `
+==================================================
+1.1. KONSEP & RUJUKAN DARI MODUL AJAR TERSTRUKTUR
+==================================================
+- Sumber Modul: "${activeLearningData.sourceModulTitle}" (${activeLearningData.inputAsli.schoolName} — ${activeLearningData.inputAsli.teacherName})
+- Capaian Pembelajaran (CP) Asli Guru: "${activeLearningData.inputAsli.learningOutcomeCP}"
+- Konsep Esensial Materi: ${activeLearningData.hasilModul.konsepMateri}
+- Indikator Asesmen Game: ${activeLearningData.hasilModul.indikatorAsesmen}
+- Kriteria Keberhasilan Siswa: ${activeLearningData.hasilModul.kriteriaKeberhasilan}
+${
+  activeLearningData.hasilModul.coreFormulas && activeLearningData.hasilModul.coreFormulas.length > 0
+    ? `- Rumus & Notasi Acuan: ${activeLearningData.hasilModul.coreFormulas.map((f) => `${f.name} -> ${f.textFallback}`).join('; ')}`
+    : ''
+}
+${
+  activeLearningData.hasilModul.aktivitasPembelajaranRingkas.length > 0
+    ? `- Alur Aktivitas Bermakna: ${activeLearningData.hasilModul.aktivitasPembelajaranRingkas.join('; ')}`
+    : ''
+}`
+    : ''
+}
 
 ==================================================
 2. FORMAT & MEKANISME GAME
@@ -654,6 +716,62 @@ Mohon hasilkan sekarang kode lengkap yang dapat saya jalankan dan mainkan di Gem
                   </div>
                 </div>
 
+                {/* Indikator Data Terisi Otomatis dari Modul Ajar */}
+                {importedForGame && activeLearningData && (
+                  <div className="p-3.5 rounded-2xl bg-gradient-to-r from-[#0C1F38] to-[#071426] border-2 border-[#00E5FF]/60 shadow-lg space-y-2.5 animate-fade-in">
+                    <div className="flex items-start gap-2.5">
+                      <div className="w-7 h-7 rounded-lg bg-[#00E5FF]/20 border border-[#00E5FF]/40 flex items-center justify-center text-[#00E5FF] shrink-0 mt-0.5">
+                        <Sparkles className="w-4 h-4 text-[#FFD166]" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-xs font-bold text-white">
+                            Data diisi otomatis dari Modul Ajar:
+                          </span>
+                          <span className="text-xs font-bold text-[#00E5FF] truncate block">
+                            {activeLearningData.sourceModulTitle}
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-slate-300 mt-0.5">
+                          Mata pelajaran, topik, fase, dan tujuan pembelajaran telah disinkronkan. Anda tetap bebas mengubah parameter ini.
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 pt-2 border-t border-slate-800 flex-wrap">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const inputEl = document.getElementById('game-studio-mapel-input');
+                          if (inputEl) inputEl.focus();
+                        }}
+                        className="px-2.5 py-1 text-xs rounded-lg bg-[#071426] hover:bg-[#122A4E] border border-slate-700 text-slate-200 hover:text-white transition-colors cursor-pointer flex items-center gap-1 font-medium"
+                      >
+                        <Edit3 className="w-3 h-3 text-[#00E5FF]" />
+                        <span>Edit Data</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => scrollToSection('prompt-lab')}
+                        className="px-2.5 py-1 text-xs rounded-lg bg-[#071426] hover:bg-[#122A4E] border border-slate-700 text-slate-200 hover:text-white transition-colors cursor-pointer flex items-center gap-1 font-medium"
+                      >
+                        <RotateCcw className="w-3 h-3 text-[#FFD166]" />
+                        <span>Ganti Modul</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={handleClearModulData}
+                        className="px-2.5 py-1 text-xs rounded-lg bg-red-950/40 hover:bg-red-900/50 border border-red-800/60 text-red-300 hover:text-red-200 transition-colors cursor-pointer flex items-center gap-1 font-medium ml-auto"
+                      >
+                        <RotateCcw className="w-3 h-3 text-red-400" />
+                        <span>Bersihkan Data</span>
+                      </button>
+                    </div>
+                  </div>
+                )}
+
                 <form onSubmit={handleGeneratePrompt} className="space-y-4 text-xs">
                   {/* 1. Nama Game */}
                   <div className="space-y-1">
@@ -672,6 +790,7 @@ Mohon hasilkan sekarang kode lengkap yang dapat saya jalankan dan mainkan di Gem
                     <div className="space-y-1">
                       <label className="text-slate-300 font-medium">2. Mata Pelajaran</label>
                       <input
+                        id="game-studio-mapel-input"
                         type="text"
                         value={config.subject}
                         onChange={(e) => setConfig({ ...config, subject: e.target.value })}

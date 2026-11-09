@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   MediaType,
   PageSize,
@@ -37,6 +37,33 @@ import {
   AlertCircle
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { useLearningData } from '../context/LearningDataContext';
+
+// Default configuration for Media Generator
+const DEFAULT_MEDIA_CONFIG: MediaGeneratorConfig = {
+  mediaType: 'poster',
+  title: '5 Langkah Bijak Memanfaatkan AI dalam Belajar',
+  subject: 'Informatika & Literasi Digital',
+  gradeLevel: 'Fase D (SMP) / Fase E (SMA) · Adaptif',
+  topic: 'Etika, Integritas Akademik & Keamanan Privasi AI',
+  learningGoal:
+    'Peserta didik memahami prinsip berpikir kritis, verifikasi kebenaran informasi, dan etika saat berinteraksi dengan kecerdasan artifisial.',
+  language: 'Bahasa Indonesia',
+  pageSize: 'A4',
+  orientation: 'potret',
+  colorTheme: 'Biru dan cyan futuristik',
+  designStyle: '3D Pixar',
+  illustrationStyle: '3D Pixar',
+  characterChoice: 'Karakter Muslimah Berhijab',
+  schoolLogo: null,
+  typography: 'Modern Sans-Serif (Outfit / Plus Jakarta Sans)',
+  authorOrSchool: 'Sekolah Penggerak Nusantara · Tim Pendidik Inspiratif',
+  posterSubtitle: 'Panduan Praktis Menjadi Pelajar Digital yang Kritis, Beradab & Kreatif',
+  posterMainMessage:
+    'Kecerdasan Artifisial adalah kompas cerdasmu. Akal budi dan nuranimu yang memegang kendali.',
+  posterCallToAction: 'Ayo jadikan AI jembatan inspirasi, bukan pengganti daya berpikir kritis kita!',
+  posterAdditionalInfo: 'Dipasang di Mading Sekolah, Lab Komputer & Ruang Kelas'
+};
 
 // Sample School Logo (SVG data URL formatted as lightweight image for instant 1-click testing)
 const SAMPLE_SCHOOL_LOGO_DATA: SchoolLogoData = {
@@ -63,31 +90,43 @@ export const MediaGeneratorSection: React.FC = () => {
   const [logoError, setLogoError] = useState<string>('');
   const [isDraggingLogo, setIsDraggingLogo] = useState<boolean>(false);
 
+  // Shared Learning Data Context
+  const { activeLearningData, importedForMedia, clearMediaGeneratorData, scrollToSection } = useLearningData();
+  const lastAppliedModulId = useRef<string | null>(null);
+
   // Extended config with defaults (characterChoice default: Karakter Muslimah Berhijab, schoolLogo default: null)
-  const [config, setConfig] = useState<MediaGeneratorConfig>({
-    mediaType: 'poster',
-    title: '5 Langkah Bijak Memanfaatkan AI dalam Belajar',
-    subject: 'Informatika & Literasi Digital',
-    gradeLevel: 'Fase D (SMP) / Fase E (SMA) · Adaptif',
-    topic: 'Etika, Integritas Akademik & Keamanan Privasi AI',
-    learningGoal:
-      'Peserta didik memahami prinsip berpikir kritis, verifikasi kebenaran informasi, dan etika saat berinteraksi dengan kecerdasan artifisial.',
-    language: 'Bahasa Indonesia',
-    pageSize: 'A4',
-    orientation: 'potret',
-    colorTheme: 'Biru dan cyan futuristik',
-    designStyle: '3D Pixar',
-    illustrationStyle: '3D Pixar',
-    characterChoice: 'Karakter Muslimah Berhijab',
-    schoolLogo: null,
-    typography: 'Modern Sans-Serif (Outfit / Plus Jakarta Sans)',
-    authorOrSchool: 'Sekolah Penggerak Nusantara · Tim Pendidik Inspiratif',
-    posterSubtitle: 'Panduan Praktis Menjadi Pelajar Digital yang Kritis, Beradab & Kreatif',
-    posterMainMessage:
-      'Kecerdasan Artifisial adalah kompas cerdasmu. Akal budi dan nuranimu yang memegang kendali.',
-    posterCallToAction: 'Ayo jadikan AI jembatan inspirasi, bukan pengganti daya berpikir kritis kita!',
-    posterAdditionalInfo: 'Dipasang di Mading Sekolah, Lab Komputer & Ruang Kelas'
-  });
+  const [config, setConfig] = useState<MediaGeneratorConfig>(DEFAULT_MEDIA_CONFIG);
+
+  // Synchronize when learning data is transferred from Prompt Lab
+  useEffect(() => {
+    if (importedForMedia && activeLearningData && lastAppliedModulId.current !== activeLearningData.id) {
+      lastAppliedModulId.current = activeLearningData.id;
+      const { inputAsli, hasilModul } = activeLearningData;
+
+      setConfig((prev) => ({
+        ...prev,
+        title: inputAsli.topic ? `Media Pembelajaran: ${inputAsli.topic}` : `Media Pembelajaran: ${inputAsli.materi}`,
+        subject: inputAsli.subject,
+        gradeLevel: inputAsli.gradeLevel,
+        topic: inputAsli.topic ? `${inputAsli.materi} — ${inputAsli.topic}` : inputAsli.materi,
+        learningGoal: hasilModul.tujuanPembelajaranRingkasan || inputAsli.learningOutcomeCP,
+        authorOrSchool: `${inputAsli.schoolName} · ${inputAsli.teacherName}`,
+        posterSubtitle: `Eksplorasi Konsep & Pemahaman Bermakna ${inputAsli.materi}`
+      }));
+      setCustomPromptText('');
+      setIsEditingPrompt(false);
+    }
+  }, [importedForMedia, activeLearningData]);
+
+  const handleClearModulData = () => {
+    lastAppliedModulId.current = null;
+    clearMediaGeneratorData();
+    setConfig(DEFAULT_MEDIA_CONFIG);
+    setCustomPromptText('');
+    setIsEditingPrompt(false);
+    setCopyFeedbackText('Data modul telah dibersihkan. Formulir kembali ke pengaturan default.');
+    setTimeout(() => setCopyFeedbackText(''), 3000);
+  };
 
   // Handle Logo Upload File
   const handleLogoFile = (file: File) => {
@@ -470,12 +509,69 @@ export const MediaGeneratorSection: React.FC = () => {
               </button>
             </div>
 
+            {/* Indikator Data Terisi Otomatis dari Modul Ajar */}
+            {importedForMedia && activeLearningData && (
+              <div className="p-3.5 rounded-xl bg-gradient-to-r from-[#0C1F38] to-[#071426] border-2 border-[#00E5FF]/60 shadow-lg space-y-2.5 animate-fade-in">
+                <div className="flex items-start gap-2.5">
+                  <div className="w-7 h-7 rounded-lg bg-[#00E5FF]/20 border border-[#00E5FF]/40 flex items-center justify-center text-[#00E5FF] shrink-0 mt-0.5">
+                    <Sparkles className="w-4 h-4 text-[#FFD166]" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-xs font-bold text-white">
+                        Data diisi otomatis dari Modul Ajar:
+                      </span>
+                      <span className="text-xs font-bold text-[#00E5FF] truncate block">
+                        {activeLearningData.sourceModulTitle}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-300 mt-0.5">
+                      Mata pelajaran, topik, jenjang, dan tujuan pembelajaran telah disinkronkan. Anda tetap bebas mengubah formulir ini.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 pt-2 border-t border-slate-800 flex-wrap">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const inputEl = document.getElementById('media-generator-title-input');
+                      if (inputEl) inputEl.focus();
+                    }}
+                    className="px-2.5 py-1 text-xs rounded-lg bg-[#071426] hover:bg-[#122A4E] border border-slate-700 text-slate-200 hover:text-white transition-colors cursor-pointer flex items-center gap-1 font-medium"
+                  >
+                    <Edit3 className="w-3 h-3 text-[#00E5FF]" />
+                    <span>Edit Data</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => scrollToSection('prompt-lab')}
+                    className="px-2.5 py-1 text-xs rounded-lg bg-[#071426] hover:bg-[#122A4E] border border-slate-700 text-slate-200 hover:text-white transition-colors cursor-pointer flex items-center gap-1 font-medium"
+                  >
+                    <RotateCcw className="w-3 h-3 text-[#FFD166]" />
+                    <span>Ganti Modul</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleClearModulData}
+                    className="px-2.5 py-1 text-xs rounded-lg bg-red-950/40 hover:bg-red-900/50 border border-red-800/60 text-red-300 hover:text-red-200 transition-colors cursor-pointer flex items-center gap-1 font-medium ml-auto"
+                  >
+                    <RotateCcw className="w-3 h-3 text-red-400" />
+                    <span>Bersihkan Data</span>
+                  </button>
+                </div>
+              </div>
+            )}
+
             {/* Field: Judul */}
             <div>
               <label className="block text-xs font-semibold text-slate-300 mb-1">
                 Judul Media Pembelajaran
               </label>
               <input
+                id="media-generator-title-input"
                 type="text"
                 value={config.title}
                 onChange={(e) => setConfig({ ...config, title: e.target.value })}
