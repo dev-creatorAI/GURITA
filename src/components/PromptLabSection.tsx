@@ -752,104 +752,93 @@ export const PromptLabSection: React.FC = () => {
                 </div>
 
                 {/* LANJUTKAN PENGEMBANGAN PEMBELAJARAN */}
-                <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-[#0C1F38] via-[#0E223D] to-[#071426] border-2 border-[#00E5FF]/40 shadow-xl space-y-3">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#2979FF]/20 pb-2.5">
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-8 h-8 rounded-xl bg-[#00E5FF]/20 border border-[#00E5FF]/40 flex items-center justify-center text-[#00E5FF] shadow-inner">
-                        <Zap className="w-4 h-4 text-[#FFD166]" />
-                      </div>
-                      <div>
-                        <h4 className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-white flex items-center gap-2">
-                          <span>LANJUTKAN PENGEMBANGAN PEMBELAJARAN</span>
-                          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800 font-semibold">
-                            Integrasi Otomatis
-                          </span>
-                        </h4>
-                        <p className="text-[11px] text-slate-300">
-                          Satu modul ajar menjadi sumber data untuk Game Studio, Generator Media, dan Prompt AI tanpa perlu mengisi ulang parameter.
-                        </p>
-                      </div>
-                    </div>
+<div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-[#0C1F38] via-[#0E223D] to-[#071426] border-2 border-[#00E5FF]/40 shadow-xl space-y-4">
 
-                    {transferStatus && (
-                      <span className="text-xs text-emerald-300 font-semibold flex items-center gap-1.5 animate-pulse bg-emerald-950/70 px-3 py-1 rounded-lg border border-emerald-700">
-                        <Check className="w-3.5 h-3.5 text-emerald-400" />
-                        {transferStatus}
-                      </span>
-                    )}
-                  </div>
+  {/* HEADER */}
+  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#2979FF]/20 pb-3">
+    <div className="flex items-center gap-2.5">
+      <div className="w-9 h-9 shrink-0 rounded-xl bg-[#00E5FF]/20 border border-[#00E5FF]/40 flex items-center justify-center text-[#00E5FF] shadow-inner">
+        <Zap className="w-4 h-4 text-[#FFD166]" />
+      </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
-                    {/* Tombol 1: Buat Game dari Modul Ini */}
-                    <div className="p-3.5 rounded-xl bg-[#071426]/90 border border-[#2979FF]/40 hover:border-[#00E5FF] transition-all flex flex-col justify-between space-y-2.5 group shadow-sm">
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2 text-white font-bold text-xs sm:text-sm">
-                          <Gamepad2 className="w-4 h-4 text-[#00E5FF] group-hover:scale-110 transition-transform" />
-                          <span>1. Game Studio (Gemini Canvas)</span>
-                        </div>
-                        <p className="text-[11px] text-slate-300 leading-relaxed">
-                          Teruskan otomatis: mata pelajaran <strong>{formInput.subject}</strong>, topik <em>"{formInput.topic}"</em>, kelas, dan tujuan pembelajaran ke formulir Game Studio.
-                        </p>
-                      </div>
+      <div className="min-w-0">
+        <h4 className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-white flex flex-wrap items-center gap-2">
+          <span>LANJUTKAN PENGEMBANGAN PEMBELAJARAN</span>
 
-                      <button
-                        type="button"
-                        onClick={handleCreateGameFromModul}
-                        className="w-full py-2.5 px-3 rounded-lg font-bold text-xs bg-gradient-to-r from-[#00E5FF] to-[#2979FF] text-[#071426] hover:brightness-110 shadow-lg shadow-[#00E5FF]/20 flex items-center justify-center gap-2 transition-all cursor-pointer"
-                      >
-                        <Gamepad2 className="w-4 h-4" />
-                        <span>Buat Game dari Modul Ini</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
+          <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800 font-semibold whitespace-nowrap">
+            Integrasi Otomatis
+          </span>
+        </h4>
 
-                    {/* Tombol 2: Buat Media dari Modul Ini */}
-                    <div className="p-3.5 rounded-xl bg-[#071426]/90 border border-[#8B5CF6]/40 hover:border-[#8B5CF6] transition-all flex flex-col justify-between space-y-2.5 group shadow-sm">
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2 text-white font-bold text-xs sm:text-sm">
-                          <Sparkles className="w-4 h-4 text-[#FFD166] group-hover:scale-110 transition-transform" />
-                          <span>2. Generator Media (ChatGPT)</span>
-                        </div>
-                        <p className="text-[11px] text-slate-300 leading-relaxed">
-                          Teruskan otomatis: judul, topik <em>"{formInput.topic}"</em>, jenjang, dan identitas sekolah ke perancang poster, infografis & LKPD siap pakai.
-                        </p>
-                      </div>
+        <p className="text-[11px] text-slate-300 leading-relaxed mt-1">
+          Satu modul ajar menjadi sumber data untuk Game Studio dan Generator Media tanpa perlu mengisi ulang parameter.
+        </p>
+      </div>
+    </div>
 
-                      <button
-                        type="button"
-                        onClick={handleCreateMediaFromModul}
-                        className="w-full py-2.5 px-3 rounded-lg font-bold text-xs bg-gradient-to-r from-[#10B981] to-[#00E5FF] text-[#071426] hover:brightness-110 shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 transition-all cursor-pointer"
-                      >
-                        <Sparkles className="w-4 h-4" />
-                        <span>Buat Media dari Modul Ini</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
+    {transferStatus && (
+      <span className="text-xs text-emerald-300 font-semibold flex items-center gap-1.5 animate-pulse bg-emerald-950/70 px-3 py-1.5 rounded-lg border border-emerald-700 shrink-0">
+        <Check className="w-3.5 h-3.5 text-emerald-400" />
+        {transferStatus}
+      </span>
+    )}
+  </div>
 
-                    {/* Tombol 3: Generate Prompt dari Modul Ajar */}
-                    <div className="p-3.5 rounded-xl bg-[#071426]/90 border border-purple-500/40 hover:border-purple-400 transition-all flex flex-col justify-between space-y-2.5 group shadow-sm">
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2 text-white font-bold text-xs sm:text-sm">
-                          <Sparkles className="w-4 h-4 text-[#FFD166] group-hover:scale-110 transition-transform" />
-                          <span>3. Prompt AI Modul Ajar</span>
-                        </div>
-                        <p className="text-[11px] text-slate-300 leading-relaxed">
-                          Susun prompt AI utuh berstandar Pembelajaran Mendalam untuk dipakai langsung di ChatGPT, Gemini, atau Claude.
-                        </p>
-                      </div>
+  {/* DUA KARTU INTEGRASI */}
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-1 items-stretch">
 
-                      <button
-                        type="button"
-                        onClick={handleOpenPromptModal}
-                        className="w-full py-2.5 px-3 rounded-lg font-bold text-xs bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:brightness-110 shadow-lg shadow-purple-500/20 flex items-center justify-center gap-2 transition-all cursor-pointer"
-                      >
-                        <Sparkles className="w-4 h-4 text-[#FFD166]" />
-                        <span>Generate Prompt dari Modul Ajar</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </div>
-                </div>
+    {/* KARTU 1: GAME STUDIO */}
+    <div className="h-full p-4 rounded-xl bg-[#071426]/90 border border-[#2979FF]/40 hover:border-[#00E5FF] transition-all flex flex-col justify-between gap-4 group shadow-sm">
+
+      <div className="space-y-2">
+        <div className="flex items-center gap-2 text-white font-bold text-xs sm:text-sm">
+          <Gamepad2 className="w-4 h-4 shrink-0 text-[#00E5FF] group-hover:scale-110 transition-transform" />
+          <span>1. Game Studio (Gemini Canvas)</span>
+        </div>
+
+        <p className="text-[11px] text-slate-300 leading-relaxed">
+          Teruskan otomatis: mata pelajaran <strong>{formInput.subject}</strong>, topik <em>"{formInput.topic}"</em>, kelas, dan tujuan pembelajaran ke formulir Game Studio.
+        </p>
+      </div>
+
+      <button
+        type="button"
+        onClick={handleCreateGameFromModul}
+        className="w-full min-h-[44px] py-2.5 px-3 rounded-lg font-bold text-xs bg-gradient-to-r from-[#00E5FF] to-[#2979FF] text-[#071426] hover:brightness-110 shadow-lg shadow-[#00E5FF]/20 flex items-center justify-center gap-2 transition-all cursor-pointer"
+      >
+        <Gamepad2 className="w-4 h-4 shrink-0" />
+        <span>Buat Game dari Modul Ini</span>
+        <ArrowRight className="w-3.5 h-3.5 shrink-0" />
+      </button>
+    </div>
+
+    {/* KARTU 2: GENERATOR MEDIA */}
+    <div className="h-full p-4 rounded-xl bg-[#071426]/90 border border-[#8B5CF6]/40 hover:border-[#8B5CF6] transition-all flex flex-col justify-between gap-4 group shadow-sm">
+
+      <div className="space-y-2">
+        <div className="flex items-center gap-2 text-white font-bold text-xs sm:text-sm">
+          <Sparkles className="w-4 h-4 shrink-0 text-[#FFD166] group-hover:scale-110 transition-transform" />
+          <span>2. Generator Media (ChatGPT)</span>
+        </div>
+
+        <p className="text-[11px] text-slate-300 leading-relaxed">
+          Teruskan otomatis: judul, topik <em>"{formInput.topic}"</em>, jenjang, dan identitas sekolah ke perancang poster, infografis &amp; LKPD siap pakai.
+        </p>
+      </div>
+
+      <button
+        type="button"
+        onClick={handleCreateMediaFromModul}
+        className="w-full min-h-[44px] py-2.5 px-3 rounded-lg font-bold text-xs bg-gradient-to-r from-[#10B981] to-[#00E5FF] text-[#071426] hover:brightness-110 shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 transition-all cursor-pointer"
+      >
+        <Sparkles className="w-4 h-4 shrink-0" />
+        <span>Buat Media dari Modul Ini</span>
+        <ArrowRight className="w-3.5 h-3.5 shrink-0" />
+      </button>
+    </div>
+
+  </div>
+</div>
 
                 {/* Section Navigator Tabs */}
                 <div className="flex items-center gap-1.5 overflow-x-auto pb-2 border-b border-slate-800 text-xs font-mono">
