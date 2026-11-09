@@ -184,10 +184,10 @@ export const MateriSection: React.FC = () => {
             <span>Presentasi Pembelajaran Interaktif Guru & Pendidik Semua Jenjang</span>
           </div>
           <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
-            Materi Workshop GURITA
+            Materi
           </h2>
           <p className="text-base sm:text-lg text-slate-300 leading-relaxed text-balance">
-            Materi pelatihan visual berbasis slide interaktif dengan bahasa yang ringkas, mudah dipahami, bebas paragraf panjang, dan dilengkapi contoh nyata penerapan di kelas.
+            Materi berbasis slide interaktif dengan bahasa yang ringkas, mudah dipahami, bebas paragraf panjang, dan dilengkapi contoh nyata penerapan di kelas.
           </p>
         </div>
 

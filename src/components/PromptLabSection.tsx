@@ -249,6 +249,56 @@ export const PromptLabSection: React.FC = () => {
         };
         break;
 
+      case 'bahasa-prosedur':
+        preset = {
+          schoolName: 'SMP Negeri 3 Nusantara',
+          principalName: 'Dra. Hj. Sri Wahyuni, M.Pd.',
+          teacherName: 'Siti Rahmawati, S.Pd.',
+          subject: 'Bahasa Indonesia',
+          materi: 'Teks Prosedur',
+          topic: 'Struktur, Kaidah Kebahasaan, dan Praktik Menulis Teks Prosedur',
+          learningOutcomeCP:
+            'Peserta didik mampu memahami, menganalisis struktur dan kaidah kebahasaan, serta menulis dan mempresentasikan teks prosedur secara logis, runtut, dan komunikatif.',
+          element: 'Membaca, Memirsa, Menulis, dan Mempresentasikan',
+          gradeLevel: 'Fase D (SMP Kelas 7)',
+          semester: '1 (Ganjil)',
+          timeAllocation: '2 JP (80 Menit)',
+          pedagogicalPractice: 'Problem Based Learning (PBL)',
+          customPedagogicalPractice: '',
+          studentCharacteristics: 'Senang berdiskusi dan mengekspresikan ide melalui tulisan kreatif, membutuhkan panduan struktur wacana.',
+          priorKnowledge: 'Mampu membedakan kalimat perintah (imperatif) dan membaca teks instruksi sederhana.',
+          facilitiesAndTools: 'Contoh teks prosedur otentik, lembar kerja analisis teks, proyektor, kertas plano.',
+          specialLearningNeeds: 'Kartu panduan konjungsi temporal dan contoh templat teks prosedur berjenjang.',
+          learningApproach: 'Genre-Based Approach & Diskusi Kolaboratif',
+          teacherNotes: 'Fokuskan pada kejelasan langkah, penggunaan verba material dan kata penghubung waktu tanpa melibatkan rumus matematika.'
+        };
+        break;
+
+      case 'econ-kebutuhan':
+        preset = {
+          schoolName: 'SMP Negeri 8 Harapan Bangsa',
+          principalName: 'Drs. H. Mulyadi, M.M.',
+          teacherName: 'Rian Pratama, S.E., Gr.',
+          subject: 'Ekonomi (IPS Terpadu)',
+          materi: 'Konsep Kebutuhan dan Kelangkaan Manusia',
+          topic: 'Skala Prioritas dan Pengambilan Keputusan Konsumsi Rasional',
+          learningOutcomeCP:
+            'Peserta didik mampu memahami konsep kelangkaan, mengidentifikasi faktor-faktor yang memengaruhi kebutuhan manusia, serta menyusun skala prioritas untuk pengambilan keputusan ekonomi yang bijak.',
+          element: 'Pemahaman Konsep Ekonomi & Literasi Keuangan',
+          gradeLevel: 'Fase D (SMP Kelas 7) / Fase E',
+          semester: '1 (Ganjil)',
+          timeAllocation: '2 JP (80 Menit)',
+          pedagogicalPractice: 'Pembelajaran Berbasis Studi Kasus',
+          customPedagogicalPractice: '',
+          studentCharacteristics: 'Kritis menanggapi isu tren konsumsi remaja dan tertarik mengelola uang saku pribadi secara mandiri.',
+          priorKnowledge: 'Mengenal konsep uang, jual beli sederhana, dan kebutuhan hidup sehari-hari.',
+          facilitiesAndTools: 'Lembar simulasi anggaran keluarga, artikel studi kasus kelangkaan barang, kartu prioritas belanja.',
+          specialLearningNeeds: 'Penyusunan matriks 4 kuadran prioritas (mendesak-penting) untuk menyederhanakan keputusan.',
+          learningApproach: 'Studi Kasus Kontekstual & Refleksi Literasi Keuangan',
+          teacherNotes: 'Tanamkan nilai kesederhanaan, rasionalitas konsumsi, dan kepedulian sosial tanpa memaksakan rumus hitungan matematis.'
+        };
+        break;
+
       case 'dkv-typography':
       default:
         preset = {
@@ -282,7 +332,7 @@ export const PromptLabSection: React.FC = () => {
     // Generate immediately with visual feedback
     const doc = generateCompleteModulAjar(preset);
     setGeneratedDoc(doc);
-    setActiveDocSection('sec-subject-aware');
+    setActiveDocSection('sec-1');
     confetti({ particleCount: 45, spread: 60, origin: { y: 0.6 } });
   };
 
@@ -343,7 +393,7 @@ export const PromptLabSection: React.FC = () => {
       const doc = generateCompleteModulAjar(formInput);
       setGeneratedDoc(doc);
       setIsGenerating(false);
-      setActiveDocSection('sec-subject-aware');
+      setActiveDocSection('sec-1');
 
       confetti({
         particleCount: 60,
@@ -355,7 +405,7 @@ export const PromptLabSection: React.FC = () => {
 
   const handleCopyText = () => {
     if (!generatedDoc) return;
-    const plainText = `MODUL AJAR KURIKULUM MERDEKA\n${generatedDoc.informasiUmum.mataPelajaran} - ${generatedDoc.informasiUmum.topikPembelajaran}\n\nBAGIAN I. INFORMASI UMUM\nSekolah: ${generatedDoc.informasiUmum.namaSekolah}\nPenyusun: ${generatedDoc.informasiUmum.namaPenyusun}\nAlokasi: ${generatedDoc.informasiUmum.alokasiWaktu}\n\nBAGIAN II. CAPAIAN PEMBELAJARAN\n${generatedDoc.identifikasiDanDesain.capaianPembelajaran}\n\nBAGIAN III. LANGKAH-LANGKAH PEMBELAJARAN\n${generatedDoc.langkahPembelajaran.kegiatanAwal.map((k) => `[Awal] ${k.activity} (${k.timeAllocation})`).join('\n')}\n${generatedDoc.langkahPembelajaran.kegiatanInti.map((k) => `[Inti] ${k.activity} (${k.timeAllocation})`).join('\n')}\n${generatedDoc.langkahPembelajaran.kegiatanPenutup.map((k) => `[Penutup] ${k.activity} (${k.timeAllocation})`).join('\n')}\n\nMengetahui,\nKepala Sekolah: ${generatedDoc.pengesahan.namaKepalaSekolah}\n\nPenyusun: ${generatedDoc.pengesahan.namaPenyusun}`;
+    const plainText = `RENCANA PEMBELAJARAN MENDALAM (DEEP LEARNING)\n${generatedDoc.informasiUmum.mataPelajaran} - ${generatedDoc.informasiUmum.topikPembelajaran}\n\nBAGIAN I. INFORMASI UMUM\nSekolah: ${generatedDoc.informasiUmum.namaSekolah}\nPenyusun: ${generatedDoc.informasiUmum.namaPenyusun}\nAlokasi: ${generatedDoc.informasiUmum.alokasiWaktu}\n\nBAGIAN II. CAPAIAN PEMBELAJARAN\n${generatedDoc.identifikasiDanDesain.capaianPembelajaran}\n\nBAGIAN III. LANGKAH-LANGKAH PEMBELAJARAN (5 KOLOM)\n${generatedDoc.langkahPembelajaran.kegiatanAwal.map((k) => `[Awal] ${k.activity} (${k.timeAllocation})`).join('\n')}\n${generatedDoc.langkahPembelajaran.kegiatanInti.map((k) => `[Inti] ${k.activity} (${k.timeAllocation})`).join('\n')}\n${generatedDoc.langkahPembelajaran.kegiatanPenutup.map((k) => `[Penutup] ${k.activity} (${k.timeAllocation})`).join('\n')}\n\nMengetahui,\nKepala Sekolah: ${generatedDoc.pengesahan.namaKepalaSekolah}\n\nPenyusun: ${generatedDoc.pengesahan.namaPenyusun}`;
 
     navigator.clipboard.writeText(plainText);
     setCopied(true);
@@ -388,13 +438,13 @@ export const PromptLabSection: React.FC = () => {
           <div className="space-y-4 max-w-3xl">
             <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-[#00E5FF]">
               <FileText className="w-4 h-4 text-[#00E5FF]" />
-              <span>Prompt Lab · Generator Modul Ajar Kurikulum Mendalam</span>
+              <span>Prompt Lab </span>
             </div>
             <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
-              Subject-Aware Output Engine
+              Generator Modul Ajar Deep Learning
             </h2>
             <p className="text-base sm:text-lg text-slate-300 leading-relaxed text-balance">
-              Menghasilkan Modul Ajar Kurikulum Merdeka yang otomatis mengenali karakteristik mata pelajaran. Khusus <strong>Matematika, Fisika, Kimia, Ekonomi/Akuntansi, dan Informatika</strong>, sistem menyertakan rumus akurat, contoh soal bertahap, dan tabel numerik. Pada <strong>DKV & Seni</strong>, materi disajikan secara estetik dan konseptual tanpa rumus paksaan.
+              Menghasilkan Modul Ajar Deep Learning yang otomatis mengenali karakteristik mata pelajaran.
             </p>
           </div>
 
@@ -412,52 +462,6 @@ export const PromptLabSection: React.FC = () => {
             >
               Reset
             </button>
-          </div>
-        </div>
-
-        {/* 8 Mandatory Subject-Aware Testing Presets Bar */}
-        <div className="p-4 sm:p-5 rounded-2xl bg-[#0B1B31] border border-[#00E5FF]/30 shadow-lg space-y-3">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
-            <div className="flex items-center gap-2">
-              <Calculator className="w-4 h-4 text-[#00E5FF]" />
-              <span className="text-xs font-bold text-white uppercase tracking-wider">
-                Preset Skenario Pengujian Subject-Aware (Wajib 8 Skenario):
-              </span>
-            </div>
-            <span className="text-[11px] text-amber-300 font-mono">
-              Klik salah satu tombol untuk memuat parameter & menghasilkan output seketika:
-            </span>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2">
-            {[
-              { id: 'math-splsv', label: '1. MTK - SPLSV', desc: 'Aljabar & Persamaan Linear', icon: Sigma, color: 'border-cyan-500/40 text-cyan-300' },
-              { id: 'math-geometry', label: '2. MTK - Bangun Ruang', desc: 'Volume Balok & Kubus', icon: Layers, color: 'border-blue-500/40 text-blue-300' },
-              { id: 'physics-motion', label: '3. Fisika - Kecepatan', desc: 'GLB v = s/t & Satuan SI', icon: Zap, color: 'border-amber-500/40 text-amber-300' },
-              { id: 'chem-mol', label: '4. Kimia - Hitungan Mol', desc: 'Stoikiometri & Avogadro', icon: Sparkles, color: 'border-emerald-500/40 text-emerald-300' },
-              { id: 'econ-profit', label: '5. Ekonomi - Untung/Rugi', desc: 'Persentase Margin Usaha', icon: Calculator, color: 'border-yellow-500/40 text-yellow-300' },
-              { id: 'accounting-journal', label: '6. Akuntansi - Jurnal', desc: 'Format Jurnal 5 Kolom', icon: TableIcon, color: 'border-violet-500/40 text-violet-300' },
-              { id: 'info-binary', label: '7. Informatika - Biner', desc: 'Konversi Basis 2 & Kode', icon: Code, color: 'border-cyan-500/40 text-cyan-300' },
-              { id: 'dkv-typography', label: '8. DKV - Tipografi', desc: 'Anatomi Desain (Non-Math)', icon: BookOpen, color: 'border-pink-500/40 text-pink-300' }
-            ].map((sc) => {
-              const ScIcon = sc.icon;
-              return (
-                <button
-                  key={sc.id}
-                  onClick={() => handleScenarioPreset(sc.id)}
-                  title={sc.desc}
-                  className={`p-2 rounded-xl bg-[#071426] hover:bg-[#122A4E] border ${sc.color} text-[11px] font-bold text-left transition-all hover:scale-102 flex flex-col justify-between cursor-pointer`}
-                >
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="truncate">{sc.label}</span>
-                    <ScIcon className="w-3 h-3 shrink-0 opacity-70" />
-                  </div>
-                  <span className="text-[9px] text-slate-400 font-normal line-clamp-1">
-                    {sc.desc}
-                  </span>
-                </button>
-              );
-            })}
           </div>
         </div>
 
@@ -673,7 +677,7 @@ export const PromptLabSection: React.FC = () => {
                   className="w-full py-3 px-4 rounded-xl font-bold text-sm text-white bg-gradient-to-r from-[#2979FF] via-[#00E5FF] to-[#8B5CF6] hover:shadow-lg hover:shadow-[#00E5FF]/20 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                 >
                   <Sparkles className="w-4 h-4 text-[#FFD166]" />
-                  <span>{isGenerating ? 'Menganalisis Karakteristik Subjek...' : 'Buat Modul Ajar Subject-Aware'}</span>
+                  <span>{isGenerating ? 'Menganalisis Karakteristik Subjek...' : 'Buat Modul Ajar'}</span>
                 </button>
               </div>
             </form>
@@ -720,27 +724,25 @@ export const PromptLabSection: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Section Navigator Tabs with Subject-Aware Star Tab */}
+                {/* Section Navigator Tabs */}
                 <div className="flex items-center gap-1.5 overflow-x-auto pb-2 border-b border-slate-800 text-xs font-mono">
                   {[
-                    ...(subjectAnalysis
+                    { id: 'sec-1', label: 'I. Info Umum' },
+                    { id: 'sec-2', label: 'II. Identifikasi' },
+                    { id: 'sec-3', label: 'III. Desain Pembelajaran' },
+                    { id: 'sec-4', label: 'IV. Pengalaman Belajar (Tabel 5 Kolom)' },
+                    { id: 'sec-5', label: 'V. Asesmen & Rubrik' },
+                    { id: 'sec-6', label: 'VI. Refleksi & Tindak Lanjut' },
+                    { id: 'sec-7', label: 'VII. Pengesahan' },
+                    ...(subjectAnalysis?.isQuantitative
                       ? [
                           {
-                            id: 'sec-subject-aware',
-                            label: subjectAnalysis.isQuantitative
-                              ? '★ Rumus & Kalkulasi Subjek'
-                              : '★ Karakteristik Subjek (Non-Numerik)',
+                            id: 'sec-math',
+                            label: '★ Lampiran Rumus & Kalkulasi',
                             isSpecial: true
                           }
                         ]
-                      : []),
-                    { id: 'sec-1', label: 'I. Info Umum' },
-                    { id: 'sec-2', label: 'II. Desain Pembelajaran' },
-                    { id: 'sec-3', label: 'III. Langkah (Tabel 5 Kolom)' },
-                    { id: 'sec-4', label: 'IV. Asesmen & Rubrik' },
-                    { id: 'sec-5', label: 'V. Alat & Bahan' },
-                    { id: 'sec-6', label: 'VI. Refleksi' },
-                    { id: 'sec-7', label: 'VII. Pengesahan' }
+                      : [])
                   ].map((tab) => (
                     <button
                       key={tab.id}
@@ -761,19 +763,394 @@ export const PromptLabSection: React.FC = () => {
                 </div>
 
                 {/* Document Body Render */}
-                <div className="p-6 rounded-2xl bg-[#071426] border border-slate-800 max-h-[560px] overflow-y-auto space-y-6 text-slate-300 text-xs sm:text-sm leading-relaxed">
-                  {/* TAB KHUSUS: SUBJECT-AWARE REPRESENTATION (RUMUS / CONTOH SOAL / TABEL / CODE / DKV) */}
-                  {activeDocSection === 'sec-subject-aware' && subjectAnalysis && (
+                <div className="p-6 rounded-2xl bg-[#071426] border border-slate-800 max-h-[580px] overflow-y-auto space-y-6 text-slate-300 text-xs sm:text-sm leading-relaxed">
+                  {/* TAB 1: INFORMASI UMUM */}
+                  {activeDocSection === 'sec-1' && (
+                    <div className="space-y-4 animate-fade-in">
+                      <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+                        <h4 className="text-base font-bold text-white uppercase">
+                          BAGIAN I. INFORMASI UMUM
+                        </h4>
+                        <span className="text-[11px] font-mono text-cyan-400">
+                          {subjectAnalysis?.domainNameId || 'Subject-Aware'}
+                        </span>
+                      </div>
+                      <table className="w-full text-left text-xs">
+                        <tbody className="divide-y divide-slate-800">
+                          <tr>
+                            <td className="py-2.5 font-bold text-[#00E5FF] w-48">Nama Sekolah</td>
+                            <td className="py-2.5 text-white">{generatedDoc.informasiUmum.namaSekolah}</td>
+                          </tr>
+                          <tr>
+                            <td className="py-2.5 font-bold text-[#00E5FF]">Nama Penyusun / Guru</td>
+                            <td className="py-2.5 text-white">{generatedDoc.informasiUmum.namaPenyusun}</td>
+                          </tr>
+                          <tr>
+                            <td className="py-2.5 font-bold text-[#00E5FF]">Mata Pelajaran</td>
+                            <td className="py-2.5 text-white">{generatedDoc.informasiUmum.mataPelajaran}</td>
+                          </tr>
+                          <tr>
+                            <td className="py-2.5 font-bold text-[#00E5FF]">Materi Pokok</td>
+                            <td className="py-2.5 text-white">{generatedDoc.informasiUmum.materi}</td>
+                          </tr>
+                          <tr>
+                            <td className="py-2.5 font-bold text-[#00E5FF]">Topik Pembelajaran</td>
+                            <td className="py-2.5 text-white">{generatedDoc.informasiUmum.topikPembelajaran}</td>
+                          </tr>
+                          <tr>
+                            <td className="py-2.5 font-bold text-[#00E5FF]">Fase / Kelas</td>
+                            <td className="py-2.5 text-white">{generatedDoc.informasiUmum.faseAtauKelas}</td>
+                          </tr>
+                          <tr>
+                            <td className="py-2.5 font-bold text-[#00E5FF]">Semester</td>
+                            <td className="py-2.5 text-white">Semester {generatedDoc.informasiUmum.semester}</td>
+                          </tr>
+                          <tr>
+                            <td className="py-2.5 font-bold text-[#00E5FF]">Alokasi Waktu</td>
+                            <td className="py-2.5 text-white">{generatedDoc.informasiUmum.alokasiWaktu}</td>
+                          </tr>
+                          <tr>
+                            <td className="py-2.5 font-bold text-[#00E5FF]">Sarana & Prasarana</td>
+                            <td className="py-2.5 text-white">
+                              {generatedDoc.informasiUmum.saranaDanPrasarana || formInput.facilitiesAndTools || 'Papan tulis, lembar kerja siswa, buku referensi, dan media pendukung.'}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td className="py-2.5 font-bold text-[#00E5FF]">Sasaran Peserta Didik</td>
+                            <td className="py-2.5 text-white">
+                              {generatedDoc.informasiUmum.sasaranPesertaDidik || 'Peserta didik reguler / tipikal'}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+
+                  {/* TAB 2: IDENTIFIKASI */}
+                  {activeDocSection === 'sec-2' && (
+                    <div className="space-y-5 animate-fade-in">
+                      <h4 className="text-base font-bold text-white uppercase border-b border-slate-800 pb-2">
+                        BAGIAN II. IDENTIFIKASI
+                      </h4>
+
+                      <div className="space-y-2">
+                        <span className="font-bold text-[#FFD166] block">1. Identifikasi Peserta Didik:</span>
+                        <div className="p-4 rounded-xl bg-[#0B1B31] border border-slate-800 space-y-2 text-xs">
+                          <p><strong className="text-cyan-300">Karakteristik Peserta Didik:</strong> {generatedDoc.identifikasiDanDesain.identifikasiPesertaDidik.karakteristikPesertaDidik || formInput.studentCharacteristics}</p>
+                          <p><strong className="text-cyan-300">Pengetahuan Awal:</strong> {generatedDoc.identifikasiDanDesain.identifikasiPesertaDidik.pengetahuanAwal}</p>
+                          <p><strong className="text-cyan-300">Minat & Kebutuhan Belajar:</strong> {generatedDoc.identifikasiDanDesain.identifikasiPesertaDidik.minatDanKebutuhanBelajar || generatedDoc.identifikasiDanDesain.identifikasiPesertaDidik.minatDanMotivasi}</p>
+                          <p><strong className="text-cyan-300">Kesiapan Belajar:</strong> {generatedDoc.identifikasiDanDesain.identifikasiPesertaDidik.kesiapanBelajar}</p>
+                          <p><strong className="text-rose-300">Potensi Miskonsepsi:</strong> {generatedDoc.identifikasiDanDesain.identifikasiPesertaDidik.potensiMiskonsepsi}</p>
+                          <p><strong className="text-emerald-300">Dukungan & Diferensiasi:</strong> {generatedDoc.identifikasiDanDesain.identifikasiPesertaDidik.dukunganDanDiferensiasi}</p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <span className="font-bold text-[#00E5FF] block">
+                          2. Dimensi Profil Lulusan yang Ditumbuhkan (Pilihan 2–3 Dimensi Resmi):
+                        </span>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                          {generatedDoc.identifikasiDanDesain.dimensiProfilLulusan.map((dp, i) => (
+                            <div key={i} className="p-3.5 rounded-xl bg-[#0B1B31] border border-cyan-500/20 space-y-1.5 text-xs">
+                              <div className="flex items-center gap-1.5 text-cyan-300 font-bold">
+                                <CheckCircle2 className="w-4 h-4 text-[#00E5FF] shrink-0" />
+                                <span>{dp.dimensi}</span>
+                              </div>
+                              <p className="text-slate-300 leading-relaxed text-[11px]">{dp.alasanRelevansi}</p>
+                              <div className="pt-1 text-[11px] text-amber-300 font-mono">
+                                <strong>Perilaku teramati:</strong> {dp.perilakuTeramati}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <span className="font-bold text-[#FFD166] block">3. Karakteristik Materi Pelajaran:</span>
+                        <div className="p-3.5 rounded-xl bg-[#0B1B31] border border-slate-800 text-xs text-slate-300 leading-relaxed">
+                          {generatedDoc.identifikasiDanDesain.identifikasiPesertaDidik.karakteristikMateri || generatedDoc.identifikasiDanDesain.identifikasiMataPelajaran.relevansiKehidupanNyata}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* TAB 3: DESAIN PEMBELAJARAN */}
+                  {activeDocSection === 'sec-3' && (
+                    <div className="space-y-5 animate-fade-in">
+                      <h4 className="text-base font-bold text-white uppercase border-b border-slate-800 pb-2">
+                        BAGIAN III. DESAIN PEMBELAJARAN
+                      </h4>
+
+                      <div className="space-y-1.5">
+                        <span className="font-bold text-[#00E5FF] block">1. Capaian Pembelajaran (CP) Resmi:</span>
+                        <p className="p-3.5 rounded-xl bg-[#0B1B31] border border-slate-800 text-slate-200 text-xs italic leading-relaxed">
+                          "{generatedDoc.identifikasiDanDesain.capaianPembelajaran}"
+                        </p>
+                      </div>
+
+                      <div className="space-y-2">
+                        <span className="font-bold text-[#FFD166] block">
+                          2. Tujuan Pembelajaran (3 Pengalaman Belajar Kurikulum Deep Learning):
+                        </span>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                          <div className="p-3.5 rounded-xl bg-[#0B1B31] border border-emerald-500/30 space-y-1.5">
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold font-mono bg-emerald-950 text-emerald-400 border border-emerald-800 uppercase block w-fit">
+                              A. Memahami (Meaningful)
+                            </span>
+                            <p className="text-slate-200 leading-relaxed">{generatedDoc.identifikasiDanDesain.tujuanPembelajaran.memahami.join(' ')}</p>
+                          </div>
+
+                          <div className="p-3.5 rounded-xl bg-[#0B1B31] border border-blue-500/30 space-y-1.5">
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold font-mono bg-blue-950 text-blue-400 border border-blue-800 uppercase block w-fit">
+                              B. Mengaplikasi (Authentic)
+                            </span>
+                            <p className="text-slate-200 leading-relaxed">{generatedDoc.identifikasiDanDesain.tujuanPembelajaran.mengaplikasi.join(' ')}</p>
+                          </div>
+
+                          <div className="p-3.5 rounded-xl bg-[#0B1B31] border border-amber-500/30 space-y-1.5">
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold font-mono bg-amber-950 text-amber-400 border border-amber-800 uppercase block w-fit">
+                              C. Merefleksi (Metacognitive)
+                            </span>
+                            <p className="text-slate-200 leading-relaxed">{generatedDoc.identifikasiDanDesain.tujuanPembelajaran.merefleksi.join(' ')}</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2">
+                        <span className="font-bold text-[#00E5FF] block">3. Praktik Pedagogis & Sintaks:</span>
+                        <div className="p-4 rounded-xl bg-[#0B1B31] border border-slate-800 space-y-2.5 text-xs">
+                          <div className="flex items-center justify-between">
+                            <strong className="text-white text-sm">Pendekatan: {generatedDoc.identifikasiDanDesain.praktikPedagogis.namaPendekatan}</strong>
+                          </div>
+                          <p className="text-slate-300 leading-relaxed">{generatedDoc.identifikasiDanDesain.praktikPedagogis.alasanPemilihan}</p>
+                          {generatedDoc.identifikasiDanDesain.praktikPedagogis.sintaksTahapan && (
+                            <div className="pt-2 border-t border-slate-800 space-y-1.5">
+                              <span className="font-bold text-slate-200 block text-[11px]">Sintaks Tahapan:</span>
+                              {generatedDoc.identifikasiDanDesain.praktikPedagogis.sintaksTahapan.map((s, idx) => (
+                                <div key={idx} className="flex items-start gap-2 text-slate-300">
+                                  <span className="font-mono text-cyan-400 font-bold shrink-0">{idx + 1}.</span>
+                                  <div>
+                                    <strong className="text-white">{s.tahapan}: </strong>
+                                    <span>{s.deskripsi}</span>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                        <div className="p-3.5 rounded-xl bg-[#0B1B31] border border-slate-800 space-y-1">
+                          <strong className="text-[#FFD166] block">Kemitraan Pembelajaran:</strong>
+                          <p className="text-slate-300 leading-relaxed">
+                            {generatedDoc.identifikasiDanDesain.kemitraanPembelajaran || generatedDoc.identifikasiDanDesain.mitraPembelajaran || 'Kolaborasi rekan sejawat dalam kelompok kecil dan umpan balik timbal balik.'}
+                          </p>
+                        </div>
+
+                        <div className="p-3.5 rounded-xl bg-[#0B1B31] border border-slate-800 space-y-1">
+                          <strong className="text-[#00E5FF] block">Lingkungan Pembelajaran:</strong>
+                          <p className="text-slate-300 leading-relaxed">
+                            <strong>Fisik:</strong> {generatedDoc.identifikasiDanDesain.lingkunganPembelajaran.fisik}<br />
+                            <strong>Sosial:</strong> {generatedDoc.identifikasiDanDesain.lingkunganPembelajaran.sosial}<br />
+                            <strong>Digital:</strong> {generatedDoc.identifikasiDanDesain.lingkunganPembelajaran.digital}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* TAB 4: PENGALAMAN BELAJAR (TABEL 5 KOLOM) */}
+                  {activeDocSection === 'sec-4' && (
+                    <div className="space-y-4 animate-fade-in">
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-2">
+                        <h4 className="text-base font-bold text-white uppercase">
+                          BAGIAN IV. PENGALAMAN BELAJAR (TABEL 5 KOLOM)
+                        </h4>
+                        <span className="text-xs font-mono text-[#00E5FF] bg-[#0E223D] px-2.5 py-1 rounded-lg border border-[#00E5FF]/30">
+                          {generatedDoc.langkahPembelajaran.asumsiWaktuText}
+                        </span>
+                      </div>
+
+                      <div className="overflow-x-auto rounded-xl border border-slate-800">
+                        <table className="w-full text-left text-xs border-collapse">
+                          <thead className="bg-[#0B1B31] text-[#00E5FF] font-bold border-b border-slate-800">
+                            <tr>
+                              <th className="p-3 w-5/12">Aktivitas Pembelajaran (Awal, Inti, Penutup)</th>
+                              <th className="p-3 w-20 text-center">Waktu</th>
+                              <th className="p-3 w-28">Prinsip (3 Prinsip)</th>
+                              <th className="p-3 w-28">Pengalaman (3 Pengalaman)</th>
+                              <th className="p-3">Sumber & Media</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-slate-800 text-xs">
+                            {[
+                              ...generatedDoc.langkahPembelajaran.kegiatanAwal,
+                              ...generatedDoc.langkahPembelajaran.kegiatanInti,
+                              ...generatedDoc.langkahPembelajaran.kegiatanPenutup
+                            ].map((row, idx) => (
+                              <tr key={idx} className="hover:bg-[#0E223D]/50 transition-colors">
+                                <td className="p-3 text-slate-200">
+                                  <MixedMathText content={row.activity} />
+                                </td>
+                                <td className="p-3 font-mono text-[#FFD166] text-center whitespace-nowrap">{row.timeAllocation}</td>
+                                <td className="p-3 text-slate-300 whitespace-nowrap">{row.principle}</td>
+                                <td className="p-3 font-semibold text-cyan-300 whitespace-nowrap">{row.learningExperience}</td>
+                                <td className="p-3 text-slate-400 text-[11px]">{row.learningResources}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* TAB 5: ASESMEN & RUBRIK */}
+                  {activeDocSection === 'sec-5' && (
+                    <div className="space-y-5 animate-fade-in">
+                      <h4 className="text-base font-bold text-white uppercase border-b border-slate-800 pb-2">
+                        BAGIAN V. ASESMEN PEMBELAJARAN & RUBRIK
+                      </h4>
+
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+                        <div className="p-3.5 rounded-xl bg-[#0B1B31] border border-emerald-500/30 space-y-1.5">
+                          <strong className="text-emerald-400 block font-mono uppercase">1. Asesmen Awal</strong>
+                          <p><strong>Tujuan:</strong> {generatedDoc.asesmen.asesmenAwal.tujuan}</p>
+                          <p><strong>Teknik:</strong> {generatedDoc.asesmen.asesmenAwal.teknik}</p>
+                          <p className="text-[11px] text-slate-300 italic">{generatedDoc.asesmen.asesmenAwal.contohSoalTugas}</p>
+                        </div>
+
+                        <div className="p-3.5 rounded-xl bg-[#0B1B31] border border-blue-500/30 space-y-1.5">
+                          <strong className="text-blue-400 block font-mono uppercase">2. Asesmen Formatif</strong>
+                          <p><strong>Teknik:</strong> {generatedDoc.asesmen.asesmenFormatif.teknik}</p>
+                          <p><strong>Waktu:</strong> {generatedDoc.asesmen.asesmenFormatif.waktuPelaksanaan}</p>
+                          <p><strong>Kriteria:</strong> {generatedDoc.asesmen.asesmenFormatif.kriteriaKeberhasilan}</p>
+                          <p className="text-[11px] text-slate-400"><strong>Umpan Balik:</strong> {generatedDoc.asesmen.asesmenFormatif.bentukUmpanBalik}</p>
+                        </div>
+
+                        <div className="p-3.5 rounded-xl bg-[#0B1B31] border border-amber-500/30 space-y-1.5">
+                          <strong className="text-amber-400 block font-mono uppercase">3. Asesmen Sumatif</strong>
+                          <p><strong>Bentuk:</strong> {generatedDoc.asesmen.asesmenSumatif.bentuk}</p>
+                          <p><strong>Deskripsi:</strong> {generatedDoc.asesmen.asesmenSumatif.deskripsiTugasSoal}</p>
+                          <p className="text-[11px] text-slate-400"><strong>Kunci / Kriteria:</strong> {generatedDoc.asesmen.asesmenSumatif.kunciAtauKriteria}</p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-2 pt-2">
+                        <span className="font-bold text-white block">Rubrik Penilaian Skala 1–4:</span>
+                        <div className="overflow-x-auto rounded-xl border border-slate-800">
+                          <table className="w-full text-left text-xs border-collapse">
+                            <thead className="bg-[#0B1B31] text-slate-300 font-bold border-b border-slate-800 text-[11px]">
+                              <tr>
+                                <th className="p-2.5 w-36">Aspek & Indikator</th>
+                                <th className="p-2.5">1 (Perlu Bimbingan)</th>
+                                <th className="p-2.5">2 (Cukup)</th>
+                                <th className="p-2.5">3 (Baik)</th>
+                                <th className="p-2.5">4 (Sangat Baik)</th>
+                              </tr>
+                            </thead>
+                            <tbody className="divide-y divide-slate-800 text-[11px]">
+                              {generatedDoc.asesmen.rubrikPenilaian.map((r, ri) => (
+                                <tr key={ri} className="hover:bg-[#0E223D]/50 transition-colors">
+                                  <td className="p-2.5 font-bold text-[#00E5FF]">
+                                    {r.aspek}
+                                    <span className="block font-normal text-slate-400 text-[10px] mt-0.5">{r.indikator}</span>
+                                  </td>
+                                  <td className="p-2.5 text-slate-400">{r.skala1}</td>
+                                  <td className="p-2.5 text-slate-300">{r.skala2}</td>
+                                  <td className="p-2.5 text-slate-200">{r.skala3}</td>
+                                  <td className="p-2.5 text-emerald-300 font-medium">{r.skala4}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* TAB 6: REFLEKSI & TINDAK LANJUT */}
+                  {activeDocSection === 'sec-6' && (
+                    <div className="space-y-5 animate-fade-in">
+                      <h4 className="text-base font-bold text-white uppercase border-b border-slate-800 pb-2">
+                        BAGIAN VI. REFLEKSI & TINDAK LANJUT
+                      </h4>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div className="p-4 rounded-xl bg-[#0B1B31] border border-slate-800 space-y-2 text-xs">
+                          <strong className="text-[#00E5FF] block">Pertanyaan Refleksi Peserta Didik:</strong>
+                          <ul className="list-disc list-inside space-y-1.5 text-slate-200">
+                            {generatedDoc.refleksi.refleksiPesertaDidik.map((r, i) => (
+                              <li key={i}>{r}</li>
+                            ))}
+                          </ul>
+                        </div>
+
+                        <div className="p-4 rounded-xl bg-[#0B1B31] border border-slate-800 space-y-2 text-xs">
+                          <strong className="text-[#FFD166] block">Pertanyaan Refleksi Guru:</strong>
+                          <ul className="list-disc list-inside space-y-1.5 text-slate-200">
+                            {generatedDoc.refleksi.refleksiGuru.map((r, i) => (
+                              <li key={i}>{r}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+
+                      <div className="p-4 rounded-xl bg-[#0B1B31] border border-slate-800 space-y-2 text-xs">
+                        <strong className="text-white block font-mono uppercase">Program Remedial & Pengayaan:</strong>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-slate-300">
+                          <div>
+                            <span className="font-semibold text-rose-300 block mb-0.5">• Program Remedial:</span>
+                            <p>{generatedDoc.asesmen.pengolahanDanTindakLanjut.remedial}</p>
+                          </div>
+                          <div>
+                            <span className="font-semibold text-emerald-300 block mb-0.5">• Program Pengayaan:</span>
+                            <p>{generatedDoc.asesmen.pengolahanDanTindakLanjut.pengayaan}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* TAB 7: PENGESAHAN */}
+                  {activeDocSection === 'sec-7' && (
                     <div className="space-y-6 animate-fade-in">
-                      {/* Domain Header Banner */}
+                      <h4 className="text-base font-bold text-white uppercase border-b border-slate-800 pb-2">
+                        BAGIAN VII. PENGESAHAN DOKUMEN
+                      </h4>
+                      <p className="text-xs text-slate-400">{generatedDoc.pengesahan.kotaDanTanggal}</p>
+
+                      <div className="grid grid-cols-2 gap-8 pt-4">
+                        <div className="space-y-12">
+                          <p className="text-xs text-slate-300">Mengetahui,<br /><strong>Kepala Sekolah</strong></p>
+                          <div className="space-y-1">
+                            <p className="text-sm font-bold text-white underline">{generatedDoc.pengesahan.namaKepalaSekolah}</p>
+                            <p className="text-xs text-slate-400 font-mono">NIP. ........................................</p>
+                          </div>
+                        </div>
+
+                        <div className="space-y-12">
+                          <p className="text-xs text-slate-300">Penyusun,<br /><strong>Guru Mata Pelajaran</strong></p>
+                          <div className="space-y-1">
+                            <p className="text-sm font-bold text-white underline">{generatedDoc.pengesahan.namaPenyusun}</p>
+                            <p className="text-xs text-slate-400 font-mono">NIP. ........................................</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* TAB 8: LAMPIRAN RUMUS & KALKULASI (HANYA MUNCUL JIKA isQuantitative === true) */}
+                  {activeDocSection === 'sec-math' && subjectAnalysis?.isQuantitative && (
+                    <div className="space-y-6 animate-fade-in">
                       <div className="p-4 rounded-xl bg-gradient-to-r from-[#0C1F38] to-[#071426] border border-[#00E5FF]/40 space-y-2">
                         <div className="flex items-center justify-between">
                           <span className="text-xs font-mono uppercase tracking-wider text-[#00E5FF] font-bold flex items-center gap-1.5">
                             <Sigma className="w-4 h-4 text-[#FFD166]" />
-                            Karakteristik Subjek: {subjectAnalysis.domainNameId}
+                            Karakteristik Subjek Numerik: {subjectAnalysis.domainNameId}
                           </span>
                           <span className="px-2 py-0.5 text-[10px] font-extrabold rounded bg-[#FFD166]/20 text-[#FFD166] border border-[#FFD166]/40">
-                            Subject-Aware Active
+                            Subject-Aware Aktif
                           </span>
                         </div>
                         <ul className="text-xs text-slate-300 space-y-1 pl-1">
@@ -787,7 +1164,7 @@ export const PromptLabSection: React.FC = () => {
                       </div>
 
                       {/* 1. Core Formulas (Rendered with KaTeX) */}
-                      {subjectAnalysis.isQuantitative && subjectAnalysis.coreFormulas && (
+                      {subjectAnalysis.coreFormulas && (
                         <div className="space-y-3">
                           <h4 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2 border-b border-slate-800 pb-1.5">
                             <Sigma className="w-4 h-4 text-[#00E5FF]" />
@@ -824,7 +1201,7 @@ export const PromptLabSection: React.FC = () => {
                       )}
 
                       {/* 2. Step-by-Step Worked Example */}
-                      {subjectAnalysis.isQuantitative && subjectAnalysis.workedExample && (
+                      {subjectAnalysis.workedExample && (
                         <div className="space-y-3 pt-2">
                           <h4 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2 border-b border-slate-800 pb-1.5">
                             <Calculator className="w-4 h-4 text-[#FFD166]" />
@@ -877,7 +1254,7 @@ export const PromptLabSection: React.FC = () => {
                       )}
 
                       {/* 3. Specialized Data Table */}
-                      {subjectAnalysis.isQuantitative && subjectAnalysis.specializedTable && (
+                      {subjectAnalysis.specializedTable && (
                         <div className="space-y-3 pt-2">
                           <h4 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2 border-b border-slate-800 pb-1.5">
                             <TableIcon className="w-4 h-4 text-[#8B5CF6]" />
@@ -937,334 +1314,6 @@ export const PromptLabSection: React.FC = () => {
                           <p className="text-xs text-slate-400">{subjectAnalysis.codeOrPseudocode.explanation}</p>
                         </div>
                       )}
-
-                      {/* 5. Non-Numeric Guidance (DKV / Seni / Bahasa) */}
-                      {!subjectAnalysis.isQuantitative && subjectAnalysis.nonNumericGuidance && (
-                        <div className="space-y-4 pt-2">
-                          <div className="p-3.5 rounded-xl bg-[#0B1B31] border border-pink-500/30 text-xs text-pink-200">
-                            <strong className="block text-pink-300 mb-1">Prinsip Non-Numerik (Tanpa Rumus Paksaan):</strong>
-                            <p>{subjectAnalysis.nonNumericGuidance.conceptualFramework}</p>
-                          </div>
-
-                          <div className="space-y-2">
-                            <h5 className="text-xs font-bold text-[#FFD166] uppercase tracking-wider">
-                              Anatomi Tipografi & Prinsip Estetika Visual:
-                            </h5>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                              {subjectAnalysis.nonNumericGuidance.artisticPrinciples.map((ap: string, api: number) => (
-                                <div key={api} className="p-3 rounded-lg bg-[#071426] border border-slate-800 text-xs">
-                                  <span className="text-[#00E5FF] font-semibold block mb-0.5">• Prinsip {api + 1}</span>
-                                  <span className="text-slate-300">{ap}</span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-
-                          <div className="space-y-2">
-                            <h5 className="text-xs font-bold text-[#00E5FF] uppercase tracking-wider">
-                              Pedoman Hierarki Visual & Tata Letak:
-                            </h5>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                              {subjectAnalysis.nonNumericGuidance.visualHierarchyGuidelines.map((vh: string, vhi: number) => (
-                                <div key={vhi} className="p-3 rounded-lg bg-[#071426] border border-slate-800 text-xs">
-                                  <span className="text-[#FFD166] font-semibold block mb-0.5">• Panduan {vhi + 1}</span>
-                                  <span className="text-slate-300">{vh}</span>
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {/* TAB 1: INFORMASI UMUM */}
-                  {activeDocSection === 'sec-1' && (
-                    <div className="space-y-4 animate-fade-in">
-                      <h4 className="text-base font-bold text-white uppercase border-b border-slate-800 pb-2">
-                        BAGIAN I. INFORMASI UMUM
-                      </h4>
-                      <table className="w-full text-left text-xs">
-                        <tbody className="divide-y divide-slate-800">
-                          <tr>
-                            <td className="py-2 font-bold text-[#00E5FF] w-40">Nama Sekolah</td>
-                            <td className="py-2 text-white">{generatedDoc.informasiUmum.namaSekolah}</td>
-                          </tr>
-                          <tr>
-                            <td className="py-2 font-bold text-[#00E5FF]">Mata Pelajaran</td>
-                            <td className="py-2 text-white">{generatedDoc.informasiUmum.mataPelajaran}</td>
-                          </tr>
-                          <tr>
-                            <td className="py-2 font-bold text-[#00E5FF]">Materi Pokok</td>
-                            <td className="py-2 text-white">{generatedDoc.informasiUmum.materi}</td>
-                          </tr>
-                          <tr>
-                            <td className="py-2 font-bold text-[#00E5FF]">Topik Pembelajaran</td>
-                            <td className="py-2 text-white">{generatedDoc.informasiUmum.topikPembelajaran}</td>
-                          </tr>
-                          <tr>
-                            <td className="py-2 font-bold text-[#00E5FF]">Fase / Kelas</td>
-                            <td className="py-2 text-white">{generatedDoc.informasiUmum.faseAtauKelas}</td>
-                          </tr>
-                          <tr>
-                            <td className="py-2 font-bold text-[#00E5FF]">Semester</td>
-                            <td className="py-2 text-white">Semester {generatedDoc.informasiUmum.semester}</td>
-                          </tr>
-                          <tr>
-                            <td className="py-2 font-bold text-[#00E5FF]">Alokasi Waktu</td>
-                            <td className="py-2 text-white">{generatedDoc.informasiUmum.alokasiWaktu}</td>
-                          </tr>
-                          <tr>
-                            <td className="py-2 font-bold text-[#00E5FF]">Nama Penyusun</td>
-                            <td className="py-2 text-white">{generatedDoc.informasiUmum.namaPenyusun}</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  )}
-
-                  {/* TAB 2: IDENTIFIKASI & DESAIN PEMBELAJARAN */}
-                  {activeDocSection === 'sec-2' && (
-                    <div className="space-y-5 animate-fade-in">
-                      <h4 className="text-base font-bold text-white uppercase border-b border-slate-800 pb-2">
-                        BAGIAN II. IDENTIFIKASI DAN DESAIN PEMBELAJARAN
-                      </h4>
-
-                      <div className="space-y-2">
-                        <span className="font-bold text-[#FFD166] block">1. Identifikasi Peserta Didik:</span>
-                        <ul className="list-disc list-inside space-y-1 pl-2 text-slate-300">
-                          <li><strong>Pengetahuan Awal:</strong> {generatedDoc.identifikasiDanDesain.identifikasiPesertaDidik.pengetahuanAwal}</li>
-                          <li><strong>Minat & Motivasi:</strong> {generatedDoc.identifikasiDanDesain.identifikasiPesertaDidik.minatDanMotivasi}</li>
-                          <li><strong>Kesiapan Belajar:</strong> {generatedDoc.identifikasiDanDesain.identifikasiPesertaDidik.kesiapanBelajar}</li>
-                          <li><strong>Kebutuhan Belajar:</strong> {generatedDoc.identifikasiDanDesain.identifikasiPesertaDidik.kebutuhanBelajar}</li>
-                          <li><strong>Potensi Miskonsepsi:</strong> {generatedDoc.identifikasiDanDesain.identifikasiPesertaDidik.potensiMiskonsepsi}</li>
-                          <li><strong>Dukungan & Diferensiasi:</strong> {generatedDoc.identifikasiDanDesain.identifikasiPesertaDidik.dukunganDanDiferensiasi}</li>
-                        </ul>
-                      </div>
-
-                      <div className="space-y-1">
-                        <span className="font-bold text-[#00E5FF] block">2. Dimensi Profil Lulusan yang Ditumbuhkan:</span>
-                        {generatedDoc.identifikasiDanDesain.dimensiProfilLulusan.map((dp, i) => (
-                          <div key={i} className="p-2.5 rounded-lg bg-[#0B1B31] border border-slate-800 text-xs">
-                            <strong className="text-white">{dp.dimensi}:</strong> {dp.alasanRelevansi}
-                            <span className="block text-slate-400 mt-0.5">Perilaku teramati: {dp.perilakuTeramati}</span>
-                          </div>
-                        ))}
-                      </div>
-
-                      <div className="space-y-1">
-                        <span className="font-bold text-[#00E5FF] block">3. Capaian Pembelajaran (CP) Resmi:</span>
-                        <p className="p-3 rounded-lg bg-[#0B1B31] border border-slate-800 text-slate-200 italic">
-                          "{generatedDoc.identifikasiDanDesain.capaianPembelajaran}"
-                        </p>
-                      </div>
-
-                      <div className="space-y-1">
-                        <span className="font-bold text-[#00E5FF] block">4. Tujuan Pembelajaran (3 Pengalaman Belajar):</span>
-                        <div className="p-3 rounded-lg bg-[#0B1B31] border border-slate-800 space-y-1 text-xs">
-                          <p><strong className="text-emerald-400">A. Memahami:</strong> {generatedDoc.identifikasiDanDesain.tujuanPembelajaran.memahami.join(' ')}</p>
-                          <p><strong className="text-blue-400">B. Mengaplikasi:</strong> {generatedDoc.identifikasiDanDesain.tujuanPembelajaran.mengaplikasi.join(' ')}</p>
-                          <p><strong className="text-amber-400">C. Merefleksi:</strong> {generatedDoc.identifikasiDanDesain.tujuanPembelajaran.merefleksi.join(' ')}</p>
-                        </div>
-                      </div>
-
-                      <div className="space-y-1">
-                        <span className="font-bold text-[#00E5FF] block">5. Praktik Pedagogis & Sintaks:</span>
-                        <div className="p-3 rounded-lg bg-[#0B1B31] border border-slate-800 space-y-2 text-xs">
-                          <p><strong className="text-white">Pendekatan:</strong> {generatedDoc.identifikasiDanDesain.praktikPedagogis.namaPendekatan}</p>
-                          <p className="text-slate-300">{generatedDoc.identifikasiDanDesain.praktikPedagogis.alasanPemilihan}</p>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* TAB 3: LANGKAH PEMBELAJARAN (TABEL 5 KOLOM) */}
-                  {activeDocSection === 'sec-3' && (
-                    <div className="space-y-4 animate-fade-in">
-                      <div className="flex items-center justify-between border-b border-slate-800 pb-2">
-                        <h4 className="text-base font-bold text-white uppercase">
-                          BAGIAN III. LANGKAH-LANGKAH PEMBELAJARAN
-                        </h4>
-                        <span className="text-xs font-mono text-[#00E5FF]">Tabel Wajib 5 Kolom</span>
-                      </div>
-                      <p className="text-xs text-amber-300 italic">{generatedDoc.langkahPembelajaran.asumsiWaktuText}</p>
-
-                      <div className="overflow-x-auto rounded-xl border border-slate-800">
-                        <table className="w-full text-left text-xs border-collapse">
-                          <thead className="bg-[#0B1B31] text-[#00E5FF] font-bold border-b border-slate-800">
-                            <tr>
-                              <th className="p-2.5 w-1/2">Aktivitas Pembelajaran (Awal, Inti, Penutup)</th>
-                              <th className="p-2.5 w-24">Waktu</th>
-                              <th className="p-2.5 w-28">Prinsip</th>
-                              <th className="p-2.5 w-28">Pengalaman</th>
-                              <th className="p-2.5">Sumber & Media</th>
-                            </tr>
-                          </thead>
-                          <tbody className="divide-y divide-slate-800 text-xs">
-                            {[
-                              ...generatedDoc.langkahPembelajaran.kegiatanAwal,
-                              ...generatedDoc.langkahPembelajaran.kegiatanInti,
-                              ...generatedDoc.langkahPembelajaran.kegiatanPenutup
-                            ].map((row, idx) => (
-                              <tr key={idx} className="hover:bg-[#0E223D]/50 transition-colors">
-                                <td className="p-2.5 text-slate-200">
-                                  <MixedMathText content={row.activity} />
-                                </td>
-                                <td className="p-2.5 font-mono text-[#FFD166]">{row.timeAllocation}</td>
-                                <td className="p-2.5 text-slate-300">{row.principle}</td>
-                                <td className="p-2.5 font-semibold text-cyan-300">{row.learningExperience}</td>
-                                <td className="p-2.5 text-slate-400 text-[11px]">{row.learningResources}</td>
-                              </tr>
-                            ))}
-                          </tbody>
-                        </table>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* TAB 4: ASESMEN & RUBRIK */}
-                  {activeDocSection === 'sec-4' && (
-                    <div className="space-y-5 animate-fade-in">
-                      <h4 className="text-base font-bold text-white uppercase border-b border-slate-800 pb-2">
-                        BAGIAN IV. ASESMEN PEMBELAJARAN
-                      </h4>
-
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
-                        <div className="p-3.5 rounded-xl bg-[#0B1B31] border border-slate-800 space-y-1.5">
-                          <strong className="text-emerald-400 block font-mono uppercase">1. Asesmen Awal</strong>
-                          <p><strong>Tujuan:</strong> {generatedDoc.asesmen.asesmenAwal.tujuan}</p>
-                          <p><strong>Teknik:</strong> {generatedDoc.asesmen.asesmenAwal.teknik}</p>
-                          <p className="text-[11px] text-slate-400 italic">{generatedDoc.asesmen.asesmenAwal.contohSoalTugas}</p>
-                        </div>
-
-                        <div className="p-3.5 rounded-xl bg-[#0B1B31] border border-slate-800 space-y-1.5">
-                          <strong className="text-blue-400 block font-mono uppercase">2. Asesmen Formatif</strong>
-                          <p><strong>Teknik:</strong> {generatedDoc.asesmen.asesmenFormatif.teknik}</p>
-                          <p><strong>Waktu:</strong> {generatedDoc.asesmen.asesmenFormatif.waktuPelaksanaan}</p>
-                          <p><strong>Kriteria:</strong> {generatedDoc.asesmen.asesmenFormatif.kriteriaKeberhasilan}</p>
-                        </div>
-
-                        <div className="p-3.5 rounded-xl bg-[#0B1B31] border border-slate-800 space-y-1.5">
-                          <strong className="text-amber-400 block font-mono uppercase">3. Asesmen Sumatif</strong>
-                          <p><strong>Bentuk:</strong> {generatedDoc.asesmen.asesmenSumatif.bentuk}</p>
-                          <p><strong>Deskripsi:</strong> {generatedDoc.asesmen.asesmenSumatif.deskripsiTugasSoal}</p>
-                          <p className="text-[11px] text-slate-400"><strong>Kunci / Kriteria:</strong> {generatedDoc.asesmen.asesmenSumatif.kunciAtauKriteria}</p>
-                        </div>
-                      </div>
-
-                      <div className="space-y-2 pt-2">
-                        <span className="font-bold text-white block">Rubrik Penilaian Skala 1–4:</span>
-                        <div className="overflow-x-auto rounded-xl border border-slate-800">
-                          <table className="w-full text-left text-xs border-collapse">
-                            <thead className="bg-[#0B1B31] text-slate-300 font-bold border-b border-slate-800 text-[11px]">
-                              <tr>
-                                <th className="p-2 w-32">Aspek & Indikator</th>
-                                <th className="p-2">1 (Perlu Bimbingan)</th>
-                                <th className="p-2">2 (Cukup)</th>
-                                <th className="p-2">3 (Baik)</th>
-                                <th className="p-2">4 (Sangat Baik)</th>
-                              </tr>
-                            </thead>
-                            <tbody className="divide-y divide-slate-800 text-[11px]">
-                              {generatedDoc.asesmen.rubrikPenilaian.map((r, ri) => (
-                                <tr key={ri} className="hover:bg-[#0E223D]/50 transition-colors">
-                                  <td className="p-2 font-bold text-[#00E5FF]">{r.aspek}<span className="block font-normal text-slate-400 text-[10px]">{r.indikator}</span></td>
-                                  <td className="p-2 text-slate-400">{r.skala1}</td>
-                                  <td className="p-2 text-slate-300">{r.skala2}</td>
-                                  <td className="p-2 text-slate-200">{r.skala3}</td>
-                                  <td className="p-2 text-emerald-300 font-medium">{r.skala4}</td>
-                                </tr>
-                              ))}
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* TAB 5: ALAT & SUMBER */}
-                  {activeDocSection === 'sec-5' && (
-                    <div className="space-y-4 animate-fade-in text-xs">
-                      <h4 className="text-base font-bold text-white uppercase border-b border-slate-800 pb-2">
-                        BAGIAN V. ALAT DAN SUMBER BELAJAR
-                      </h4>
-                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div className="p-3.5 rounded-xl bg-[#0B1B31] border border-slate-800 space-y-1.5">
-                          <strong className="text-[#FFD166] block">Alat & Bahan:</strong>
-                          <ul className="list-disc list-inside space-y-1 text-slate-300">
-                            {generatedDoc.alatDanSumberBelajar.alatDanBahan.map((a, i) => (
-                              <li key={i}>{a}</li>
-                            ))}
-                          </ul>
-                        </div>
-                        <div className="p-3.5 rounded-xl bg-[#0B1B31] border border-slate-800 space-y-1.5">
-                          <strong className="text-[#00E5FF] block">Media Pembelajaran:</strong>
-                          <ul className="list-disc list-inside space-y-1 text-slate-300">
-                            {generatedDoc.alatDanSumberBelajar.mediaPembelajaran.map((m, i) => (
-                              <li key={i}>{m}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-                      <div className="p-3.5 rounded-xl bg-[#0B1B31] border border-slate-800 text-xs space-y-1">
-                        <strong className="text-[#FFD166] block">Alternatif Pembelajaran Luring:</strong>
-                        <p className="text-slate-300">{generatedDoc.alatDanSumberBelajar.alternatifLuring}</p>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* TAB 6: REFLEKSI GURU & MURID */}
-                  {activeDocSection === 'sec-6' && (
-                    <div className="space-y-5 animate-fade-in">
-                      <h4 className="text-base font-bold text-white uppercase border-b border-slate-800 pb-2">
-                        BAGIAN VI. REFLEKSI GURU DAN PESERTA DIDIK
-                      </h4>
-                      <div className="space-y-3">
-                        <div className="p-4 rounded-xl bg-[#0B1B31] border border-slate-800 space-y-2 text-xs">
-                          <strong className="text-[#00E5FF] block">Pertanyaan Refleksi Peserta Didik:</strong>
-                          <ul className="list-disc list-inside space-y-1.5 text-slate-200">
-                            {generatedDoc.refleksi.refleksiPesertaDidik.map((r, i) => (
-                              <li key={i}>{r}</li>
-                            ))}
-                          </ul>
-                        </div>
-                        <div className="p-4 rounded-xl bg-[#0B1B31] border border-slate-800 space-y-2 text-xs">
-                          <strong className="text-[#FFD166] block">Pertanyaan Refleksi Guru:</strong>
-                          <ul className="list-disc list-inside space-y-1.5 text-slate-200">
-                            {generatedDoc.refleksi.refleksiGuru.map((r, i) => (
-                              <li key={i}>{r}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                  {/* TAB 7: PENGESAHAN */}
-                  {activeDocSection === 'sec-7' && (
-                    <div className="space-y-6 animate-fade-in">
-                      <h4 className="text-base font-bold text-white uppercase border-b border-slate-800 pb-2">
-                        BAGIAN VII. PENGESAHAN DOKUMEN
-                      </h4>
-                      <p className="text-xs text-slate-400">{generatedDoc.pengesahan.kotaDanTanggal}</p>
-
-                      <div className="grid grid-cols-2 gap-8 pt-4">
-                        <div className="space-y-12">
-                          <p className="text-xs text-slate-300">Mengetahui,<br /><strong>Kepala Sekolah</strong></p>
-                          <div className="space-y-1">
-                            <p className="text-sm font-bold text-white underline">{generatedDoc.pengesahan.namaKepalaSekolah}</p>
-                            <p className="text-xs text-slate-400 font-mono">NIP. ........................................</p>
-                          </div>
-                        </div>
-
-                        <div className="space-y-12">
-                          <p className="text-xs text-slate-300">Penyusun,<br /><strong>Guru Mata Pelajaran</strong></p>
-                          <div className="space-y-1">
-                            <p className="text-sm font-bold text-white underline">{generatedDoc.pengesahan.namaPenyusun}</p>
-                            <p className="text-xs text-slate-400 font-mono">NIP. ........................................</p>
-                          </div>
-                        </div>
-                      </div>
                     </div>
                   )}
                 </div>

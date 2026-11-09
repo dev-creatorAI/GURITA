@@ -198,14 +198,19 @@ export interface ModulAjarDocument {
     semester: string;
     alokasiWaktu: string;
     namaPenyusun: string;
+    saranaDanPrasarana?: string;
+    sasaranPesertaDidik?: string;
   };
   // BAGIAN II. IDENTIFIKASI DAN DESAIN PEMBELAJARAN
   identifikasiDanDesain: {
     identifikasiPesertaDidik: {
+      karakteristikPesertaDidik?: string;
       pengetahuanAwal: string;
       minatDanMotivasi: string;
+      minatDanKebutuhanBelajar?: string;
       kesiapanBelajar: string;
       kebutuhanBelajar: string;
+      karakteristikMateri?: string;
       potensiMiskonsepsi: string;
       dukunganDanDiferensiasi: string;
       catatanAsumsi: string;
@@ -242,6 +247,7 @@ export interface ModulAjarDocument {
       hubunganDenganTujuan: string;
     };
     mitraPembelajaran: string;
+    kemitraanPembelajaran?: string;
     lingkunganPembelajaran: {
       fisik: string;
       sosial: string;

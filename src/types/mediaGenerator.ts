@@ -1,4 +1,4 @@
-export type MediaType = 'poster' | 'infografis' | 'lkpd' | 'sampul' | 'presentasi' | 'ilustrasi';
+export type MediaType = 'poster' | 'infografis' | 'lkpd' | 'sampul' | 'presentasi' | 'ilustrasi' | 'komik';
 
 export type PageSize = 'A4' | 'A3' | 'A5' | 'Letter' | 'Kustom';
 export type PageOrientation = 'potret' | 'lanskap';
@@ -15,12 +15,18 @@ export type ColorTheme =
   | 'Kustom';
 
 export type DesignStyle =
+  | '3D Pixar'
+  | 'Kartun 2D'
+  | 'Anime'
+  | 'Flat design'
+  | 'Semi-realistis'
+  | 'Realistis'
+  | 'Clay style'
   | 'Minimalis profesional'
   | 'Futuristik'
   | 'Modern edukatif'
   | 'Infografis editorial'
   | 'Ilustrasi kartun'
-  | 'Flat design'
   | 'Hand-drawn'
   | 'Geometris'
   | 'Majalah pendidikan'
@@ -28,6 +34,13 @@ export type DesignStyle =
   | 'Formal untuk sekolah';
 
 export type IllustrationStyle =
+  | '3D Pixar'
+  | 'Kartun 2D'
+  | 'Anime'
+  | 'Ilustrasi flat'
+  | 'Semi-realistis'
+  | 'Realistis'
+  | 'Clay style'
   | 'Ikon'
   | 'Ilustrasi vektor'
   | 'Ilustrasi kartun'
@@ -53,6 +66,19 @@ export type LkpdType =
   | 'Lembar kerja individu'
   | 'Lembar kerja tim';
 
+export type CharacterChoice =
+  | 'Karakter Muslimah Berhijab'
+  | 'Karakter Umum (Tanpa Ketentuan Hijab)'
+  | 'Karakter Tanpa Manusia'
+  | 'Karakter Bebas Sesuai Materi';
+
+export interface SchoolLogoData {
+  fileName: string;
+  fileSize: number;
+  dataUrl: string;
+  fileType: string;
+}
+
 export interface MediaGeneratorConfig {
   mediaType: MediaType;
   title: string;
@@ -60,7 +86,7 @@ export interface MediaGeneratorConfig {
   gradeLevel: string;
   topic: string;
   learningGoal: string;
-  contentPoints: string;
+  contentPoints?: string;
   language: string;
   pageSize: PageSize;
   orientation: PageOrientation;
@@ -72,6 +98,8 @@ export interface MediaGeneratorConfig {
   };
   designStyle: DesignStyle;
   illustrationStyle: IllustrationStyle;
+  characterChoice: CharacterChoice;
+  schoolLogo?: SchoolLogoData | null;
   typography: string;
   authorOrSchool: string;
 

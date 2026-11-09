@@ -11,7 +11,11 @@ function getPort(): number {
     const parsed = Number(process.argv[portArgIndex + 1]);
     if (!isNaN(parsed) && parsed > 0) return parsed;
   }
-  return Number(process.env.PORT) || 3000;
+  // In development, the dev server must always listen on port 3000 as required by AI Studio environment
+  if (process.env.NODE_ENV !== 'production') {
+    return 3000;
+  }
+  return Number(process.env.PORT) || 8080;
 }
 
 const PORT = getPort();
@@ -110,7 +114,10 @@ app.post('/api/generate-design-image', async (req, res) => {
 async function startServer() {
   if (process.env.NODE_ENV !== 'production') {
     const vite = await createViteServer({
-      server: { middlewareMode: true },
+      server: {
+        middlewareMode: true,
+        hmr: process.env.DISABLE_HMR === 'true' ? false : undefined
+      },
       appType: 'spa'
     });
     app.use(vite.middlewares);
@@ -121,8 +128,12 @@ async function startServer() {
     });
   }
 
-  app.listen(PORT, '0.0.0.0', () => {
+  const server = app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server listening on http://0.0.0.0:${PORT}`);
+  });
+
+  server.on('error', (err: any) => {
+    console.error('Server listen error:', err);
   });
 }
 

@@ -6,9 +6,11 @@ import {
   ColorTheme,
   DesignStyle,
   IllustrationStyle,
+  CharacterChoice,
+  SchoolLogoData,
   MediaGeneratorConfig
 } from '../types/mediaGenerator';
-import { classifySubject } from '../utils/subjectClassifier';
+import { buildCompleteChatGPTMediaPrompt } from '../utils/mediaContentGenerator';
 import {
   FileText,
   PieChart,
@@ -16,18 +18,34 @@ import {
   BookOpen,
   Layers,
   ImageIcon,
+  MessageSquare,
   Sparkles,
   Copy,
   Check,
   RotateCcw,
   Edit3,
   ExternalLink,
-  Palette,
   Sliders,
-  Type,
-  Maximize2
+  Zap,
+  CheckCircle2,
+  ShieldCheck,
+  Upload,
+  Trash2,
+  RefreshCw,
+  Users,
+  EyeOff,
+  AlertCircle
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
+
+// Sample School Logo (SVG data URL formatted as lightweight image for instant 1-click testing)
+const SAMPLE_SCHOOL_LOGO_DATA: SchoolLogoData = {
+  fileName: 'logo_smpn1_nusantara.png',
+  fileSize: 49200,
+  fileType: 'image/png',
+  dataUrl:
+    'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="180" height="180" viewBox="0 0 180 180"><defs><linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="%2300E5FF"/><stop offset="100%" stop-color="%232979FF"/></linearGradient></defs><circle cx="90" cy="90" r="84" fill="%230E223D" stroke="url(%23g)" stroke-width="6"/><circle cx="90" cy="90" r="70" fill="%23071426" stroke="%23FFD166" stroke-width="3"/><path d="M90 36 L104 68 L138 72 L112 96 L120 130 L90 112 L60 130 L68 96 L42 72 L76 68 Z" fill="%23FFD166"/><circle cx="90" cy="90" r="22" fill="%2300E5FF"/><text x="90" y="96" font-size="14" font-weight="900" text-anchor="middle" fill="%23071426" font-family="Arial, sans-serif">TUT WURI</text><text x="90" y="152" font-size="11" font-weight="bold" text-anchor="middle" fill="%2300E5FF" font-family="Arial, sans-serif">SMPN 1 NUSANTARA</text></svg>'
+};
 
 // Official ChatGPT Icon
 const ChatGptIcon: React.FC<{ className?: string }> = ({ className = 'w-4 h-4' }) => (
@@ -42,390 +60,300 @@ export const MediaGeneratorSection: React.FC = () => {
   const [copyFeedbackText, setCopyFeedbackText] = useState<string>('');
   const [isEditingPrompt, setIsEditingPrompt] = useState<boolean>(false);
   const [customPromptText, setCustomPromptText] = useState<string>('');
+  const [logoError, setLogoError] = useState<string>('');
+  const [isDraggingLogo, setIsDraggingLogo] = useState<boolean>(false);
 
-  // Extended config with defaults
+  // Extended config with defaults (characterChoice default: Karakter Muslimah Berhijab, schoolLogo default: null)
   const [config, setConfig] = useState<MediaGeneratorConfig>({
     mediaType: 'poster',
     title: '5 Langkah Bijak Memanfaatkan AI dalam Belajar',
     subject: 'Informatika & Literasi Digital',
     gradeLevel: 'Fase D (SMP) / Fase E (SMA) · Adaptif',
     topic: 'Etika, Integritas Akademik & Keamanan Privasi AI',
-    learningGoal: 'Peserta didik memahami prinsip berpikir kritis, verifikasi kebenaran informasi, dan etika saat berinteraksi dengan kecerdasan artifisial.',
-    contentPoints: '1. Verifikasi Fakta: Selalu periksa kembali data penting dengan sumber terpercaya.\n2. Lindungi Privasi: Jangan pernah membagikan password, NIK, atau data pribadi ke dalam AI.\n3. Pendamping Belajar: Gunakan AI untuk berdiskusi konsep, bukan menyalin tugas secara instan.\n4. Kejujuran Akademik: Sebutkan jika ide karya dibantu oleh AI secara bertanggung jawab.\n5. Konsultasi Guru: Diskusikan hal yang meragukan bersama guru dan teman sebaya.',
+    learningGoal:
+      'Peserta didik memahami prinsip berpikir kritis, verifikasi kebenaran informasi, dan etika saat berinteraksi dengan kecerdasan artifisial.',
     language: 'Bahasa Indonesia',
     pageSize: 'A4',
     orientation: 'potret',
     colorTheme: 'Biru dan cyan futuristik',
-    designStyle: 'Futuristik',
-    illustrationStyle: 'Ikon',
+    designStyle: '3D Pixar',
+    illustrationStyle: '3D Pixar',
+    characterChoice: 'Karakter Muslimah Berhijab',
+    schoolLogo: null,
     typography: 'Modern Sans-Serif (Outfit / Plus Jakarta Sans)',
     authorOrSchool: 'Sekolah Penggerak Nusantara · Tim Pendidik Inspiratif',
     posterSubtitle: 'Panduan Praktis Menjadi Pelajar Digital yang Kritis, Beradab & Kreatif',
-    posterMainMessage: 'Kecerdasan Artifisial adalah kompas cerdasmu. Akal budi dan nuranimu yang memegang kendali.',
+    posterMainMessage:
+      'Kecerdasan Artifisial adalah kompas cerdasmu. Akal budi dan nuranimu yang memegang kendali.',
     posterCallToAction: 'Ayo jadikan AI jembatan inspirasi, bukan pengganti daya berpikir kritis kita!',
     posterAdditionalInfo: 'Dipasang di Mading Sekolah, Lab Komputer & Ruang Kelas'
   });
 
-  // Presets for different media types
+  // Handle Logo Upload File
+  const handleLogoFile = (file: File) => {
+    setLogoError('');
+    const validTypes = ['image/png', 'image/jpeg', 'image/jpg'];
+    const isExtensionValid = /\.(png|jpe?g)$/i.test(file.name);
+    const isMimeValid = validTypes.includes(file.type.toLowerCase());
+
+    if (!isMimeValid && !isExtensionValid) {
+      setLogoError('Format file tidak didukung. Harap unggah file logo berformat PNG, JPG, atau JPEG.');
+      return;
+    }
+
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    if (file.size > maxSize) {
+      setLogoError('Ukuran file melebihi batas 5MB. Silakan pilih file logo yang lebih kecil.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target?.result as string;
+      setConfig((prev) => ({
+        ...prev,
+        schoolLogo: {
+          fileName: file.name,
+          fileSize: file.size,
+          fileType: file.type || 'image/png',
+          dataUrl
+        }
+      }));
+      setIsEditingPrompt(false);
+      setCustomPromptText('');
+      setCopyFeedbackText('Logo sekolah berhasil diunggah dan diintegrasikan!');
+      confetti({ particleCount: 30, spread: 50, origin: { y: 0.7 } });
+      setTimeout(() => setCopyFeedbackText(''), 3000);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      handleLogoFile(e.target.files[0]);
+      e.target.value = ''; // Reset input to allow re-uploading same file name if needed
+    }
+  };
+
+  // Handle Remove Logo
+  const handleRemoveLogo = () => {
+    setConfig((prev) => ({
+      ...prev,
+      schoolLogo: null
+    }));
+    setLogoError('');
+    setIsEditingPrompt(false);
+    setCustomPromptText('');
+    setCopyFeedbackText('Logo sekolah dihapus. Prompt otomatis kembali ke mode tanpa logo.');
+    setTimeout(() => setCopyFeedbackText(''), 3000);
+  };
+
+  // Handle Load Sample Logo for instant 1-click test
+  const handleLoadSampleLogo = () => {
+    setConfig((prev) => ({
+      ...prev,
+      schoolLogo: SAMPLE_SCHOOL_LOGO_DATA
+    }));
+    setLogoError('');
+    setIsEditingPrompt(false);
+    setCustomPromptText('');
+    setCopyFeedbackText('Contoh logo sekolah resmi berhasil dipasang!');
+    confetti({ particleCount: 25, spread: 45, origin: { y: 0.7 } });
+    setTimeout(() => setCopyFeedbackText(''), 3000);
+  };
+
+  // Presets for different media types (preserves logo & characterChoice if already set)
   const handleLoadSample = (type: MediaType) => {
     setSelectedType(type);
     setIsEditingPrompt(false);
     setCustomPromptText('');
 
     if (type === 'poster') {
-      setConfig({
-        ...config,
+      setConfig((prev) => ({
+        ...prev,
         mediaType: 'poster',
         title: '5 Langkah Bijak Memanfaatkan AI dalam Belajar',
         subject: 'Informatika & Literasi Digital',
         gradeLevel: 'Fase D (SMP) / Fase E (SMA) · Adaptif',
         topic: 'Etika, Integritas Akademik & Keamanan Privasi AI',
-        learningGoal: 'Peserta didik memahami prinsip berpikir kritis, verifikasi kebenaran informasi, dan etika saat berinteraksi dengan AI.',
-        contentPoints: '1. Verifikasi Fakta: Selalu periksa kembali data penting dengan sumber terpercaya.\n2. Lindungi Privasi: Jangan pernah membagikan password, NIK, atau data pribadi ke dalam AI.\n3. Pendamping Belajar: Gunakan AI untuk berdiskusi konsep, bukan menyalin tugas secara instan.\n4. Kejujuran Akademik: Sebutkan jika ide karya dibantu oleh AI secara bertanggung jawab.\n5. Konsultasi Guru: Diskusikan hal yang meragukan bersama guru dan teman sebaya.',
+        learningGoal:
+          'Peserta didik memahami prinsip berpikir kritis, verifikasi kebenaran informasi, dan etika saat berinteraksi dengan AI.',
         pageSize: 'A4',
         orientation: 'potret',
         colorTheme: 'Biru dan cyan futuristik',
-        designStyle: 'Futuristik',
-        illustrationStyle: 'Ikon',
+        designStyle: '3D Pixar',
+        illustrationStyle: '3D Pixar',
         posterSubtitle: 'Panduan Praktis Menjadi Pelajar Digital yang Kritis, Beradab & Kreatif',
-        posterMainMessage: 'Kecerdasan Artifisial adalah kompas cerdasmu. Akal budi dan nuranimu yang memegang kendali.',
+        posterMainMessage:
+          'Kecerdasan Artifisial adalah kompas cerdasmu. Akal budi dan nuranimu yang memegang kendali.',
         posterCallToAction: 'Ayo jadikan AI jembatan inspirasi, bukan pengganti daya berpikir kritis kita!',
         posterAdditionalInfo: 'Dipasang di Mading Sekolah, Lab Komputer & Ruang Kelas'
-      });
+      }));
     } else if (type === 'infografis') {
-      setConfig({
-        ...config,
+      setConfig((prev) => ({
+        ...prev,
         mediaType: 'infografis',
-        title: 'Siklus Aliran Energi & Jaring-Jaring Makanan',
+        title: 'Siklus Aliran Energi & Jaring-Jaring Makanan Ekosistem',
         subject: 'Ilmu Pengetahuan Alam (IPA)',
-        gradeLevel: 'Fase D (Kelas 7-8)',
+        gradeLevel: 'Fase D (SMP Kelas 7-8)',
         topic: 'Interaksi Antarmakhluk Hidup & Keseimbangan Ekosistem',
-        learningGoal: 'Peserta didik mampu menganalisis perpindahan energi dari produsen, konsumen bertingkat, hingga pengurai dalam menjaga kestabilan biosfer.',
-        contentPoints: 'Tingkat 1: Matahari memancarkan energi foton kepada produsen (tumbuhan hijau/fitoplankton).\nTingkat 2: Herbivora mengonsumsi produsen dengan efisiensi transfer energi sekitar 10%.\nTingkat 3: Karnivora dan predator memangsa konsumen primer dalam jaring interaktif.\nTingkat 4: Dekomposer (jamur & bakteri) menguraikan materi organik kembali ke tanah dan air.',
+        learningGoal:
+          'Peserta didik mampu menganalisis perpindahan energi dari produsen, konsumen bertingkat, hingga pengurai dalam menjaga kestabilan biosfer.',
         pageSize: 'A4',
         orientation: 'potret',
         colorTheme: 'Hijau edukatif',
         designStyle: 'Infografis editorial',
         illustrationStyle: 'Diagram',
-        infographicType: 'Infografis proses',
-        infographicConclusion: 'Runtuhnya satu spesies kunci dapat merusak stabilitas seluruh rantai kehidupan ekosistem.',
-        infographicSourceReference: 'Buku Guru & Siswa IPA Kurikulum Merdeka Kemendikbudristek 2024'
-      });
+        posterSubtitle: 'Memahami Rantai Kehidupan dan Peran Setiap Organisme di Alam'
+      }));
     } else if (type === 'lkpd') {
-      setConfig({
-        ...config,
+      setConfig((prev) => ({
+        ...prev,
         mediaType: 'lkpd',
-        title: 'LKPD Eksperimen: Menyelidiki Fotosintesis & Oksigen',
+        title: 'LKPD Eksperimen: Menyelidiki Fotosintesis & Produksi Oksigen',
         subject: 'IPA / Biologi Terapan',
         gradeLevel: 'Fase D / E (SMP - SMA)',
         topic: 'Percobaan Ingenhousz pada Tumbuhan Air Hydrilla',
-        learningGoal: 'Membuktikan produksi gas oksigen selama reaksi fotosintesis di bawah variasi intensitas pencahayaan.',
-        contentPoints: 'Alat & Bahan: Corong kaca, tabung reaksi, beker glass 1000ml, kawat penyangga, tumbuhan Hydrilla verticillata, air bersih, soda kue (NaHCO3), dan sumber sinar matahari.\nLangkah Kerja: Rangkai alat, amati jumlah gelembung per 5 menit, bandingkan tempat terang vs tempat teduh.\nPertanyaan: Gas apa yang terbentuk? Faktor apa yang mempercepat gelembung?',
+        learningGoal:
+          'Membuktikan produksi gas oksigen selama reaksi fotosintesis di bawah variasi intensitas pencahayaan matahari.',
         pageSize: 'A4',
         orientation: 'potret',
         colorTheme: 'Biru profesional',
         designStyle: 'Modern edukatif',
-        illustrationStyle: 'Ikon',
-        lkpdType: 'Eksperimen atau praktik',
-        lkpdAnswerSpaceFormat: 'Tabel Isian'
-      });
+        illustrationStyle: 'Diagram',
+        posterSubtitle: 'Lembar Penyelidikan Ilmiah Terbimbing Laboratorium Sains'
+      }));
     } else if (type === 'sampul') {
-      setConfig({
-        ...config,
+      setConfig((prev) => ({
+        ...prev,
         mediaType: 'sampul',
         title: 'MODUL AJAR: MENJELAJAH SAMUDRA KECERDASAN BUATAN',
-        subject: 'Informatika & Proyek Penguatan Profil Pelajar Pancasila',
+        subject: 'Informatika & Literasi Digital',
         gradeLevel: 'Fase E (Kelas 10 SMA/SMK)',
         topic: 'Panduan Pembelajaran Berdiferensiasi & Integrasi AI Produktif',
-        learningGoal: 'Membimbing siswa membangun nalar komputasional, literasi prompt rekayasa, dan penciptaan karya kreatif digital.',
-        contentPoints: 'Bagian I: Fondasi Kecerdasan Artifisial & Etika Digital\nBagian II: Rekayasa Prompt Efektif dengan Formula 7P\nBagian III: Proyek Inovasi Solusi Masalah di Lingkungan Sekolah\nBagian IV: Asesmen Otentik & Rubrik Refleksi Siswa',
+        learningGoal:
+          'Membimbing siswa membangun nalar komputasional, literasi prompt rekayasa, dan penciptaan karya kreatif digital.',
         pageSize: 'A4',
         orientation: 'potret',
         colorTheme: 'Biru dan cyan futuristik',
         designStyle: 'Futuristik',
-        illustrationStyle: 'Ilustrasi vektor',
-        posterSubtitle: 'Edisi Guru Penggerak · Dilengkapi Aktivitas Kolaboratif & Lembar Kerja'
-      });
+        illustrationStyle: '3D Pixar',
+        posterSubtitle: 'Edisi Kurikulum Merdeka · Panduan Guru dan Aktivitas Kolaboratif Siswa'
+      }));
     } else if (type === 'presentasi') {
-      setConfig({
-        ...config,
+      setConfig((prev) => ({
+        ...prev,
         mediaType: 'presentasi',
-        title: 'Revolusi Pembelajaran Berbasis AI: Dari Guru Pengajar ke Fasilitator Kreatif',
-        subject: 'Pengembangan Keprofesian Berkelanjutan (PKB)',
-        gradeLevel: 'Komunitas Belajar Guru / Workshop Pendidik',
-        topic: 'Transformasi Pedagogik Abad ke-21 dengan Alat Bantu AI Generatif',
-        learningGoal: 'Pendidik mampu memanfaatkan AI untuk merancang asesmen berdiferensiasi, media pembelajaran adaptif, dan manajemen waktu yang lebih efisien.',
-        contentPoints: 'Slide 1: Realitas Kelas Abad 21 & Mengapa AI Bukan Pengganti Guru\nSlide 2: Tiga Pilar Guru AI: Prompt Cerdas, Kurasi Humanis, Refleksi Kritis\nSlide 3: Contoh Praktik Baik: Pembuatan Rencana Pembelajaran 10 Menit\nSlide 4: Simulasi Game Edukasi Interaktif Berbasis Skenario\nSlide 5: Rencana Aksi Nyata di Satuan Pendidikan Masing-Masing',
+        title: 'Prinsip Tipografi & Komposisi Visual Desain Grafis',
+        subject: 'Desain Komunikasi Visual (DKV)',
+        gradeLevel: 'Fase E / F (SMK Kelas 10-11)',
+        topic: 'Hierarki Tipografi, Anatomi Huruf & Legibilitas Pesan Visual',
+        learningGoal:
+          'Peserta didik menguasai pemilihan font, kontras hierarki visual, dan tata letak grid portofolio desain secara komunikatif.',
         pageSize: 'Letter',
         orientation: 'lanskap',
         colorTheme: 'Biru dan cyan futuristik',
-        designStyle: 'Futuristik',
-        illustrationStyle: 'Diagram',
-        posterSubtitle: 'Materi Workshop Interaktif 3 Jam Komunitas Pendidik Hebat'
-      });
+        designStyle: 'Minimalis profesional',
+        illustrationStyle: 'Ilustrasi flat',
+        posterSubtitle: 'Materi Presentasi Interaktif: Membangun Jiwa Estetika di Setiap Goresan Huruf'
+      }));
+    } else if (type === 'komik') {
+      setConfig((prev) => ({
+        ...prev,
+        mediaType: 'komik',
+        title: 'Petualangan Detektif Sains: Menyingkap Rahasia Fotosintesis',
+        subject: 'Ilmu Pengetahuan Alam (IPA)',
+        gradeLevel: 'Fase D (SMP Kelas 7)',
+        topic: 'Fotosintesis Tumbuhan dan Pelepasan Gas Oksigen',
+        learningGoal:
+          'Menjelaskan peran klorofil dan sinar matahari dalam fotosintesis melalui cerita bergambar yang seru dan edukatif.',
+        pageSize: 'A4',
+        orientation: 'potret',
+        colorTheme: 'Pastel lembut',
+        designStyle: 'Kartun 2D',
+        illustrationStyle: 'Kartun 2D',
+        posterSubtitle: 'Komik Pembelajaran 4 Panel: Kolaborasi Sains di Laboratorium Sekolah'
+      }));
     } else {
       // ilustrasi
-      setConfig({
-        ...config,
+      setConfig((prev) => ({
+        ...prev,
         mediaType: 'ilustrasi',
         title: 'Visualisasi Konsep Algoritma & Jalur Logika Komputasi',
         subject: 'Informatika Dasar',
         gradeLevel: 'Fase D (SMP Kelas 7-9)',
         topic: 'Dekomposisi Masalah, Pengenalan Pola & Algoritma Berurutan',
-        learningGoal: 'Memvisualisasikan secara konkret bagaimana alur logika input-proses-output dijalankan dalam sebuah sistem terstruktur.',
-        contentPoints: 'Elemen 1: Titik Awal (Input Data) digambarkan sebagai aliran energi data terstruktur.\nElemen 2: Gerbang Keputusan (Kondisi If-Else) dengan percabangan jalur pilihan yang jelas.\nElemen 3: Siklus Perulangan (Looping) berputar dinamis dengan indikator kondisi terminasi.\nElemen 4: Output Akhir berupa kristal solusi atau data terverifikasi yang rapi.',
+        learningGoal:
+          'Memvisualisasikan secara konkret bagaimana alur logika input-proses-output dijalankan dalam sebuah sistem terstruktur.',
         pageSize: 'A4',
         orientation: 'potret',
         colorTheme: 'Ungu kreatif',
         designStyle: 'Modern edukatif',
-        illustrationStyle: 'Ilustrasi semi-realistis',
+        illustrationStyle: 'Semi-realistis',
         posterSubtitle: 'Aset Visual Pembelajaran Berpikir Komputasional'
-      });
+      }));
     }
+
+    confetti({ particleCount: 25, spread: 45, origin: { y: 0.7 } });
   };
 
-  // Helper: Detailed description for selected color theme
-  const getColorThemeDetail = (theme: ColorTheme, custom?: { primary: string; secondary: string; accent: string }): string => {
-    switch (theme) {
-      case 'Biru profesional':
-        return `Dominan Biru Tua Formal (Navy / Slate Blue) dengan warna pendukung Biru Muda Bersih dan aksen Putih/Abu-abu Terang. Memberikan kesan akademis, tenang, dan berwibawa.`;
-      case 'Biru dan cyan futuristik':
-        return `Dominan Midnight Navy Gelap (#071426) dengan aksen bercahaya Electric Blue (#2979FF) dan Neon Cyan (#00E5FF), serta aksen sorotan Kuning (#FFD166).`;
-      case 'Ungu kreatif':
-        return `Dominan Deep Violet dan Ungu Kreatif dengan aksen Lavender, Lilac, dan Emas Lembut. Memberikan kesan imajinatif, inovatif, dan premium.`;
-      case 'Hijau edukatif':
-        return `Dominan Hijau Hutan (Forest Green / Emerald) dengan aksen Hijau Daun Segar, Mint, dan Kuning Alami. Sangat cocok untuk tema sains, alam, dan lingkungan hidup.`;
-      case 'Kuning dan oranye ceria':
-        return `Dominan Oranye Ceria dan Kuning Hangat dengan aksen Coral dan Amber. Memberikan nuansa energik, optimis, dan memotivasi belajar peserta didik.`;
-      case 'Pastel lembut':
-        return `Palet warna-warna pastel yang ramah anak dan lembut di mata (Soft Baby Blue, Sage Mint, Pale Peach, dan Krem Lembut) dengan latar belakang terang bersih.`;
-      case 'Monokrom':
-        return `Kombinasi Hitam, Putih, dan Skala Abu-abu Netral dengan kontras tajam. Tampilan minimalis, tegas, dan mudah dibaca pada dokumen cetak standar.`;
-      case 'Warna sekolah':
-        return `Menggunakan kombinasi warna identitas resmi sekolah / madrasah yang formal, tertib, dan memiliki keterbacaan tinggi.`;
-      case 'Kustom':
-        return custom
-          ? `Warna Utama: ${custom.primary}, Warna Pendukung: ${custom.secondary}, Warna Aksen: ${custom.accent}. Gunakan proporsi 60-30-10 untuk keseimbangan visual.`
-          : `Kombinasi palet warna kustom pilihan pengguna dengan kontras tinggi yang nyaman dibaca.`;
-      default:
-        return `${theme} dengan kontras tinggi dan kenyamanan visual bagi peserta didik.`;
+  // Handler for direct testing of the 8 scenarios
+  const handleApplyScenario = (
+    scenario:
+      | 'muslimah'
+      | 'umum'
+      | 'tanpa-manusia'
+      | 'bebas'
+      | 'upload-logo'
+      | 'tanpa-logo'
+  ) => {
+    setIsEditingPrompt(false);
+    setCustomPromptText('');
+
+    if (scenario === 'muslimah') {
+      setConfig((prev) => ({
+        ...prev,
+        characterChoice: 'Karakter Muslimah Berhijab'
+      }));
+      setCopyFeedbackText('Skenario 1 Aktif: Karakter Muslimah Berhijab (Wajib Hijab Siswi & Guru)');
+    } else if (scenario === 'umum') {
+      setConfig((prev) => ({
+        ...prev,
+        characterChoice: 'Karakter Umum (Tanpa Ketentuan Hijab)'
+      }));
+      setCopyFeedbackText('Skenario 2 Aktif: Karakter Umum (Tanpa Kewajiban Hijab)');
+    } else if (scenario === 'tanpa-manusia') {
+      setConfig((prev) => ({
+        ...prev,
+        characterChoice: 'Karakter Tanpa Manusia'
+      }));
+      setCopyFeedbackText('Skenario 3 Aktif: Karakter Tanpa Manusia (Fokus Objek & Diagram Saja)');
+    } else if (scenario === 'bebas') {
+      setConfig((prev) => ({
+        ...prev,
+        characterChoice: 'Karakter Bebas Sesuai Materi'
+      }));
+      setCopyFeedbackText('Skenario 4 Aktif: Karakter Bebas Sesuai Materi (Adaptif AI)');
+    } else if (scenario === 'upload-logo') {
+      setConfig((prev) => ({
+        ...prev,
+        schoolLogo: SAMPLE_SCHOOL_LOGO_DATA
+      }));
+      setCopyFeedbackText('Skenario 5 Aktif: Logo Sekolah Terpasang (Instruksi Proteksi 100% Aktif)');
+    } else if (scenario === 'tanpa-logo') {
+      setConfig((prev) => ({
+        ...prev,
+        schoolLogo: null
+      }));
+      setCopyFeedbackText('Skenario 6 Aktif: Tanpa Logo Sekolah (Bebas Logo Fiktif)');
     }
+
+    confetti({ particleCount: 20, spread: 40, origin: { y: 0.65 } });
+    setTimeout(() => setCopyFeedbackText(''), 3000);
   };
 
-  // Helper: Detailed description for selected design style
-  const getDesignStyleDetail = (style: DesignStyle): string => {
-    switch (style) {
-      case 'Minimalis profesional':
-        return `Gaya Minimalis Profesional — Tata letak sangat bersih, ruang negatif (white space) yang lega dan lapang, tanpa hiasan ornamen berlebihan. Menomorsatukan kejelasan tipografi, hierarki judul, dan kemudahan navigasi baca.`;
-      case 'Futuristik':
-        return `Gaya Futuristik — Elemen grafis modern bernuansa teknologi, kartu informasi dengan sudut halus, garis batas tipis yang rapi, dan aksen visual kontemporer.`;
-      case 'Modern edukatif':
-        return `Gaya Modern Edukatif — Desain ramah siswa yang bersih dan terstruktur. Menggunakan kartu modul berbingkai halus, ikon pemantik, dan jarak baris yang nyaman untuk pembelajaran di kelas.`;
-      case 'Infografis editorial':
-        return `Gaya Infografis Editorial — Pendekatan majalah edukasi terstruktur dengan blok perbandingan, diagram alur, penanda data visual, dan tipografi editorial yang elegan.`;
-      case 'Ilustrasi kartun':
-        return `Gaya Ilustrasi Kartun — Visual yang ceria, bersahabat, penuh warna, dan ekspresif. Sangat cocok untuk membangun antusiasme belajar siswa.`;
-      case 'Flat design':
-        return `Gaya Flat Design 2D — Visual dua dimensi dengan bidang warna solid, ikon grafis tegas, tanpa bayangan atau gradien berlebihan, mengedepankan efisiensi informasi.`;
-      case 'Hand-drawn':
-        return `Gaya Hand-Drawn / Sketsa Tangan — Aksen coretan ilustratif yang hangat, organik, bersahaja, dan terasa humanis layaknya catatan belajar visual guru.`;
-      case 'Geometris':
-        return `Gaya Geometris — Komposisi berbasis bentuk-bentuk geometris presisi (lingkaran, bujur sangkar, poligon) yang teratur, proporsional, dan dinamis.`;
-      case 'Majalah pendidikan':
-        return `Gaya Majalah Pendidikan — Tata letak artikel majalah cetak dengan headline yang kuat, kolom kisi-kisi rapi, dan kutipan pemantik (pull-quote) yang menarik perhatian.`;
-      case 'Fun dan ceria':
-        return `Gaya Fun & Ceria — Pendekatan visual penuh kegembiraan dengan sudut melengkung besar, warna-warni positif, dan ikonografi ramah anak.`;
-      case 'Formal untuk sekolah':
-        return `Gaya Formal Satuan Pendidikan — Tata letak resmi institusional, simetris, berwibawa, tertib, dan sesuai standar dokumen kedinasan/sekolah.`;
-      default:
-        return `${style} yang disesuaikan secara proporsional dengan tujuan materi dan karakteristik peserta didik.`;
-    }
-  };
-
-  // Helper: Layout instruction based on media type & orientation
-  const getLayoutGuidance = (type: MediaType, orientation: PageOrientation, size: PageSize): string => {
-    const orientText = orientation === 'potret' ? 'Potret (Vertikal)' : 'Lanskap (Horizontal)';
-    switch (type) {
-      case 'poster':
-        return `- Tata Letak Poster Edukasi (${orientText} - Format ${size}):
-  * Area Atas (Header): Judul utama berukuran besar, tebal, dan sangat kontras. Terbaca jelas dari jarak pandang 2-3 meter.
-  * Area Tengah (Body): Komposisi seimbang yang membagi poin-poin materi ke dalam kartu informasi atau visualisasi sentral yang mudah ditelusuri.
-  * Area Bawah (Footer): Pesan ajakan (call-to-action) yang tegas, identitas penyusun, dan informasi penerbitan sekolah.`;
-      case 'infografis':
-        return `- Tata Letak Infografis Pembelajaran (${orientText} - Format ${size}):
-  * Alur Visual: Susun informasi secara hierarkis dan kronologis (alur proses bernomor, komparasi berdampingan, atau daftar terstruktur).
-  * Pemisahan Bagian: Gunakan garis pemisah halus atau kartu berlatar kontras lembut untuk mengelompokkan setiap langkah konsep.
-  * Ringkasan & Sumber: Sertakan kesimpulan penting dan rujukan sumber belajar di bagian akhir.`;
-      case 'lkpd':
-        return `- Tata Letak Lembar Kerja Peserta Didik / LKPD (${orientText} - Format ${size}):
-  * Kop Dokumen: Header formal LKPD lengkap dengan kolom identitas siswa (Nama Siswa / Kelompok, Kelas, Tanggal, dan Nilai).
-  * Petunjuk & Langkah Kerja: Instruksi pengerjaan bernomor tegas dengan tata letak rapi.
-  * Ruang Jawaban Siswa: Sediakan area pengerjaan lapang (kotak berbingkai atau garis-garis isian) yang siap dicetak dan ditulis langsung oleh siswa.
-  * Refleksi & Kriteria: Bagian penutup memuat pertanyaan refleksi diri dan rubrik penilaian ringkas.`;
-      case 'sampul':
-        return `- Tata Letak Sampul Modul / Bahan Ajar (${orientText} - Format ${size}):
-  * Komposisi Sampul: 1/3 bagian atas memuat judul modul dan mata pelajaran secara megah dan elegan.
-  * Visual Sentral: Area tengah didedikasikan untuk ilustrasi utama yang mencerminkan inti materi.
-  * Area Bawah: Nama penulis, jenjang/fase, logo atau nama satuan pendidikan, dan tahun ajar.`;
-      case 'presentasi':
-        return `- Tata Letak Slide Presentasi (${orientText} - Format Aspek Rasio Layar 16:9):
-  * Komposisi Slide: Ruang negatif lega dengan aturan "satu konsep utama per slide".
-  * Struktur: Headline di sudut atas, visual diagram atau analogi di sisi utama, dan 3-4 poin ringkas penjelas di sisi pelengkap.
-  * Keterbacaan Layar: Ukuran huruf besar yang nyaman dibaca oleh seluruh siswa di ruang kelas melalui proyektor/layar digital.`;
-      case 'ilustrasi':
-        return `- Tata Letak Ilustrasi Konsep (${orientText} - Format ${size}):
-  * Komposisi Terpusat: Fokus visual pada objek atau analogi konseptual yang sedang dijelaskan.
-  * Label Penjelas: Keterangan bagian-bagian elemen penting ditata dengan garis penunjuk (callout line) yang bersih dan tidak menutupi gambar.`;
-      default:
-        return `- Tata Letak: Proporsional, terstruktur rapi, dan disesuaikan dengan format ${size} ${orientText}.`;
-    }
-  };
-
-  // Helper: Detect if user explicitly requested octopus mascot
-  const checkOctopusRequest = (): boolean => {
-    const combinedText = `
-      ${config.title}
-      ${config.topic}
-      ${config.learningGoal}
-      ${config.contentPoints}
-      ${config.authorOrSchool}
-      ${config.posterSubtitle || ''}
-      ${config.posterMainMessage || ''}
-      ${config.posterCallToAction || ''}
-      ${config.posterAdditionalInfo || ''}
-      ${config.designStyle}
-      ${config.illustrationStyle}
-    `.toLowerCase();
-
-    return combinedText.includes('gurita') || combinedText.includes('octopus');
-  };
-
-  // Build the comprehensive ChatGPT prompt strictly following user inputs
-  const buildAiDesignPrompt = (): string => {
-    const mediaNameMap: Record<MediaType, string> = {
-      poster: 'POSTER EDUKASI VISUAL',
-      infografis: 'INFOGRAFIS PEMBELAJARAN TERSTRUKTUR',
-      lkpd: 'LEMBAR KERJA PESERTA DIDIK (LKPD) KREATIF',
-      sampul: 'SAMPUL BUKU / MODUL AJAR RESMI',
-      presentasi: 'SLIDE / DECK PRESENTASI KELAS INTERAKTIF',
-      ilustrasi: 'ILUSTRASI KONSEP EDUKASI & ANALOGI VISUAL'
-    };
-
-    const ratioMap: Record<PageOrientation, string> = {
-      potret: 'Potret (Vertikal)',
-      lanskap: 'Lanskap (Horizontal - Layar Lebar)'
-    };
-
-    const isOctopusExplicitlyRequested = checkOctopusRequest();
-
-    return `Bertindaklah sebagai Senior Graphic Designer, Art Director, dan Ahli Desain Media Pembelajaran Profesional.
-
-Saya ingin Anda merancang desain media pembelajaran berkualitas tinggi yang sepenuhnya mengikuti spesifikasi, gaya visual, palet warna, dan tata letak yang telah ditentukan di bawah ini.
-
-==================================================
-1. IDENTITAS & SPESIFIKASI MEDIA
-==================================================
-- Jenis Media: ${mediaNameMap[config.mediaType]}
-- Judul Utama: "${config.title}"
-- Subjudul / Tagline: "${config.posterSubtitle || config.topic}"
-- Mata Pelajaran: ${config.subject}
-- Sasaran / Jenjang: ${config.gradeLevel}
-- Topik / Materi Pembelajaran: ${config.topic}
-- Lembaga / Penyusun: ${config.authorOrSchool}
-- Format & Ukuran: ${config.pageSize} (${ratioMap[config.orientation]})
-
-==================================================
-2. TUJUAN & PESAN INTI PEMBELAJARAN
-==================================================
-- Tujuan Pembelajaran:
-  "${config.learningGoal}"
-- Pesan Utama / Ajakan:
-  "${config.posterMainMessage || config.posterCallToAction || 'Sajikan materi secara menarik, mudah dipahami siswa, dan menumbuhkan rasa ingin tahu.'}"
-
-==================================================
-3. KONTEN & TEKS YANG HARUS DICANTUMKAN
-==================================================
-${config.contentPoints}
-
-==================================================
-4. PANDUAN GAYA VISUAL, WARNA & TATA LETAK
-==================================================
-- Gaya Desain yang Dipilih Pengguna:
-  ${getDesignStyleDetail(config.designStyle)}
-
-- Gaya Ilustrasi:
-  ${config.illustrationStyle}
-
-- Palet Warna yang Dipilih Pengguna:
-  ${getColorThemeDetail(config.colorTheme, config.customColors)}
-
-- Tata Letak & Komposisi:
-${getLayoutGuidance(config.mediaType, config.orientation, config.pageSize)}
-
-- Tipografi & Hierarki Visual:
-  * Gaya Tipografi: ${config.typography}
-  * Judul: Menonjol, tebal, dan mudah dibaca secara instan.
-  * Subjudul: Ukuran sedang yang melengkapi judul dengan warna harmonis.
-  * Isi / Teks Penjelas: Ukuran nyaman dibaca, spasi teratur, kontras tinggi terhadap latar belakang, hindari teks bertumpuk atau terpotong.
-
-- Elemen Ilustrasi & Karakter:
-  ${
-    isOctopusExplicitlyRequested
-      ? 'Sertakan karakter/maskot gurita edukasi yang ramah dan inspiratif sesuai permintaan spesifik pengguna.'
-      : `Fokuskan ilustrasi dan aset visual secara eksklusif pada objek/konsep materi "${config.topic}". PENTING: JANGAN menambahkan maskot gurita, karakter hewan kartun, atau elemen logo yang tidak diminta secara eksplisit oleh pengguna.`
-  }
-${(() => {
-  const analysis = classifySubject(
-    config.subject,
-    config.title,
-    config.topic,
-    `${config.learningGoal} ${config.contentPoints}`
-  );
-
-  if (analysis.isQuantitative) {
-    return `
-==================================================
-5. AKURASI SIMBOL, RUMUS & DATA NUMERIK KHUSUS (${analysis.domainNameId.toUpperCase()})
-==================================================
-- Ketepatan Rumus & Notasi:
-  * Wajib menuliskan rumus, persamaan, dan simbol ilmiah secara 100% akurat tanpa mengubah notasi atau variabel resmi.
-${analysis.coreFormulas ? analysis.coreFormulas.map(f => `  * Rumus Utama: ${f.name} -> ${f.textFallback} (LaTeX: ${f.latex})`).join('\n') : ''}
-- Visualisasi Pendukung:
-  * Sediakan diagram skematis, grafik koordinat/relasi variabel, atau tabel data numerik yang rapi dengan label satuan internasional (SI) yang konsisten.
-  * Pastikan seluruh angka, eksponen/pangkat, indeks subskrip (misal H₂O, CO₂, m/s, cm³), dan tanda operasi matematika terbaca tajam dan tidak kabur.
-- Integritas Data & Anti-Halusinasi:
-  * Jangan mengarang angka atau rumus fiktif; seluruh operasi hitung dan pembuktian langkah kalkulasi harus konsisten secara matematis dan ilmiah.`;
-  }
-
-  if (analysis.domain === 'HUMANITIES_ARTS_LANGUAGE') {
-    return `
-==================================================
-5. PANDUAN TIPOGRAFI & EKSPLORASI ESTETIKA KHUSUS (${analysis.domainNameId.toUpperCase()})
-==================================================
-- Pendekatan Non-Numerik:
-  * Materi ini berfokus pada kekuatan komunikasi visual, pesan estetika, dan ekspresi kreatif. JANGAN memaksakan rumus atau angka hitungan buatan yang tidak relevan dengan esensi materi seni/desain.
-- Anatomi Tipografi & Komposisi:
-  * Terapkan prinsip hierarki visual (headline, subhead, body), keterbacaan (legibility), kerning, leading, dan tracking yang proporsional.
-  * Padukan kontras warna dan ruang kosong (negative space) untuk menonjolkan pesan utama secara elegan.`;
-  }
-
-  return '';
-})()}
-
-==================================================
-6. INSTRUKSI EKSEKUSI UNTUK CHATGPT
-==================================================
-1. JIKA ANDA MEMILIKI FITUR PEMBUATAN GAMBAR (DALL-E / IMAGE GENERATION TOOL):
-   Tolong buatkan visual desain utama sesuai seluruh spesifikasi, gaya visual "${config.designStyle}", dan palet warna "${config.colorTheme}" di atas sekarang juga dengan resolusi tinggi, rasio aspek ${config.pageSize} ${ratioMap[config.orientation]}, bebas typo, dan komposisi yang seimbang antara teks dengan visual pendukung.
-
-2. JIKA ANDA MEMBERIKAN PANDUAN DESAIN / TATA LETAK TEKS:
-   - Berikan blueprint wireframe tata letak dari atas ke bawah.
-   - Uraikan hierarki penempatan setiap blok teks, kartu konten, dan ilustrasi pendukung.
-   - Sertakan rekomendasi spesifikasi font, kode warna HEX pelengkap, dan tip penataan di Canva / software desain.
-   - Pastikan Bahasa Indonesia yang digunakan baku, komunikatif, dan ramah bagi dunia pendidikan.`;
-  };
-
-  const activePrompt = customPromptText || buildAiDesignPrompt();
+  // The active prompt is automatically composed using the intelligent content generator
+  const activePrompt = customPromptText || buildCompleteChatGPTMediaPrompt(config);
 
   // Copy prompt handler
   const handleCopyPrompt = async () => {
@@ -455,7 +383,7 @@ ${analysis.coreFormulas ? analysis.coreFormulas.map(f => `  * Rumus Utama: ${f.n
     }
   };
 
-  // Open ChatGPT
+  // Open ChatGPT official link
   const handleOpenChatGPT = () => {
     window.open('https://chatgpt.com/', '_blank', 'noopener,noreferrer');
   };
@@ -467,9 +395,9 @@ ${analysis.coreFormulas ? analysis.coreFormulas.map(f => `  * Rumus Utama: ${f.n
       <div className="absolute bottom-1/4 -right-40 w-96 h-96 bg-[#8B5CF6]/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-7xl h-full bg-[radial-gradient(ellipse_at_center,rgba(0,229,255,0.03),transparent_70%)] pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-8">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12">
+        <div className="text-center max-w-3xl mx-auto">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#00E5FF]/10 border border-[#00E5FF]/30 text-[#00E5FF] text-xs font-semibold tracking-wider uppercase mb-4 shadow-[0_0_15px_rgba(0,229,255,0.2)]">
             <Sparkles className="w-4 h-4 text-[#FFD166]" />
             GENERATOR MEDIA PEMBELAJARAN
@@ -481,23 +409,26 @@ ${analysis.coreFormulas ? analysis.coreFormulas.map(f => `  * Rumus Utama: ${f.n
             </span>
           </h2>
           <p className="text-base sm:text-lg text-slate-300">
-            Hasilkan prompt rekayasa desain presisi tinggi untuk Poster, Infografis, LKPD, Sampul Modul, Slide Presentasi, dan Ilustrasi Konsep. Salin prompt dalam satu klik dan langsung kreasikan di ChatGPT.
+            Hasilkan prompt desain AI terstruktur dengan <strong>konten otomatis</strong>,{' '}
+            <strong>pilihan aturan karakter fleksibel</strong>, dan <strong>dukungan upload logo resmi sekolah</strong>. Cukup masukkan info dasar pembelajaran, lalu salin dan buka langsung di ChatGPT.
           </p>
         </div>
 
+
         {/* Media Type Selector Chips */}
-        <div className="mb-8">
+        <div>
           <div className="text-xs uppercase tracking-wider text-slate-400 font-semibold mb-3 text-center sm:text-left">
             Pilih Jenis Media yang Ingin Dibuat:
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5">
+          <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2.5">
             {[
               { id: 'poster', label: 'Poster Edukasi', icon: FileText, desc: 'Pesan visual persuasif' },
               { id: 'infografis', label: 'Infografis Materi', icon: PieChart, desc: 'Alur konsep & data' },
               { id: 'lkpd', label: 'LKPD Siswa', icon: CheckSquare, desc: 'Lembar kerja aktivitas' },
               { id: 'sampul', label: 'Sampul Modul', icon: BookOpen, desc: 'Cover buku & ajar' },
               { id: 'presentasi', label: 'Slide Presentasi', icon: Layers, desc: 'Materi tayang kelas' },
-              { id: 'ilustrasi', label: 'Ilustrasi Konsep', icon: ImageIcon, desc: 'Visualisasi analogi' },
+              { id: 'komik', label: 'Komik Edukasi', icon: MessageSquare, desc: 'Cerita strip bergambar' },
+              { id: 'ilustrasi', label: 'Ilustrasi Konsep', icon: ImageIcon, desc: 'Visualisasi analogi' }
             ].map((item) => {
               const Icon = item.icon;
               const isSelected = selectedType === item.id;
@@ -522,9 +453,8 @@ ${analysis.coreFormulas ? analysis.coreFormulas.map(f => `  * Rumus Utama: ${f.n
 
         {/* Main Work Area: 2 Columns (Form on left 5 cols, ChatGPT Prompt on right 7 cols) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          
           {/* Column 1: Config Form (5 cols) */}
-          <div className="lg:col-span-5 bg-[#0B1B31]/80 backdrop-blur-md border border-[#2979FF]/20 rounded-2xl p-5 sm:p-6 shadow-xl space-y-5">
+          <div className="lg:col-span-5 bg-[#0B1B31]/80 backdrop-blur-md border border-[#2979FF]/20 rounded-2xl p-5 sm:p-6 shadow-xl space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-slate-700/60">
               <div className="flex items-center gap-2">
                 <Sliders className="w-4 h-4 text-[#00E5FF]" />
@@ -543,14 +473,14 @@ ${analysis.coreFormulas ? analysis.coreFormulas.map(f => `  * Rumus Utama: ${f.n
             {/* Field: Judul */}
             <div>
               <label className="block text-xs font-semibold text-slate-300 mb-1">
-                Judul Media Pembelajaran <span className="text-[#FFD166]">*</span>
+                Judul Media Pembelajaran
               </label>
               <input
                 type="text"
                 value={config.title}
                 onChange={(e) => setConfig({ ...config, title: e.target.value })}
                 className="w-full px-3 py-2 text-xs sm:text-sm bg-[#071426] border border-slate-700 rounded-lg text-white focus:outline-none focus:border-[#00E5FF] transition-colors"
-                placeholder="Misal: 5 Langkah Bijak Mengarungi Samudra AI"
+                placeholder="Misal: 5 Langkah Bijak Memanfaatkan AI"
               />
             </div>
 
@@ -563,7 +493,7 @@ ${analysis.coreFormulas ? analysis.coreFormulas.map(f => `  * Rumus Utama: ${f.n
                   value={config.subject}
                   onChange={(e) => setConfig({ ...config, subject: e.target.value })}
                   className="w-full px-3 py-2 text-xs sm:text-sm bg-[#071426] border border-slate-700 rounded-lg text-white focus:outline-none focus:border-[#00E5FF]"
-                  placeholder="Informatika / IPA / IPS"
+                  placeholder="Informatika / IPA / IPS / DKV"
                 />
               </div>
               <div>
@@ -573,7 +503,7 @@ ${analysis.coreFormulas ? analysis.coreFormulas.map(f => `  * Rumus Utama: ${f.n
                   value={config.gradeLevel}
                   onChange={(e) => setConfig({ ...config, gradeLevel: e.target.value })}
                   className="w-full px-3 py-2 text-xs sm:text-sm bg-[#071426] border border-slate-700 rounded-lg text-white focus:outline-none focus:border-[#00E5FF]"
-                  placeholder="Fase D (SMP) / Fase E (SMA)"
+                  placeholder="Fase B (SD) / Fase D (SMP) / Fase E"
                 />
               </div>
             </div>
@@ -604,21 +534,222 @@ ${analysis.coreFormulas ? analysis.coreFormulas.map(f => `  * Rumus Utama: ${f.n
               />
             </div>
 
-            {/* Field: Poin-Poin Konten Utama */}
-            <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">
-                Poin-Poin Konten Utama (Teks yang Harus Tampil) <span className="text-[#FFD166]">*</span>
-              </label>
-              <textarea
-                rows={4}
-                value={config.contentPoints}
-                onChange={(e) => setConfig({ ...config, contentPoints: e.target.value })}
-                className="w-full px-3 py-2 text-xs sm:text-sm bg-[#071426] border border-slate-700 rounded-lg text-white focus:outline-none focus:border-[#00E5FF] resize-none font-mono"
-                placeholder="1. Poin pertama...&#10;2. Poin kedua...&#10;3. Poin ketiga..."
-              />
+            {/* Smart Auto-Content Banner */}
+            <div className="p-3.5 rounded-xl bg-[#071426] border border-[#00E5FF]/30 text-xs text-slate-300 space-y-1.5 shadow-sm">
+              <div className="flex items-center gap-2 text-[#00E5FF] font-semibold">
+                <Sparkles className="w-4 h-4 text-[#FFD166]" />
+                <span>Penyusunan Konten Otomatis AI Aktif</span>
+              </div>
+              <p className="text-[11px] text-slate-400 leading-relaxed">
+                Anda tidak perlu mengetik poin materi secara manual. AI menyusun judul, subjudul, poin esensial, contoh nyata, aktivitas interaktif, dan tata letak secara otomatis.
+              </p>
             </div>
 
-            {/* Visual Options: Layout, Tema Warna, Gaya Desain */}
+            {/* PARAMETER BARU 1: PILIHAN KARAKTER (Dropdown) */}
+            <div className="pt-2 border-t border-slate-800 space-y-1.5">
+              <div className="flex items-center justify-between">
+                <label className="block text-xs font-bold text-white flex items-center gap-1.5">
+                  <Users className="w-4 h-4 text-[#00E5FF]" />
+                  <span>Pilihan Karakter</span>
+                </label>
+                <span className="text-[11px] font-medium text-[#00E5FF]">
+                  {config.characterChoice === 'Karakter Muslimah Berhijab' && '🌸 Hijab Wajib'}
+                  {config.characterChoice === 'Karakter Umum (Tanpa Ketentuan Hijab)' && '👥 Karakter Umum'}
+                  {config.characterChoice === 'Karakter Tanpa Manusia' && '🔬 Objek/Diagram'}
+                  {config.characterChoice === 'Karakter Bebas Sesuai Materi' && '✨ Karakter Adaptif'}
+                </span>
+              </div>
+
+              <select
+                value={config.characterChoice}
+                onChange={(e) =>
+                  setConfig({ ...config, characterChoice: e.target.value as CharacterChoice })
+                }
+                className="w-full px-3 py-2.5 text-xs sm:text-sm bg-[#071426] border border-[#2979FF]/50 rounded-lg text-white font-medium focus:outline-none focus:border-[#00E5FF] transition-colors"
+              >
+                <option value="Karakter Muslimah Berhijab">1. Karakter Muslimah Berhijab (Default)</option>
+                <option value="Karakter Umum (Tanpa Ketentuan Hijab)">2. Karakter Umum (Tanpa Ketentuan Hijab)</option>
+                <option value="Karakter Tanpa Manusia">3. Karakter Tanpa Manusia</option>
+                <option value="Karakter Bebas Sesuai Materi">4. Karakter Bebas Sesuai Materi</option>
+              </select>
+
+              {/* Explanatory description card based on selected character */}
+              <div className="p-2.5 rounded-lg bg-[#071426] border border-slate-700/70 text-[11px] leading-relaxed">
+                {config.characterChoice === 'Karakter Muslimah Berhijab' && (
+                  <div className="text-emerald-300 flex items-start gap-2">
+                    <ShieldCheck className="w-4 h-4 shrink-0 text-emerald-400 mt-0.5" />
+                    <div>
+                      <span className="font-semibold text-emerald-200">Karakter Muslimah Berhijab:</span>
+                      <p className="text-slate-300 mt-0.5">
+                        Guru dan siswi perempuan wajib mengenakan hijab rapi dan sopan. Karakter laki-laki berbusana sopan. Seluruh karakter tampil ramah dan sesuai lingkungan pendidikan.
+                      </p>
+                    </div>
+                  </div>
+                )}
+                {config.characterChoice === 'Karakter Umum (Tanpa Ketentuan Hijab)' && (
+                  <div className="text-cyan-300 flex items-start gap-2">
+                    <Users className="w-4 h-4 shrink-0 text-[#00E5FF] mt-0.5" />
+                    <div>
+                      <span className="font-semibold text-cyan-200">Karakter Umum:</span>
+                      <p className="text-slate-300 mt-0.5">
+                        Karakter perempuan dan laki-laki mengikuti konteks dan gaya visual tanpa kewajiban hijab. Tetap berbusana sopan, santun, dan mencerminkan lingkungan pendidikan.
+                      </p>
+                    </div>
+                  </div>
+                )}
+                {config.characterChoice === 'Karakter Tanpa Manusia' && (
+                  <div className="text-amber-300 flex items-start gap-2">
+                    <EyeOff className="w-4 h-4 shrink-0 text-amber-400 mt-0.5" />
+                    <div>
+                      <span className="font-semibold text-amber-200">Karakter Tanpa Manusia:</span>
+                      <p className="text-slate-300 mt-0.5">
+                        Tidak menampilkan karakter manusia dalam bentuk apa pun. Fokus visual pada objek materi, ikon, diagram skematik, simbol, atau instrumen yang relevan.
+                      </p>
+                    </div>
+                  </div>
+                )}
+                {config.characterChoice === 'Karakter Bebas Sesuai Materi' && (
+                  <div className="text-purple-300 flex items-start gap-2">
+                    <Sparkles className="w-4 h-4 shrink-0 text-purple-400 mt-0.5" />
+                    <div>
+                      <span className="font-semibold text-purple-200">Karakter Bebas Sesuai Materi:</span>
+                      <p className="text-slate-300 mt-0.5">
+                        AI menentukan secara adaptif karakter yang paling tepat: manusia sopan, hewan representatif, maskot edukatif, atau objek personifikasi sesuai kebutuhan topik.
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* PARAMETER BARU 2: UPLOAD LOGO SEKOLAH (OPSIONAL) */}
+            <div className="pt-2 border-t border-slate-800 space-y-2">
+              <div className="flex items-center justify-between">
+                <label className="block text-xs font-bold text-white flex items-center gap-1.5">
+                  <ImageIcon className="w-4 h-4 text-[#00E5FF]" />
+                  <span>Upload Logo Sekolah (Opsional)</span>
+                </label>
+                {config.schoolLogo ? (
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800">
+                    Logo Terlampir
+                  </span>
+                ) : (
+                  <span className="text-[10px] font-medium text-slate-400">Tidak Wajib</span>
+                )}
+              </div>
+
+              <p className="text-[11px] text-slate-400 leading-normal">
+                Unggah logo sekolah jika ingin ditampilkan pada media. Bagian ini tidak wajib diisi.
+                (Format: PNG, JPG, JPEG · Maks. 5MB · Disarankan PNG transparan)
+              </p>
+
+              {logoError && (
+                <div className="p-2.5 rounded-lg bg-red-950/60 border border-red-500/50 text-red-300 text-xs flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 text-red-400 shrink-0" />
+                  <span>{logoError}</span>
+                </div>
+              )}
+
+              {/* Upload Box or Attached Preview Box */}
+              {config.schoolLogo ? (
+                <div className="p-3.5 rounded-xl bg-[#071426] border border-emerald-500/50 shadow-md space-y-2.5">
+                  <div className="flex items-center gap-3">
+                    <div className="w-14 h-14 rounded-lg bg-[#0B1B31] border border-slate-700 flex items-center justify-center p-1 overflow-hidden shrink-0">
+                      <img
+                        src={config.schoolLogo.dataUrl}
+                        alt="Logo Sekolah Preview"
+                        className="w-full h-full object-contain"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-xs font-bold text-white truncate" title={config.schoolLogo.fileName}>
+                        {config.schoolLogo.fileName}
+                      </div>
+                      <div className="text-[11px] text-slate-400">
+                        {(config.schoolLogo.fileSize / 1024).toFixed(1)} KB ·{' '}
+                        {config.schoolLogo.fileType || 'Image'}
+                      </div>
+                      <div className="text-[10px] text-emerald-400 mt-0.5 flex items-center gap-1 font-medium">
+                        <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                        <span>Instruksi proteksi logo asli 100% aktif di prompt</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-800">
+                    <label className="px-2.5 py-1 text-xs rounded-lg bg-[#0B1B31] hover:bg-[#122A4E] border border-slate-700 text-slate-200 hover:text-white transition-colors cursor-pointer flex items-center gap-1">
+                      <RefreshCw className="w-3 h-3 text-[#00E5FF]" />
+                      <span>Ganti</span>
+                      <input
+                        type="file"
+                        accept="image/png,image/jpeg,image/jpg"
+                        onChange={handleFileInputChange}
+                        className="hidden"
+                      />
+                    </label>
+                    <button
+                      type="button"
+                      onClick={handleRemoveLogo}
+                      className="px-2.5 py-1 text-xs rounded-lg bg-red-950/40 hover:bg-red-900/50 border border-red-800/60 text-red-300 hover:text-red-200 transition-colors cursor-pointer flex items-center gap-1"
+                    >
+                      <Trash2 className="w-3 h-3 text-red-400" />
+                      <span>Hapus</span>
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    setIsDraggingLogo(true);
+                  }}
+                  onDragLeave={() => setIsDraggingLogo(false)}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    setIsDraggingLogo(false);
+                    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                      handleLogoFile(e.dataTransfer.files[0]);
+                    }
+                  }}
+                  className={`p-4 rounded-xl border-2 border-dashed text-center transition-all ${
+                    isDraggingLogo
+                      ? 'border-[#00E5FF] bg-[#00E5FF]/10'
+                      : 'border-slate-700/80 hover:border-slate-500 bg-[#071426]/50'
+                  }`}
+                >
+                  <div className="flex flex-col items-center justify-center space-y-2">
+                    <div className="w-10 h-10 rounded-full bg-[#2979FF]/10 flex items-center justify-center text-[#00E5FF]">
+                      <Upload className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-slate-300">
+                        Tarik & lepaskan file logo sekolah di sini, atau
+                      </p>
+                      <label className="inline-block mt-1.5 px-3 py-1 text-xs font-semibold rounded-lg bg-[#2979FF]/20 hover:bg-[#2979FF]/30 border border-[#2979FF]/40 text-[#00E5FF] cursor-pointer transition-colors">
+                        Pilih File Logo
+                        <input
+                          type="file"
+                          accept="image/png,image/jpeg,image/jpg"
+                          onChange={handleFileInputChange}
+                          className="hidden"
+                        />
+                      </label>
+                    </div>
+                    <div className="pt-1">
+                      <button
+                        type="button"
+                        onClick={handleLoadSampleLogo}
+                        className="text-[11px] text-slate-400 hover:text-[#FFD166] underline transition-colors cursor-pointer"
+                      >
+                        Gunakan Contoh Logo Sekolah (Uji Cepat)
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Visual Options: Layout, Tema Warna, Gaya Desain & Ilustrasi */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-800">
               <div>
                 <label className="block text-xs font-semibold text-slate-300 mb-1">Format Ukuran</label>
@@ -689,32 +820,63 @@ ${analysis.coreFormulas ? analysis.coreFormulas.map(f => `  * Rumus Utama: ${f.n
                   onChange={(e) => setConfig({ ...config, designStyle: e.target.value as DesignStyle })}
                   className="w-full px-3 py-2 text-xs bg-[#071426] border border-slate-700 rounded-lg text-white focus:outline-none focus:border-[#00E5FF]"
                 >
+                  <option value="3D Pixar">3D Pixar Style</option>
+                  <option value="Kartun 2D">Kartun 2D Edukatif</option>
+                  <option value="Anime">Anime Edukatif</option>
+                  <option value="Flat design">Flat Design 2D</option>
+                  <option value="Semi-realistis">Semi-Realistis</option>
+                  <option value="Realistis">Realistis Edukatif</option>
+                  <option value="Clay style">Clay Style (Plastisin 3D)</option>
                   <option value="Futuristik">Futuristik EdTech</option>
                   <option value="Modern edukatif">Modern Edukatif Bersih</option>
                   <option value="Infografis editorial">Infografis Editorial</option>
-                  <option value="Ilustrasi kartun">Kartun Ramah Siswa</option>
                   <option value="Minimalis profesional">Minimalis Bersih</option>
                   <option value="Geometris">Geometris Modern</option>
+                  <option value="Hand-drawn">Hand-drawn Sketsa</option>
+                  <option value="Fun dan ceria">Fun & Ceria</option>
                 </select>
               </div>
             </div>
 
-            {/* Field: Satuan Pendidikan */}
-            <div>
-              <label className="block text-xs font-semibold text-slate-300 mb-1">Nama Satuan Pendidikan / Penyusun</label>
-              <input
-                type="text"
-                value={config.authorOrSchool}
-                onChange={(e) => setConfig({ ...config, authorOrSchool: e.target.value })}
-                className="w-full px-3 py-2 text-xs sm:text-sm bg-[#071426] border border-slate-700 rounded-lg text-white focus:outline-none focus:border-[#00E5FF]"
-                placeholder="Sekolah Penggerak Nusantara · Tim MGMP"
-              />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">Gaya Ilustrasi Karakter</label>
+                <select
+                  value={config.illustrationStyle}
+                  onChange={(e) =>
+                    setConfig({ ...config, illustrationStyle: e.target.value as IllustrationStyle })
+                  }
+                  className="w-full px-3 py-2 text-xs bg-[#071426] border border-slate-700 rounded-lg text-white focus:outline-none focus:border-[#00E5FF]"
+                >
+                  <option value="3D Pixar">3D Pixar Character</option>
+                  <option value="Kartun 2D">Kartun 2D Ramah Siswa</option>
+                  <option value="Anime">Anime Style</option>
+                  <option value="Ilustrasi flat">Flat Vector Illustration</option>
+                  <option value="Semi-realistis">Semi-Realistis</option>
+                  <option value="Realistis">Realistis Manusia</option>
+                  <option value="Clay style">Clay Style (Plastisin)</option>
+                  <option value="Diagram">Diagram Konseptual</option>
+                  <option value="Ikon">Ikon & Simbol Grafis</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-slate-300 mb-1">
+                  Nama Satuan Pendidikan / Penyusun
+                </label>
+                <input
+                  type="text"
+                  value={config.authorOrSchool}
+                  onChange={(e) => setConfig({ ...config, authorOrSchool: e.target.value })}
+                  className="w-full px-3 py-2 text-xs sm:text-sm bg-[#071426] border border-slate-700 rounded-lg text-white focus:outline-none focus:border-[#00E5FF]"
+                  placeholder="Sekolah Penggerak Nusantara · Tim MGMP"
+                />
+              </div>
             </div>
           </div>
 
           {/* Column 2: ChatGPT Prompt Output Box (7 cols) */}
           <div className="lg:col-span-7 space-y-4">
-            
             {/* Action Bar Header */}
             <div className="bg-[#0B1B31] border border-[#2979FF]/30 rounded-2xl p-4 sm:p-5 shadow-xl">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-slate-700/60">
@@ -723,14 +885,17 @@ ${analysis.coreFormulas ? analysis.coreFormulas.map(f => `  * Rumus Utama: ${f.n
                     <ChatGptIcon className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="font-bold text-sm sm:text-base text-white flex items-center gap-2">
-                      Prompt Desain AI Siap Pakai
+                    <h3 className="font-bold text-sm sm:text-base text-white flex items-center gap-2 flex-wrap">
+                      <span>Prompt Desain AI Siap Pakai</span>
                       <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#10A37F]/20 text-[#10A37F] border border-[#10A37F]/30">
                         ChatGPT
                       </span>
+                      <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 border border-slate-700">
+                        {config.characterChoice}
+                      </span>
                     </h3>
                     <p className="text-xs text-slate-400">
-                      Dirancang khusus untuk ChatGPT (GPT-4o / GPT-4.5) & DALL-E Image Generation
+                      Format teruji untuk ChatGPT (GPT-4o / GPT-4.5) & DALL-E Image Generation
                     </p>
                   </div>
                 </div>
@@ -755,7 +920,7 @@ ${analysis.coreFormulas ? analysis.coreFormulas.map(f => `  * Rumus Utama: ${f.n
                     onClick={() => {
                       setIsEditingPrompt(!isEditingPrompt);
                       if (!isEditingPrompt && !customPromptText) {
-                        setCustomPromptText(buildAiDesignPrompt());
+                        setCustomPromptText(buildCompleteChatGPTMediaPrompt(config));
                       }
                     }}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors cursor-pointer ${
@@ -770,18 +935,37 @@ ${analysis.coreFormulas ? analysis.coreFormulas.map(f => `  * Rumus Utama: ${f.n
                 </div>
               </div>
 
+              {/* Status Indicator for Logo */}
+              {config.schoolLogo && (
+                <div className="mt-3 p-2.5 rounded-lg bg-emerald-950/40 border border-emerald-500/40 flex items-center justify-between text-xs">
+                  <div className="flex items-center gap-2 text-emerald-300">
+                    <img
+                      src={config.schoolLogo.dataUrl}
+                      alt="Thumbnail Logo"
+                      className="w-6 h-6 object-contain rounded bg-white/10 p-0.5"
+                    />
+                    <span>
+                      Logo terpasang: <strong>{config.schoolLogo.fileName}</strong> (Instruksi proteksi visual 100% aktif di prompt)
+                    </span>
+                  </div>
+                  <span className="text-[10px] text-emerald-400 font-mono font-semibold px-2 py-0.5 rounded bg-emerald-900/60 border border-emerald-700">
+                    Presisi Mutlak
+                  </span>
+                </div>
+              )}
+
               {/* Main Prompt Text Container */}
               <div className="mt-4 relative">
                 {isEditingPrompt ? (
                   <textarea
                     rows={17}
-                    value={customPromptText || buildAiDesignPrompt()}
+                    value={customPromptText || buildCompleteChatGPTMediaPrompt(config)}
                     onChange={(e) => setCustomPromptText(e.target.value)}
                     className="w-full p-4 rounded-xl bg-[#071426] border-2 border-[#8B5CF6] text-slate-100 text-xs sm:text-sm font-mono leading-relaxed focus:outline-none resize-none shadow-inner"
                     placeholder="Tulis atau modifikasi prompt sesuai kebutuhan spesifik Anda..."
                   />
                 ) : (
-                  <div className="w-full h-[400px] overflow-y-auto p-4 rounded-xl bg-[#071426]/90 border border-slate-700/80 text-slate-200 text-xs sm:text-sm font-mono leading-relaxed whitespace-pre-wrap select-all selection:bg-[#00E5FF]/30 selection:text-white shadow-inner">
+                  <div className="w-full h-[430px] overflow-y-auto p-4 rounded-xl bg-[#071426]/90 border border-slate-700/80 text-slate-200 text-xs sm:text-sm font-mono leading-relaxed whitespace-pre-wrap select-all selection:bg-[#00E5FF]/30 selection:text-white shadow-inner">
                     {activePrompt}
                   </div>
                 )}
@@ -839,14 +1023,21 @@ ${analysis.coreFormulas ? analysis.coreFormulas.map(f => `  * Rumus Utama: ${f.n
               <div className="mt-4 p-3 rounded-xl bg-[#071426]/60 border border-slate-700/50 flex items-start gap-2.5 text-xs text-slate-300">
                 <Sparkles className="w-4 h-4 text-[#FFD166] shrink-0 mt-0.5" />
                 <div>
-                  <span className="font-semibold text-white">Cara Menggunakan:</span>
-                  <span className="text-slate-300 ml-1">
-                    Klik <strong>Salin Prompt</strong>, lalu klik <strong>Buka di ChatGPT</strong> (akan membuka tab baru). Tempelkan prompt ke kolom obrolan ChatGPT. Jika Anda menggunakan ChatGPT Plus atau model dengan kapabilitas DALL-E, ChatGPT akan langsung melukis visual media pembelajaran beresolusi tinggi untuk Anda!
-                  </span>
+                  <span className="font-semibold text-white">Panduan Alur Penggunaan:</span>
+                  <p className="text-slate-300 mt-0.5">
+                    1. Klik <strong>Salin Prompt</strong> untuk menyimpan teks instruksi ke clipboard.<br />
+                    2. Klik <strong>Buka di ChatGPT</strong> (membuka tab baru di https://chatgpt.com/).<br />
+                    3. Tempelkan prompt pada kolom percakapan ChatGPT. {config.schoolLogo ? (
+                      <span className="text-emerald-300 font-semibold">
+                        (Tips: Lampirkan juga file logo sekolah Anda agar ChatGPT / DALL-E menjadikannya referensi visual asli secara presisi).
+                      </span>
+                    ) : (
+                      'ChatGPT / DALL-E akan langsung menyusun media pembelajaran berkualitas tinggi sesuai aturan karakter dan tata letak yang dipilih.'
+                    )}
+                  </p>
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </div>

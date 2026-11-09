@@ -573,7 +573,7 @@ Mohon hasilkan sekarang kode lengkap yang dapat saya jalankan dan mainkan di Gem
               <span>Studio Pembuat Game Edukasi Interaktif</span>
             </div>
             <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
-              Generator Prompt Game Gemini Canvas & Canva AI
+              Generator Prompt Game Interaktif
             </h2>
             <p className="text-base sm:text-lg text-slate-300 leading-relaxed text-balance">
               Rancang game edukasi berbasis web untuk peserta didik di semua jenjang dengan 22 pilihan mekanisme permainan. Salin prompt lengkap yang dihasilkan dan gunakan langsung di <strong>Gemini Canvas</strong> atau <strong>Canva AI</strong>.

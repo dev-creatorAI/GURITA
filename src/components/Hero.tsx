@@ -65,24 +65,6 @@ export const Hero: React.FC<HeroProps> = ({ onStartExploration, onTryGame }) => 
                 <span>Coba Game Edukasi</span>
               </button>
             </div>
-
-            {/* Workshop Quick Evidence Strip */}
-            <div className="pt-6 border-t border-[#2979FF]/15 flex flex-wrap items-center justify-center lg:justify-start gap-6 text-xs text-slate-400">
-              <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-[#00E5FF]" />
-                <span className="font-mono text-slate-300 font-medium">Cepat & Efektif</span>
-              </div>
-              <div className="hidden sm:block text-slate-600">·</div>
-              <div className="flex items-center gap-2">
-                <Users className="w-4 h-4 text-[#FFD166]" />
-                <span>Dirancang Khusus untuk Guru</span>
-              </div>
-              <div className="hidden sm:block text-slate-600">·</div>
-              <div className="flex items-center gap-2">
-                <Award className="w-4 h-4 text-[#8B5CF6]" />
-                <span>Siap Dipakai di Kelas</span>
-              </div>
-            </div>
           </div>
 
           {/* Right Column: 3D Octopus Mascot with Educational Orbit (5 cols) */}

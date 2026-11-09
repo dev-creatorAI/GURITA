@@ -2,6 +2,10 @@
  * Subject-Aware Output Engine for GURITA
  * Detects domain and provides mathematically and conceptually accurate
  * formulas, step-by-step calculations, specialized tables, and code.
+ *
+ * Subject-Aware NUMERIK HANYA diaktifkan bila mata pelajaran dan materi/topik
+ * memang membutuhkan kalkulasi, rumus, angka, data kuantitatif, atau sistem bilangan.
+ * Pada mata pelajaran konseptual, bahasa, seni, sosial, dan DKV, TIDAK dipaksakan rumus!
  */
 
 export type SubjectDomain =
@@ -52,7 +56,7 @@ export interface CodeBlockInfo {
 export interface SubjectAwareAnalysis {
   domain: SubjectDomain;
   domainNameId: string;
-  isQuantitative: boolean;
+  isQuantitative: boolean; // TRUE HANYA bila materi benar-benar membutuhkan rumus/angka
   requiresFormulas: boolean;
   requiresStepByStep: boolean;
   requiresTables: boolean;
@@ -64,15 +68,18 @@ export interface SubjectAwareAnalysis {
   specializedTable?: SpecializedTable;
   codeOrPseudocode?: CodeBlockInfo;
   nonNumericGuidance?: {
-    artisticPrinciples: string[];
     conceptualFramework: string;
-    visualHierarchyGuidelines: string[];
+    keyConcepts: string[];
+    artisticPrinciples?: string[];
+    visualHierarchyGuidelines?: string[];
+    caseStudyOrActivity?: string;
   };
 }
 
 /**
- * Flexible classifier that detects subject characteristics from subject name,
- * topic, materi, and learning outcomes without relying strictly on rigid keywords.
+ * Subject classifier that evaluates subject, materi, topic, and learning context
+ * to determine whether quantitative formulas are needed or if qualitative/conceptual
+ * representation should be used.
  */
 export function classifySubject(
   subject: string,
@@ -81,209 +88,204 @@ export function classifySubject(
   additionalContext: string = ''
 ): SubjectAwareAnalysis {
   const combined = `${subject} ${materi} ${topic} ${additionalContext}`.toLowerCase();
+  const subLower = (subject || '').toLowerCase();
+  const topicLower = `${materi} ${topic} ${additionalContext}`.toLowerCase();
 
-  // Helper matching
-  const matchAny = (keywords: string[]) => keywords.some((k) => combined.includes(k));
-
-  // 1. INFORMATIKA / COMPUTING
-  const infoKeywords = [
-    'informatika',
-    'komputer',
-    'coding',
-    'pemrograman',
-    'biner',
-    'binary',
-    'oktal',
-    'heksadesimal',
-    'hexadecimal',
-    'boolean',
-    'gerbang logika',
-    'tabel kebenaran',
-    'algoritma',
-    'pseudocode',
-    'python',
-    'struktur data',
-    'basis data',
-    'jaringan',
-    'berpikir komputasional'
-  ];
-  if (matchAny(infoKeywords)) {
-    return buildInformaticsAnalysis(combined);
-  }
-
-  // 2. KIMIA / CHEMISTRY
-  const chemKeywords = [
-    'kimia',
-    'stoikiometri',
-    'reaksi kimia',
-    'mol',
-    'molaritas',
-    'ikatan kimia',
-    'tabel periodik',
-    'larutan',
-    'asam basa',
-    'termokimia',
-    'unsur',
-    'senyawa',
-    'ph',
-    'redoks',
-    'hidrokarbon',
-    'avogadro'
-  ];
-  if (matchAny(chemKeywords)) {
-    return buildChemistryAnalysis(combined);
-  }
-
-  // 3. FISIKA / PHYSICS
-  const physicsKeywords = [
-    'fisika',
-    'kecepatan',
-    'percepatan',
-    'glb',
-    'glbb',
-    'gaya newton',
-    'usaha',
-    'energi',
-    'daya',
-    'tekanan',
-    'termodinamika',
-    'listrik statis',
-    'listrik dinamis',
-    'hukum ohm',
-    'optik',
-    'gelombang',
-    'bunyi',
-    'vektor',
-    'kinematika',
-    'dinamika'
-  ];
-  if (matchAny(physicsKeywords)) {
-    return buildPhysicsAnalysis(combined);
-  }
-
-  // 4. EKONOMI & AKUNTANSI
-  const econKeywords = [
-    'akuntansi',
-    'ekonomi',
-    'jurnal umum',
-    'buku besar',
-    'neraca saldo',
-    'laba rugi',
-    'keuntungan',
-    'kerugian',
-    'persentase keuntungan',
-    'bunga bank',
-    'pajak',
-    'harga jual',
-    'harga beli',
-    'arus kas',
-    'debit kredit',
-    'permintaan dan penawaran',
-    'inflasi',
-    'biaya produksi'
-  ];
-  if (matchAny(econKeywords)) {
-    return buildEconomicsAccountingAnalysis(combined);
-  }
-
-  // 5. MATEMATIKA / MATHEMATICS
-  const mathKeywords = [
-    'matematika',
-    'aljabar',
-    'persamaan linear',
-    'spldv',
-    'splsv',
-    'bangun datar',
-    'bangun ruang',
-    'luas',
-    'volume',
-    'geometri',
-    'trigonometri',
-    'statistika',
-    'peluang',
-    'fungsi kuadrat',
-    'matriks',
-    'vektor',
-    'kalkulus',
-    'pecahan',
-    'desimal',
-    'persentase',
-    'pythagoras',
-    'lingkaran',
-    'deret aritmatika',
-    'eksponen'
-  ];
-  if (matchAny(mathKeywords)) {
-    return buildMathematicsAnalysis(combined);
-  }
-
-  // 6. HUMANIORA / ARTS / DKV / LANGUAGE (Explicit Non-Numeric!)
-  const humanitiesKeywords = [
-    'dkv',
-    'desain komunikasi visual',
-    'tipografi',
-    'seni rupa',
-    'seni budaya',
-    'seni musik',
-    'tata letak',
-    'layout',
+  // 1. BAHASA & SASTRA (Strictly Non-Numeric)
+  const isLanguageSubject = [
     'bahasa indonesia',
     'bahasa inggris',
+    'bahasa daerah',
+    'bahasa arab',
+    'bahasa jepang',
+    'bahasa mandarin',
+    'bahasa jerman',
     'sastra',
-    'puisi',
-    'cerpen',
-    'sejarah',
-    'ppkn',
+    'linguistik'
+  ].some((k) => subLower.includes(k) || topicLower.includes(k));
+
+  if (isLanguageSubject) {
+    return buildLanguageAnalysis(combined, subject, topic);
+  }
+
+  // 2. KEWARGAAN, SEJARAH, SOSIAL, AGAMA, BK (Strictly Non-Numeric)
+  const isCivicsSocialSubject = [
     'pancasila',
+    'ppkn',
+    'kewarganegaraan',
+    'sejarah',
     'sosiologi',
     'antropologi',
     'filsafat',
-    'bimbingan konseling'
-  ];
-  if (matchAny(humanitiesKeywords)) {
-    return buildHumanitiesArtsAnalysis(combined, subject, topic);
+    'agama',
+    'budi pekerti',
+    'bimbingan konseling',
+    'bk'
+  ].some((k) => subLower.includes(k));
+
+  if (isCivicsSocialSubject) {
+    return buildSocialCivicsAnalysis(combined, subject, topic);
   }
 
-  // 7. Check if text mentions generic quantitative or numerical needs
+  // 3. DESAIN KOMUNIKASI VISUAL (DKV) & SENI BUDAYA
+  const isDkvOrArt = [
+    'dkv',
+    'desain komunikasi visual',
+    'seni rupa',
+    'seni budaya',
+    'seni musik',
+    'seni tari',
+    'seni teater',
+    'tipografi',
+    'desain grafis'
+  ].some((k) => subLower.includes(k) || topicLower.includes(k));
+
+  if (isDkvOrArt && !topicLower.includes('biaya cetak kalkulasi numerik')) {
+    return buildDkvAnalysis(combined, topic);
+  }
+
+  // 4. EKONOMI & AKUNTANSI
+  if (subLower.includes('ekonomi') || subLower.includes('akuntansi')) {
+    // Topik konseptual: Kebutuhan, Kelangkaan, Pelaku Ekonomi, Sistem Ekonomi, dll -> Non-Numerik!
+    const isQualitativeEconomy = [
+      'kebutuhan',
+      'kelangkaan',
+      'pelaku ekonomi',
+      'sistem ekonomi',
+      'badan usaha',
+      'bumn',
+      'koperasi',
+      'ketenagakerjaan',
+      'perdagangan internasional',
+      'masalah ekonomi',
+      'konsumsi',
+      'distribusi'
+    ].some((k) => topicLower.includes(k));
+
+    const isNumericEconomy = [
+      'akuntansi',
+      'jurnal umum',
+      'buku besar',
+      'laba rugi',
+      'untung',
+      'rugi',
+      'persentase keuntungan',
+      'pajak',
+      'bunga bank',
+      'harga jual',
+      'harga beli',
+      'debit kredit',
+      'neraca saldo',
+      'biaya produksi',
+      'titik impas',
+      'bep'
+    ].some((k) => topicLower.includes(k));
+
+    if (isQualitativeEconomy && !isNumericEconomy && !subLower.includes('akuntansi')) {
+      return buildEconomicsQualitativeAnalysis(combined, topic);
+    }
+    if (isNumericEconomy || subLower.includes('akuntansi')) {
+      return buildEconomicsAccountingAnalysis(combined);
+    }
+    // Default ekonomi: konseptual
+    return buildEconomicsQualitativeAnalysis(combined, topic);
+  }
+
+  // 5. INFORMATIKA
+  if (subLower.includes('informatika') || subLower.includes('komputer')) {
+    // Topik kualitatif: Berpikir Komputasional, Dampak Sosial, Etika Siber, dll -> Non-Numerik!
+    const isQualitativeInformatics = [
+      'berpikir komputasional',
+      'computational thinking',
+      'dampak sosial',
+      'etika siber',
+      'literasi digital',
+      'keamanan data',
+      'dekomposisi',
+      'pengenalan pola',
+      'abstraksi',
+      'flowchart',
+      'diagram alir'
+    ].some((k) => topicLower.includes(k));
+
+    const isNumericInformatics = [
+      'biner',
+      'binary',
+      'oktal',
+      'heksadesimal',
+      'gerbang logika',
+      'tabel kebenaran',
+      'boolean',
+      'sistem bilangan',
+      'konversi basis'
+    ].some((k) => topicLower.includes(k));
+
+    if (isQualitativeInformatics && !isNumericInformatics) {
+      return buildInformaticsQualitativeAnalysis(combined, topic);
+    }
+    if (isNumericInformatics) {
+      return buildInformaticsAnalysis(combined);
+    }
+    // Default informatika: kualitatif logika
+    return buildInformaticsQualitativeAnalysis(combined, topic);
+  }
+
+  // 6. FISIKA
+  if (subLower.includes('fisika')) {
+    const isQualitativePhysics = ['pemanasan global', 'perubahan iklim', 'keselamatan laboratorium', 'etika sains'].some((k) =>
+      topicLower.includes(k)
+    );
+    if (isQualitativePhysics) {
+      return buildGenericQualitativeAnalysis(combined, subject, topic);
+    }
+    return buildPhysicsAnalysis(combined);
+  }
+
+  // 7. KIMIA
+  if (subLower.includes('kimia')) {
+    const isQualitativeChemistry = ['alat laboratorium', 'keselamatan kerja', 'pencemaran lingkungan'].some((k) =>
+      topicLower.includes(k)
+    );
+    if (isQualitativeChemistry) {
+      return buildGenericQualitativeAnalysis(combined, subject, topic);
+    }
+    return buildChemistryAnalysis(combined);
+  }
+
+  // 8. MATEMATIKA
+  if (
+    subLower.includes('matematika') ||
+    ['aljabar', 'persamaan linear', 'bangun datar', 'bangun ruang', 'geometri', 'statistika', 'kalkulus', 'trigonometri', 'splsv', 'spldv'].some(
+      (k) => combined.includes(k)
+    )
+  ) {
+    return buildMathematicsAnalysis(combined, topic);
+  }
+
+  // 9. Generic Numerical Detection
   const generalNumericKeywords = [
-    'hitung',
-    'rumus',
-    'angka',
-    'data numerik',
-    'persamaan',
-    'pengukuran',
-    'kalkulasi',
-    'tabel'
+    'hitunglah',
+    'rumus perhitungan',
+    'angka kalkulasi',
+    'data numerik kuantitatif',
+    'persamaan matematis'
   ];
-  if (matchAny(generalNumericKeywords)) {
+  if (generalNumericKeywords.some((k) => topicLower.includes(k))) {
     return buildGenericQuantitativeAnalysis(combined);
   }
 
-  // Default: General Science / Contextual without forced math
-  return {
-    domain: 'GENERAL_SCIENCE',
-    domainNameId: 'Sains Terpadu & Literasi Umum',
-    isQuantitative: false,
-    requiresFormulas: false,
-    requiresStepByStep: false,
-    requiresTables: false,
-    requiresCode: false,
-    confidenceScore: 0.7,
-    detectedCharacteristics: [
-      'Eksplorasi fenomena konseptual dan kontekstual',
-      'Pengamatan kualitatif dan penyelidikan berbasis bukti',
-      'Tidak memaksakan rumus atau angka numerik artifisial'
-    ]
-  };
+  // 10. Default Fallback: Non-numeric / Contextual General Learning
+  return buildGenericQualitativeAnalysis(combined, subject, topic);
 }
 
 // -------------------------------------------------------------
-// DOMAIN-SPECIFIC BUILDERS
+// DOMAIN-SPECIFIC BUILDERS (KUANTITATIF / NUMERIK)
 // -------------------------------------------------------------
 
-function buildMathematicsAnalysis(context: string): SubjectAwareAnalysis {
+function buildMathematicsAnalysis(context: string, topic: string = ''): SubjectAwareAnalysis {
   const isGeometry = context.includes('bangun') || context.includes('ruang') || context.includes('volume') || context.includes('luas');
   const isLinearEq = context.includes('linear') || context.includes('splsv') || context.includes('spldv') || context.includes('variabel');
+  const isStats = context.includes('statistika') || context.includes('mean') || context.includes('median') || context.includes('modus');
 
   let coreFormulas: FormulaItem[] = [];
   let workedExample: WorkedExample;
@@ -314,111 +316,160 @@ function buildMathematicsAnalysis(context: string): SubjectAwareAnalysis {
         name: 'Volume Kubus',
         latex: 'V = s^3',
         textFallback: 'V = s³',
-        variables: [
-          { symbol: 's', meaning: 'Panjang rusuk kubus', unit: 'cm / m' }
-        ]
+        variables: [{ symbol: 's', meaning: 'Panjang rusuk kubus', unit: 'cm / m' }]
       }
     ];
 
     workedExample = {
       problemTitle: 'Menghitung Volume dan Luas Permukaan Balok',
       problemStatement:
-        'Sebuah kotak wadah alat peraga berbentuk balok memiliki ukuran panjang 12 cm, lebar 8 cm, dan tinggi 5 cm. Hitunglah volume wadah dan luas bahan minimum yang diperlukan untuk membuatnya!',
+        'Sebuah kotak wadah alat peraga berbentuk balok memiliki ukuran panjang 12 cm, lebar 8 cm, dan tinggi 5 cm. Hitunglah volume wadah dan luas bahan karton yang diperlukan untuk membuatnya!',
       given: ['Panjang (p) = 12 cm', 'Lebar (l) = 8 cm', 'Tinggi (t) = 5 cm'],
       steps: [
         {
           stepNumber: 1,
-          description: 'Tuliskan rumus volume balok dan substitusikan nilai ukuran yang diketahui.',
+          description: 'Tuliskan rumus volume balok dan substitusikan ukuran yang diketahui.',
           mathExpression: 'V = p \\times l \\times t = 12\\text{ cm} \\times 8\\text{ cm} \\times 5\\text{ cm}'
         },
         {
           stepNumber: 2,
-          description: 'Lakukan perkalian bertahap untuk memperoleh nilai volume.',
+          description: 'Lakukan perkalian bertahap untuk memperoleh volume total.',
           mathExpression: 'V = 96 \\times 5 = 480\\text{ cm}^3'
         },
         {
           stepNumber: 3,
           description: 'Tuliskan rumus luas permukaan balok dan hitung luas setiap pasangan sisi.',
-          mathExpression: 'L_p = 2 \\times (p \\cdot l + p \\cdot t + l \\cdot t) = 2 \\times ((12 \\cdot 8) + (12 \\cdot 5) + (8 \\cdot 5))'
+          mathExpression: 'L_p = 2 \\times ((12 \\cdot 8) + (12 \\cdot 5) + (8 \\cdot 5)) = 2 \\times (96 + 60 + 40)'
         },
         {
           stepNumber: 4,
-          description: 'Sederhanakan operasi dalam tanda kurung lalu kalikan dengan 2.',
-          mathExpression: 'L_p = 2 \\times (96 + 60 + 40) = 2 \\times 196 = 392\\text{ cm}^2'
+          description: 'Selesaikan penjumlahan dalam kurung lalu kalikan dengan 2.',
+          mathExpression: 'L_p = 2 \\times 196 = 392\\text{ cm}^2'
         }
       ],
-      finalAnswer: 'Volume kotak adalah 480 cm³ dan luas permukaan bahan adalah 392 cm².',
-      verificationOrNote: 'Validasi: Satuan volume adalah kubik (cm³) dan satuan luas adalah persegi (cm²).'
+      finalAnswer: 'Volume wadah adalah 480 cm³ dan luas permukaan bahan adalah 392 cm².',
+      verificationOrNote: 'Validasi Satuan: Satuan volume adalah kubik (cm³) dan satuan luas adalah persegi (cm²).'
     };
 
     specializedTable = {
-      title: 'Tabel Perbandingan Karakteristik Bangun Ruang',
+      title: 'Tabel Perbandingan Karakteristik Bangun Ruang Sisi Datar',
       headers: ['Nama Bangun', 'Jumlah Sisi', 'Jumlah Rusuk', 'Rumus Luas Permukaan', 'Rumus Volume'],
       rows: [
         ['Kubus', '6 persegi identik', '12 sama panjang', '6s²', 's³'],
-        ['Balok', '6 persegi panjang', '12 (3 pasang sejajar)', '2(pl + pt + lt)', 'p × l × t'],
+        ['Balok', '6 persegi panjang', '12 (3 pasang)', '2(pl + pt + lt)', 'p × l × t'],
         ['Prisma Segitiga', '5 sisi', '9 rusuk', '(2 × L_alas) + (Kel_alas × t)', 'L_alas × t'],
-        ['Tabung (Silinder)', '3 (2 lingkaran + 1 selimut)', '2 rusuk lengkung', '2πr(r + t)', 'πr²t']
+        ['Limas Segiempat', '5 sisi', '8 rusuk', 'L_alas + Jumlah L_segitiga', '1/3 × L_alas × t']
       ],
       summaryOrInsight: 'Setiap bangun ruang memiliki relasi antara bentuk bidang alas dan perkalian tinggi prisma.'
     };
-  } else {
-    // Linear Equations (SPLSV / SPLDV)
+  } else if (isStats) {
     coreFormulas = [
       {
-        name: 'Bentuk Umum Persamaan Linear Satu Variabel (SPLSV)',
-        latex: 'ax + b = c, \\quad a \\neq 0',
-        textFallback: 'ax + b = c (dengan a ≠ 0)',
+        name: 'Rata-Rata (Mean)',
+        latex: '\\bar{x} = \\frac{\\sum x_i}{n}',
+        textFallback: 'Mean = Total Nilai / Jumlah Data',
         variables: [
-          { symbol: 'a', meaning: 'Koefisien variabel x' },
-          { symbol: 'x', meaning: 'Variabel yang dicari' },
-          { symbol: 'b, c', meaning: 'Konstanta bilangan real' }
+          { symbol: '\\bar{x}', meaning: 'Nilai Rata-Rata Sampel' },
+          { symbol: '\\sum x_i', meaning: 'Jumlah seluruh nilai data' },
+          { symbol: 'n', meaning: 'Banyaknya data observasi' }
         ]
-      },
-      {
-        name: 'Solusi Nilai Variabel x',
-        latex: 'x = \\frac{c - b}{a}',
-        textFallback: 'x = (c - b) / a',
-        variables: [{ symbol: 'x', meaning: 'Akar penyelesaian' }]
       }
     ];
 
     workedExample = {
-      problemTitle: 'Penyelesaian Persamaan Linear Satu Variabel (SPLSV)',
-      problemStatement:
-        'Tentukan nilai x yang memenuhi persamaan linear: 4x + 12 = 36.',
-      given: ['Persamaan awal: 4x + 12 = 36', 'Koefisien a = 4, b = 12, c = 36'],
+      problemTitle: 'Menghitung Rata-Rata Nilai Asesmen Harian',
+      problemStatement: 'Data nilai 5 peserta didik adalah: 75, 80, 85, 90, 95. Hitunglah nilai rata-rata (mean)!',
+      given: ['Data nilai: 75, 80, 85, 90, 95', 'Banyak data (n) = 5'],
       steps: [
         {
           stepNumber: 1,
-          description: 'Kurangkan kedua ruas dengan konstanta 12 untuk mengisolasi suku bervariabel.',
-          mathExpression: '4x + 12 - 12 = 36 - 12 \\implies 4x = 24'
+          description: 'Jumlahkan seluruh nilai data yang diobservasi.',
+          mathExpression: '\\sum x_i = 75 + 80 + 85 + 90 + 95 = 425'
         },
         {
           stepNumber: 2,
-          description: 'Bagi kedua ruas dengan koefisien variabel 4 untuk menemukan nilai x.',
-          mathExpression: 'x = \\frac{24}{4} \\implies x = 6'
-        },
-        {
-          stepNumber: 3,
-          description: 'Uji substitusi balik ke persamaan awal untuk memastikan kebenaran hasil.',
-          mathExpression: '4(6) + 12 = 24 + 12 = 36\\quad (\\text{Terbukti Benar})'
+          description: 'Bagikan jumlah total nilai dengan banyak data n = 5.',
+          mathExpression: '\\bar{x} = \\frac{425}{5} = 85'
         }
       ],
-      finalAnswer: 'Himpunan penyelesaian dari 4x + 12 = 36 adalah {6}.',
-      verificationOrNote: 'Pemeriksaan substitusi membuktikan ruas kiri sama dengan ruas kanan secara presisi.'
+      finalAnswer: 'Nilai rata-rata hitung (mean) data tersebut adalah 85.',
+      verificationOrNote: 'Validasi: Nilai rata-rata berada tepat di rentang tengah antara nilai terendah (75) dan tertinggi (95).'
     };
 
     specializedTable = {
-      title: 'Tabel Uji Titik dan Validasi Solusi SPLSV: 4x + 12',
-      headers: ['Nilai Uji (x)', 'Perhitungan Ruas Kiri (4x + 12)', 'Ruas Kanan Target', 'Status Validasi'],
+      title: 'Tabel Distribusi Frekuensi Data Tunggal',
+      headers: ['Nilai (x)', 'Turus', 'Frekuensi (f)', 'f × x'],
       rows: [
-        ['x = 4', '4(4) + 12 = 16 + 12 = 28', '36', 'Salah (Terlalu kecil)'],
-        ['x = 5', '4(5) + 12 = 20 + 12 = 32', '36', 'Salah (Mendekati)'],
-        ['x = 6', '4(6) + 12 = 24 + 12 = 36', '36', 'Tepat (Solusi Benar)'],
-        ['x = 7', '4(7) + 12 = 28 + 12 = 40', '36', 'Salah (Terlalu besar)']
+        ['75', '||', '2', '150'],
+        ['80', '|||', '3', '240'],
+        ['85', '||||', '4', '340'],
+        ['90', '||', '2', '180']
       ],
-      summaryOrInsight: 'Hanya ada tepat satu nilai x yang membuat persamaan bernilai benar.'
+      summaryOrInsight: 'Total frekuensi N = 11 dengan total fx = 910.'
+    };
+  } else {
+    // Default Linear Equation (SPLSV)
+    coreFormulas = [
+      {
+        name: 'Bentuk Umum Persamaan Linear Satu Variabel (SPLSV)',
+        latex: 'ax + b = c, \\quad a \\neq 0',
+        textFallback: 'ax + b = c, dengan a ≠ 0',
+        variables: [
+          { symbol: 'x', meaning: 'Variabel peubah linear berderajat satu' },
+          { symbol: 'a', meaning: 'Koefisien variabel x' },
+          { symbol: 'b, c', meaning: 'Konstanta bilangan real' }
+        ]
+      },
+      {
+        name: 'Prinsip Keseimbangan Ruas Linear',
+        latex: 'ax = c - b \\iff x = \\frac{c - b}{a}',
+        textFallback: 'ax = c - b <=> x = (c - b) / a',
+        variables: [
+          { symbol: 'x', meaning: 'Nilai penyelesaian (akar persamaan)' }
+        ]
+      }
+    ];
+
+    workedExample = {
+      problemTitle: 'Menyelesaikan Masalah Kontekstual SPLSV',
+      problemStatement:
+        'Pak Budi membeli 4 buku tulis yang sama harganya dan sebuah penggaris seharga Rp12.000,00. Total belanjaan Pak Budi di kasir adalah Rp36.000,00. Berapakah harga sebuah buku tulis?',
+      given: [
+        'Banyak buku tulis = 4 buah (dimisalkan variabel x)',
+        'Harga penggaris = Rp12.000,00',
+        'Total pembayaran = Rp36.000,00'
+      ],
+      steps: [
+        {
+          stepNumber: 1,
+          description: 'Modelkan situasi kontekstual ke dalam bentuk persamaan linear satu variabel.',
+          mathExpression: '4x + 12.000 = 36.000'
+        },
+        {
+          stepNumber: 2,
+          description: 'Gunakan prinsip keseimbangan ruas: kurangkan kedua ruas dengan 12.000.',
+          mathExpression: '4x = 36.000 - 12.000 \\implies 4x = 24.000'
+        },
+        {
+          stepNumber: 3,
+          description: 'Bagi kedua ruas dengan koefisien x (yaitu 4) untuk menemukan nilai tunggal x.',
+          mathExpression: 'x = \\frac{24.000}{4} = 6.000'
+        }
+      ],
+      finalAnswer: 'Harga sebuah buku tulis adalah Rp6.000,00.',
+      verificationOrNote: 'Substitusi Uji Validasi: 4(6.000) + 12.000 = 24.000 + 12.000 = 36.000 (Terbukti Tepat/Benar).'
+    };
+
+    specializedTable = {
+      title: 'Tabel Tahapan Keseimbangan Ruas SPLSV',
+      headers: ['Langkah Operasi', 'Ruas Kiri', 'Ruas Kanan', 'Keterangan Keseimbangan'],
+      rows: [
+        ['Bentuk Awal', '4x + 12.000', '36.000', 'Kedua ruas seimbang awal'],
+        ['Kurangi 12.000', '4x + 12.000 - 12.000', '36.000 - 12.000', 'Menghilangkan konstanta ruas kiri'],
+        ['Hasil Penyederhanaan', '4x', '24.000', 'Ruas kiri hanya menyisakan suku variabel'],
+        ['Bagi dengan 4', '4x / 4', '24.000 / 4', 'Mendapatkan nilai variabel x = 6.000']
+      ],
+      summaryOrInsight: 'Prinsip keadilan matematis: operasi hitung yang dilakukan pada ruas kiri wajib dilakukan setara pada ruas kanan.'
     };
   }
 
@@ -430,11 +481,11 @@ function buildMathematicsAnalysis(context: string): SubjectAwareAnalysis {
     requiresStepByStep: true,
     requiresTables: true,
     requiresCode: false,
-    confidenceScore: 0.98,
+    confidenceScore: 0.99,
     detectedCharacteristics: [
-      'Memerlukan notasi matematika presisi dan rumus formal',
-      'Langkah penyelesaian bertahap dengan operasi aljabar runtut',
-      'Penyajian tabel validasi angka dan solusi eksak'
+      'Memerlukan notasi persamaan matematis eksak',
+      'Langkah penyelesaian bertahap terstruktur dengan substitusi angka',
+      'Tabel representasi numerik dan verifikasi hasil hitungan'
     ],
     coreFormulas,
     workedExample,
@@ -443,89 +494,78 @@ function buildMathematicsAnalysis(context: string): SubjectAwareAnalysis {
 }
 
 function buildPhysicsAnalysis(context: string): SubjectAwareAnalysis {
-  const isKinematics = context.includes('kecepatan') || context.includes('jarak') || context.includes('waktu') || context.includes('glbb') || context.includes('gerak');
-
   const coreFormulas: FormulaItem[] = [
     {
-      name: 'Persamaan Kecepatan Rata-Rata (Gerak Lurus Beraturan)',
+      name: 'Persamaan Kecepatan Gerak Lurus Beraturan (GLB)',
       latex: 'v = \\frac{s}{t}',
       textFallback: 'v = s / t',
       variables: [
-        { symbol: 'v', meaning: 'Kecepatan benda', unit: 'm/s atau km/jam' },
-        { symbol: 's', meaning: 'Jarak / Perpindahan', unit: 'meter (m) atau km' },
-        { symbol: 't', meaning: 'Waktu tempuh', unit: 'sekon (s) atau jam' }
+        { symbol: 'v', meaning: 'Kecepatan gerak benda', unit: 'm/s' },
+        { symbol: 's', meaning: 'Jarak tempuh lintasan', unit: 'meter (m)' },
+        { symbol: 't', meaning: 'Waktu tempuh perjalanan', unit: 'sekon (s)' }
       ]
     },
     {
-      name: 'Persamaan Jarak Tempuh',
+      name: 'Persamaan Jarak Tempuh GLB',
       latex: 's = v \\times t',
       textFallback: 's = v × t',
       variables: [
         { symbol: 's', meaning: 'Jarak tempuh', unit: 'meter (m)' }
       ]
-    },
-    {
-      name: 'Konversi Kecepatan Standar SI',
-      latex: '1\\text{ km/jam} = \\frac{1.000\\text{ m}}{3.600\\text{ s}} = \\frac{1}{3,6}\\text{ m/s}',
-      textFallback: '1 km/jam = 1/3,6 m/s',
-      variables: [
-        { symbol: '3,6', meaning: 'Faktor konversi km/jam ke m/s' }
-      ]
     }
   ];
 
   const workedExample: WorkedExample = {
-    problemTitle: 'Menghitung Kecepatan dan Konversi Satuan SI',
+    problemTitle: 'Menghitung Kecepatan dan Jarak pada GLB',
     problemStatement:
-      'Sebuah bus pariwisata menempuh perjalanan dari kota A ke kota B dengan jarak total 150 km dalam waktu 2,5 jam. Berapakah kecepatan bus dalam km/jam dan dalam satuan internasional (m/s)?',
-    given: ['Jarak tempuh (s) = 150 km', 'Waktu tempuh (t) = 2,5 jam'],
+      'Sebuah mobil bergerak di jalan tol lurus tanpa hambatan dan menempuh jarak 300 meter dalam waktu 15 detik. Hitunglah kecepatan rata-rata mobil tersebut dan tentukan jarak yang ditempuh jika mobil terus melaju selama 40 detik!',
+    given: [
+      'Jarak pertama (s₁) = 300 m',
+      'Waktu pertama (t₁) = 15 s',
+      'Waktu kedua (t₂) = 40 s'
+    ],
     steps: [
       {
         stepNumber: 1,
-        description: 'Gunakan rumus kecepatan rata-rata untuk menghitung kecepatan dalam km/jam.',
-        mathExpression: 'v = \\frac{s}{t} = \\frac{150\\text{ km}}{2,5\\text{ jam}} = 60\\text{ km/jam}'
+        description: 'Tuliskan persamaan GLB untuk mencari kecepatan v.',
+        mathExpression: 'v = \\frac{s_1}{t_1} = \\frac{300\\text{ m}}{15\\text{ s}} = 20\\text{ m/s}'
       },
       {
         stepNumber: 2,
-        description: 'Lakukan konversi satuan ke Satuan Internasional (m/s) dengan membagi 3,6.',
-        mathExpression: 'v = \\frac{60}{3,6}\\text{ m/s} = \\frac{600}{36}\\text{ m/s} \\approx 16,67\\text{ m/s}'
-      },
-      {
-        stepNumber: 3,
-        description: 'Alternatif pembuktian langsung konversi meter dan sekon.',
-        mathExpression: 'v = \\frac{150.000\\text{ m}}{2,5 \\times 3.600\\text{ s}} = \\frac{150.000\\text{ m}}{9.000\\text{ s}} = 16,67\\text{ m/s}'
+        description: 'Gunakan kecepatan v = 20 m/s untuk mencari jarak s₂ pada waktu t₂ = 40 s.',
+        mathExpression: 's_2 = v \\times t_2 = 20\\text{ m/s} \\times 40\\text{ s} = 800\\text{ m}'
       }
     ],
-    finalAnswer: 'Kecepatan rata-rata bus adalah 60 km/jam atau setara dengan 16,67 m/s.',
-    verificationOrNote: 'Satuan konsisten dengan kaidah besaran dan satuan internasional (SI).'
+    finalAnswer: 'Kecepatan mobil adalah 20 m/s dan jarak yang ditempuh selama 40 detik adalah 800 meter.',
+    verificationOrNote: 'Validasi Satuan SI: Kecepatan dalam m/s dan jarak dalam meter (m). Konversi ke km/jam: 20 × 3,6 = 72 km/jam.'
   };
 
   const specializedTable: SpecializedTable = {
-    title: 'Tabel Pengamatan Hubungan Jarak, Waktu, dan Kecepatan Konstan (v = 20 m/s)',
-    headers: ['Waktu Tempuh (t dalam sekon)', 'Kecepatan (v dalam m/s)', 'Jarak Tempuh (s = v × t dalam meter)', 'Jarak dalam Kilometer (km)'],
+    title: 'Tabel Hubungan Jarak Tempuh terhadap Waktu (Kecepatan Konstan v = 20 m/s)',
+    headers: ['Waktu t (sekon)', 'Jarak Tempuh s (meter)', 'Rasio Kecepatan s/t (m/s)', 'Karakteristik GLB'],
     rows: [
-      ['5 s', '20 m/s', '100 m', '0,10 km'],
-      ['10 s', '20 m/s', '200 m', '0,20 km'],
-      ['30 s', '20 m/s', '600 m', '0,60 km'],
-      ['60 s (1 menit)', '20 m/s', '1.200 m', '1,20 km'],
-      ['300 s (5 menit)', '20 m/s', '6.000 m', '6,00 km']
+      ['0', '0', '-', 'Posisi awal diam'],
+      ['5', '100', '20 m/s', 'Pertambahan jarak linier konstan'],
+      ['10', '200', '20 m/s', 'Kecepatan konstan tanpa percepatan'],
+      ['15', '300', '20 m/s', 'Kecepatan konstan (a = 0)'],
+      ['20', '400', '20 m/s', 'Grafik s-t membentuk garis lurus miring']
     ],
-    summaryOrInsight: 'Pada Gerak Lurus Beraturan (GLB), grafik jarak terhadap waktu membentuk garis lurus linier dengan kemiringan konstan (kecepatan).'
+    summaryOrInsight: 'Pada Gerak Lurus Beraturan (GLB), perbandingan jarak terhadap waktu selalu bernilai konstan.'
   };
 
   return {
     domain: 'PHYSICS',
-    domainNameId: 'Fisika & Pemodelan Sains Kuantitatif',
+    domainNameId: 'Fisika & Kinematika Gerak (SI Units)',
     isQuantitative: true,
     requiresFormulas: true,
     requiresStepByStep: true,
     requiresTables: true,
     requiresCode: false,
-    confidenceScore: 0.96,
+    confidenceScore: 0.98,
     detectedCharacteristics: [
-      'Menyertakan rumus fisika formal dan besaran pokok/turunan',
-      'Konsistensi satuan SI (m, s, m/s, kg, N, Joule)',
-      'Tabel data pengamatan eksperimen dan interpretasi grafik'
+      'Notasi besaran dan rumus fisika standar internasional (SI)',
+      'Konsistensi satuan m, s, m/s, dan kg',
+      'Langkah perhitungan numerik bertahap dan tabel observasi gerak'
     ],
     coreFormulas,
     workedExample,
@@ -536,7 +576,7 @@ function buildPhysicsAnalysis(context: string): SubjectAwareAnalysis {
 function buildChemistryAnalysis(context: string): SubjectAwareAnalysis {
   const coreFormulas: FormulaItem[] = [
     {
-      name: 'Hubungan Mol dengan Massa (Gram)',
+      name: 'Konsep Mol dari Massa Zat',
       latex: 'n = \\frac{m}{M_r}',
       textFallback: 'n = m / Mr',
       variables: [
@@ -546,78 +586,71 @@ function buildChemistryAnalysis(context: string): SubjectAwareAnalysis {
       ]
     },
     {
-      name: 'Hubungan Mol dengan Jumlah Partikel (Avogadro)',
-      latex: 'N = n \\times 6,022 \\times 10^{23}',
-      textFallback: 'N = n × 6,022 × 10²³ partikel',
+      name: 'Hubungan Mol dengan Jumlah Partikel (Bilangan Avogadro)',
+      latex: 'N = n \\times 6{,}022 \\times 10^{23}',
+      textFallback: 'N = n × 6.022 × 10²³ partikel/mol',
       variables: [
-        { symbol: 'N', meaning: 'Jumlah partikel (atom / molekul)', unit: 'partikel' }
-      ]
-    },
-    {
-      name: 'Hubungan Mol dengan Volume Gas pada Kondisi Standar (STP)',
-      latex: 'V_{STP} = n \\times 22,4\\text{ L}',
-      textFallback: 'V_STP = n × 22,4 Liter',
-      variables: [
-        { symbol: 'V', meaning: 'Volume gas pada 0°C, 1 atm', unit: 'Liter (L)' }
+        { symbol: 'N', meaning: 'Jumlah partikel (atom/molekul/ion)' },
+        { symbol: 'L', meaning: 'Tetapan Avogadro (6,022 × 10²³ partikel/mol)' }
       ]
     }
   ];
 
   const workedExample: WorkedExample = {
-    problemTitle: 'Konversi Massa ke Jumlah Mol dan Partikel Molekul Air (H₂O)',
+    problemTitle: 'Menghitung Jumlah Mol dan Partikel Gas Karbon Dioksida',
     problemStatement:
-      'Tentukan jumlah mol dan jumlah molekul yang terkandung di dalam 36 gram air (H₂O)! (Diketahui Ar H = 1, Ar O = 16, tetapan Avogadro = 6,022 × 10²³)',
+      'Sebuah tabung laboratorium berisi 88 gram gas karbon dioksida (CO₂). Diketahui Ar C = 12 dan Ar O = 16. Hitunglah massa molar (Mr) CO₂, jumlah mol CO₂, dan jumlah molekul gas CO₂ dalam tabung!',
     given: [
-      'Massa air (m) = 36 gram',
-      'Ar H = 1, Ar O = 16',
-      'Mr H₂O = (2 × 1) + 16 = 18 g/mol'
+      'Massa gas CO₂ (m) = 88 gram',
+      'Ar C = 12, Ar O = 16',
+      'Bilangan Avogadro (L) = 6,022 × 10²³ partikel/mol'
     ],
     steps: [
       {
         stepNumber: 1,
-        description: 'Hitung Massa Molekul Relatif (Mr) senyawa H₂O.',
-        mathExpression: 'M_r(\\text{H}_2\\text{O}) = (2 \\times A_r\\text{ H}) + A_r\\text{ O} = (2 \\times 1) + 16 = 18\\text{ g/mol}'
+        description: 'Hitung massa molekul relatif (Mr) dari CO₂.',
+        mathExpression: 'M_r\\text{ CO}_2 = (1 \\times \\text{Ar C}) + (2 \\times \\text{Ar O}) = (1 \\times 12) + (2 \\times 16) = 12 + 32 = 44\\text{ g/mol}'
       },
       {
         stepNumber: 2,
-        description: 'Gunakan rumus mol untuk mencari jumlah mol air.',
-        mathExpression: 'n = \\frac{m}{M_r} = \\frac{36\\text{ gram}}{18\\text{ g/mol}} = 2\\text{ mol}'
+        description: 'Hitung jumlah mol n dengan membagi massa zat m dengan Mr.',
+        mathExpression: 'n = \\frac{m}{M_r} = \\frac{88\\text{ g}}{44\\text{ g/mol}} = 2\\text{ mol}'
       },
       {
         stepNumber: 3,
-        description: 'Kalikan nilai mol dengan bilangan Avogadro untuk menghitung total molekul.',
-        mathExpression: 'N = n \\times 6,022 \\times 10^{23} = 2 \\times 6,022 \\times 10^{23} = 1,2044 \\times 10^{24}\\text{ molekul}'
+        description: 'Hitung jumlah molekul total menggunakan ketetapan Avogadro.',
+        mathExpression: 'N = n \\times L = 2\\text{ mol} \\times (6{,}022 \\times 10^{23}\\text{ molekul/mol}) = 1{,}2044 \\times 10^{24}\\text{ molekul}'
       }
     ],
-    finalAnswer: '36 gram air setara dengan 2 mol atau mengandung 1,2044 × 10²⁴ molekul H₂O.',
-    verificationOrNote: 'Validasi: Konsep jembatan mol menghubungkan dunia mikroskopis (atom) dengan makroskopis (gram).'
+    finalAnswer: 'Massa molar CO₂ adalah 44 g/mol, jumlah zat adalah 2 mol, dan berisi 1,2044 × 10²⁴ molekul CO₂.',
+    verificationOrNote: 'Validasi Kimia: 1 mol zat selalu setara dengan 6,022 × 10²³ partikel.'
   };
 
   const specializedTable: SpecializedTable = {
-    title: 'Tabel Perhitungan Jembatan Mol pada Senyawa Umum',
-    headers: ['Senyawa Kimia', 'Rumus Mr (g/mol)', 'Massa Sampel (g)', 'Jumlah Mol (mol)', 'Volume STP (L)', 'Jumlah Partikel'],
+    title: 'Tabel Hubungan Mol terhadap Massa dan Partikel Berbagai Zat Kimia',
+    headers: ['Nama Zat', 'Rumus Kimia', 'Mr (g/mol)', 'Massa Sampel (g)', 'Jumlah Mol (mol)', 'Jumlah Partikel'],
     rows: [
-      ['Gas Oksigen (O₂)', '32', '64 g', '2,0 mol', '44,8 L', '1,204 × 10²⁴ molekul'],
-      ['Karbon Dioksida (CO₂)', '44', '22 g', '0,5 mol', '11,2 L', '3,011 × 10²³ molekul'],
-      ['Natrium Klorida (NaCl)', '58,5', '117 g', '2,0 mol', '- (Bukan Gas)', '1,204 × 10²⁴ ion pair'],
-      ['Gas Metana (CH₄)', '16', '32 g', '2,0 mol', '44,8 L', '1,204 × 10²⁴ molekul']
+      ['Karbon Dioksida', 'CO₂', '44', '88', '2,0', '1,204 × 10²⁴ molekul'],
+      ['Air Murni', 'H₂O', '18', '36', '2,0', '1,204 × 10²⁴ molekul'],
+      ['Gas Oksigen', 'O₂', '32', '16', '0,5', '3,011 × 10²³ molekul'],
+      ['Natrium Klorida', 'NaCl', '58,5', '58,5', '1,0', '6,022 × 10²³ satuan rumus']
     ],
-    summaryOrInsight: '1 mol gas apapun pada kondisi STP (0°C, 1 atm) selalu menempati volume sebesar 22,4 Liter.'
+    summaryOrInsight: 'Mol adalah jembatan kuantitatif antara massa makroskopis zat dan jumlah partikel mikroskopis.'
   };
 
   return {
     domain: 'CHEMISTRY',
-    domainNameId: 'Kimia & Perhitungan Stoikiometri',
+    domainNameId: 'Kimia & Stoikiometri (Mol & Avogadro)',
     isQuantitative: true,
     requiresFormulas: true,
     requiresStepByStep: true,
     requiresTables: true,
     requiresCode: false,
-    confidenceScore: 0.95,
+    confidenceScore: 0.98,
     detectedCharacteristics: [
-      'Memerlukan notasi rumus kimia dan persamaan reaksi seimbang',
-      'Perhitungan jembatan mol (massa, partikel, volume gas STP)',
-      'Tabel stoikiometri data eksperimen'
+      'Konsep mol, massa molar Mr, dan persamaan stoikiometri',
+      'Bilangan Avogadro dan notasi ilmiah partikel',
+      'Langkah perhitungan konversi gram-mol-partikel terstruktur'
     ],
     coreFormulas,
     workedExample,
@@ -626,110 +659,77 @@ function buildChemistryAnalysis(context: string): SubjectAwareAnalysis {
 }
 
 function buildEconomicsAccountingAnalysis(context: string): SubjectAwareAnalysis {
-  const isAccounting = context.includes('jurnal') || context.includes('buku besar') || context.includes('neraca') || context.includes('debit');
-
   const coreFormulas: FormulaItem[] = [
     {
-      name: isAccounting ? 'Persamaan Dasar Akuntansi' : 'Perhitungan Laba / Rugi Bersih',
-      latex: isAccounting ? '\\text{Aset} = \\text{Liabilitas} + \\text{Ekuitas}' : '\\text{Laba} = \\text{Pendapatan Total} - \\text{Total Beban}',
-      textFallback: isAccounting ? 'Aset = Liabilitas + Ekuitas' : 'Laba = Pendapatan - Beban',
-      variables: [
-        { symbol: 'Aset', meaning: 'Kekayaan perusahaan (Kas, Piutang, Perlengkapan)' },
-        { symbol: 'Liabilitas', meaning: 'Kewajiban / Utang usaha' },
-        { symbol: 'Ekuitas', meaning: 'Modal pemilik usaha' }
-      ]
-    },
-    {
-      name: 'Persentase Keuntungan terhadap Modal / Harga Beli',
+      name: 'Persentase Keuntungan Usaha',
       latex: '\\%\\text{Untung} = \\frac{\\text{Harga Jual} - \\text{Harga Beli}}{\\text{Harga Beli}} \\times 100\\%',
       textFallback: '%Untung = ((Harga Jual - Harga Beli) / Harga Beli) × 100%',
       variables: [
-        { symbol: '%Untung', meaning: 'Margin keuntungan persentase', unit: '%' }
+        { symbol: '\\%U', meaning: 'Persentase Margin Keuntungan', unit: '%' },
+        { symbol: 'HJ', meaning: 'Harga Jual Produk / Total Pendapatan', unit: 'Rp' },
+        { symbol: 'HB', meaning: 'Harga Pokok Pembelian / Modal', unit: 'Rp' }
+      ]
+    },
+    {
+      name: 'Prinsip Keseimbangan Akuntansi (Persamaan Dasar)',
+      latex: '\\text{Aset (Harta)} = \\text{Liabilitas (Utang)} + \\text{Ekuitas (Modal)}',
+      textFallback: 'Harta = Utang + Modal (Debit = Kredit)',
+      variables: [
+        { symbol: 'Debit', meaning: 'Pencatatan penambahan aset atau beban' },
+        { symbol: 'Kredit', meaning: 'Pencatatan penambahan utang, modal, atau pendapatan' }
       ]
     }
   ];
 
   const workedExample: WorkedExample = {
-    problemTitle: isAccounting ? 'Pencatatan Transaksi ke Persamaan Akuntansi' : 'Menghitung Persentase Keuntungan Penjualan Produk',
-    problemStatement: isAccounting
-      ? 'Pada tanggal 5 Januari, Pemilik menyetorkan uang tunai Rp50.000.000 sebagai modal awal dan meminjam kredit bank Rp20.000.000. Catatlah transaksi ini ke dalam persamaan dasar akuntansi!'
-      : 'Seorang wirausahawan membeli 100 unit tas dengan harga pokok Rp80.000 per unit. Seluruh tas berhasil terjual dengan harga Rp110.000 per unit. Hitunglah total laba kotor dan persentase keuntungan yang diperoleh!',
-    given: isAccounting
-      ? ['Setoran modal tunai = Rp50.000.000', 'Utang bank = Rp20.000.000']
-      : ['Modal/Harga Beli Total = 100 × Rp80.000 = Rp8.000.000', 'Pendapatan/Harga Jual Total = 100 × Rp110.000 = Rp11.000.000'],
-    steps: isAccounting
-      ? [
-          {
-            stepNumber: 1,
-            description: 'Identifikasi akun Kas yang bertambah dari setoran pemilik dan pinjaman bank.',
-            mathExpression: '\\Delta\\text{Kas} = 50.000.000 + 20.000.000 = 70.000.000\\text{ (Aset)}'
-          },
-          {
-            stepNumber: 2,
-            description: 'Identifikasi akun Utang Bank (Liabilitas) dan Modal Pemilik (Ekuitas).',
-            mathExpression: '\\text{Utang Bank} = 20.000.000, \\quad \\text{Modal Pemilik} = 50.000.000'
-          },
-          {
-            stepNumber: 3,
-            description: 'Buktikan keseimbangan ruas kiri (Aset) dan ruas kanan (Liabilitas + Ekuitas).',
-            mathExpression: '70.000.000\\text{ (Aset)} = 20.000.000\\text{ (Liabilitas)} + 50.000.000\\text{ (Ekuitas)} \\quad (\\text{Seimbang})'
-          }
-        ]
-      : [
-          {
-            stepNumber: 1,
-            description: 'Hitung total keuntungan nominal (Laba = Harga Jual Total - Harga Beli Total).',
-            mathExpression: '\\text{Laba} = 11.000.000 - 8.000.000 = \\text{Rp}3.000.000'
-          },
-          {
-            stepNumber: 2,
-            description: 'Hitung persentase keuntungan terhadap total harga beli awal.',
-            mathExpression: '\\%\\text{Laba} = \\frac{3.000.000}{8.000.000} \\times 100\\% = 0,375 \\times 100\\% = 37,5\\%'
-          }
-        ],
-    finalAnswer: isAccounting
-      ? 'Total aset kas bertambah Rp70.000.000, diimbangi liabilitas utang Rp20.000.000 dan ekuitas modal Rp50.000.000.'
-      : 'Total keuntungan nominal adalah Rp3.000.000 dengan persentase keuntungan sebesar 37,5%.',
-    verificationOrNote: 'Validasi: Neraca saldo dan perhitungan margin keuntungan terbukti akurat matematis.'
+    problemTitle: 'Perhitungan Laba Usaha dan Pencatatan Transaksi Jurnal',
+    problemStatement:
+      'Toko Alat Tulis "Cerdas" membeli 100 paket ATK dengan modal Rp50.000,00 per paket (total modal Rp5.000.000,00). Seluruh paket terjual habis dengan harga Rp65.000,00 per paket. Hitunglah total keuntungan, persentase keuntungan, dan catat transaksi penjualan tunai dalam jurnal umum!',
+    given: [
+      'Modal awal pembelian (HB) = 100 × Rp50.000 = Rp5.000.000,00',
+      'Penerimaan penjualan (HJ) = 100 × Rp65.000 = Rp6.500.000,00'
+    ],
+    steps: [
+      {
+        stepNumber: 1,
+        description: 'Hitung selisih nominal keuntungan bersih usaha.',
+        mathExpression: '\\text{Keuntungan} = \\text{HJ} - \\text{HB} = \\text{Rp}6.500.000 - \\text{Rp}5.000.000 = \\text{Rp}1.500.000'
+      },
+      {
+        stepNumber: 2,
+        description: 'Hitung persentase keuntungan terhadap modal awal pembelian.',
+        mathExpression: '\\%\\text{Untung} = \\frac{\\text{Rp}1.500.000}{\\text{Rp}5.000.000} \\times 100\\% = 0{,}30 \\times 100\\% = 30\\%'
+      }
+    ],
+    finalAnswer: 'Total keuntungan toko adalah Rp1.500.000,00 dengan persentase keuntungan sebesar 30%.',
+    verificationOrNote: 'Validasi Akuntansi: Penjualan tunai menambah akun Kas (Debit Rp6.500.000) dan menambah Pendapatan Penjualan (Kredit Rp6.500.000) secara seimbang.'
   };
 
-  const specializedTable: SpecializedTable = isAccounting
-    ? {
-        title: 'Tabel Format Jurnal Umum 5 Kolom Standar Akuntansi',
-        headers: ['Tanggal', 'Keterangan Akun & Ref', 'Ref', 'Debit (Rp)', 'Kredit (Rp)'],
-        rows: [
-          ['01 Jan 2026', 'Kas\n   Modal Pemilik (Setoran Awal)', '101\n301', '50.000.000\n-', '-\n50.000.000'],
-          ['03 Jan 2026', 'Peralatan Usaha\n   Kas (Pembelian Tunai)', '121\n101', '15.000.000\n-', '-\n15.000.000'],
-          ['07 Jan 2026', 'Kas\n   Pendapatan Jasa', '101\n401', '8.500.000\n-', '-\n8.500.000'],
-          ['Total Seimbang', 'Jumlah Total Debit dan Kredit', '-', '73.500.000', '73.500.000']
-        ],
-        summaryOrInsight: 'Prinsip Akuntansi Berpasangan (Double-Entry): Total kolom Debit harus selalu sama persis dengan total kolom Kredit (Balance).'
-      }
-    : {
-        title: 'Tabel Rekapitulasi Harga Beli, Harga Jual, dan Margin Laba Rugi',
-        headers: ['Nama Barang', 'Harga Beli Satuan', 'Harga Jual Satuan', 'Nominal Laba (Rp)', 'Persentase Untung (%)'],
-        rows: [
-          ['Paket ATK Sekolah', 'Rp20.000', 'Rp25.000', 'Rp5.000', '25,0%'],
-          ['Tas Ransel Kanvas', 'Rp80.000', 'Rp110.000', 'Rp30.000', '37,5%'],
-          ['Botol Minum Ramah Lingkungan', 'Rp35.000', 'Rp45.500', 'Rp10.500', '30,0%'],
-          ['Topi Seragam Sekolah', 'Rp15.000', 'Rp18.000', 'Rp3.000', '20,0%']
-        ],
-        summaryOrInsight: 'Seluruh produk menghasilkan laba positif dengan margin rata-rata di atas 20%.'
-      };
+  const specializedTable: SpecializedTable = {
+    title: 'Format Standar Jurnal Umum 5 Kolom (Seimbang / Balance)',
+    headers: ['Tanggal (2026)', 'No. Bukti', 'Keterangan Akun & Ref', 'Debit (Rp)', 'Kredit (Rp)'],
+    rows: [
+      ['02 Nov', 'BKK-01', 'Kas\n   Modal Pemilik', '15.000.000\n-', '-\n15.000.000'],
+      ['03 Nov', 'BKK-02', 'Perlengkapan Toko\n   Kas', '2.000.000\n-', '-\n2.000.000'],
+      ['05 Nov', 'BKM-01', 'Kas\n   Pendapatan Jasa/Barang', '6.500.000\n-', '-\n6.500.000'],
+      ['Total', '-', 'TOTAL SALDO BERIMBANG', '23.500.000', '23.500.000']
+    ],
+    summaryOrInsight: 'Kaidah Baku Akuntansi: Total kolom Debit harus sama persis dengan total kolom Kredit (Keseimbangan Mutlak).'
+  };
 
   return {
     domain: 'ECONOMICS_ACCOUNTING',
-    domainNameId: 'Ekonomi, Bisnis & Akuntansi Keuangan',
+    domainNameId: 'Akuntansi & Keuangan Kuantitatif (5 Kolom Seimbang)',
     isQuantitative: true,
     requiresFormulas: true,
     requiresStepByStep: true,
     requiresTables: true,
     requiresCode: false,
-    confidenceScore: 0.95,
+    confidenceScore: 0.98,
     detectedCharacteristics: [
-      'Perhitungan persentase margin keuntungan dan biaya',
-      'Format tabel berpasangan akuntansi (Debit & Kredit)',
-      'Prinsip neraca seimbang (Aset = Liabilitas + Ekuitas)'
+      'Format Jurnal Umum 5 kolom dengan posisi Debit dan Kredit berimbang',
+      'Perhitungan persentase keuntungan, laba rugi, dan margin usaha',
+      'Analisis transaksi keuangan dengan kaidah saldo normal akun'
     ],
     coreFormulas,
     workedExample,
@@ -738,82 +738,43 @@ function buildEconomicsAccountingAnalysis(context: string): SubjectAwareAnalysis
 }
 
 function buildInformaticsAnalysis(context: string): SubjectAwareAnalysis {
-  const isBinary = context.includes('biner') || context.includes('binary') || context.includes('oktal') || context.includes('heksa');
-
   const coreFormulas: FormulaItem[] = [
     {
-      name: 'Konversi Bilangan Biner ke Desimal (Bobot Posisi Basis 2)',
-      latex: 'N_{10} = \\sum_{i=0}^{n} (b_i \\times 2^i) = (b_n 2^n + \\dots + b_1 2^1 + b_0 2^0)',
-      textFallback: 'N10 = (bn × 2^n) + ... + (b1 × 2^1) + (b0 × 2^0)',
+      name: 'Konversi Bilangan Biner ke Desimal (Bobot Pangkat 2)',
+      latex: 'N_{10} = \\sum_{i=0}^{n-1} (b_i \\times 2^i)',
+      textFallback: 'N10 = (b_n-1 × 2^n-1) + ... + (b_0 × 2^0)',
       variables: [
-        { symbol: 'b_i', meaning: 'Digit biner (bit: 0 atau 1)' },
-        { symbol: '2^i', meaning: 'Bobot posisi perpangkatan basis dua (1, 2, 4, 8, 16, 32, ...)' }
-      ]
-    },
-    {
-      name: 'Operasi Logika Boolean Dasar (Konjungsi AND & Disjungsi OR)',
-      latex: 'A \\land B = 1 \\iff A=1 \\text{ dan } B=1; \\quad A \\lor B = 0 \\iff A=0 \\text{ dan } B=0',
-      textFallback: 'A AND B = 1 jika keduanya 1; A OR B = 0 jika keduanya 0',
-      variables: [
-        { symbol: '\\land', meaning: 'Operator logika AND' },
-        { symbol: '\\lor', meaning: 'Operator logika OR' }
+        { symbol: 'b_i', meaning: 'Digit bit biner (0 atau 1)' },
+        { symbol: '2^i', meaning: 'Nilai bobot posisi bit biner pangkat 2' }
       ]
     }
   ];
 
   const workedExample: WorkedExample = {
-    problemTitle: 'Konversi Bilangan Desimal 25 ke Bilangan Biner (Basis 2)',
-    problemStatement:
-      'Ubahlah bilangan desimal 25₁₀ menjadi representasi bilangan biner menggunakan metode pembagian bertingkat dengan sisa bagi (modulo 2)!',
-    given: ['Bilangan desimal = 25', 'Basis target biner = 2'],
+    problemTitle: 'Konversi Bilangan Desimal ke Biner dan Representasi 8-bit',
+    problemStatement: 'Konversikan bilangan desimal 25 ke dalam sistem bilangan biner menggunakan metode pembagian bertingkat modulo 2!',
+    given: ['Nilai bilangan desimal = 25', 'Basis target biner = 2'],
     steps: [
-      {
-        stepNumber: 1,
-        description: 'Bagi 25 dengan 2, catat hasil bagi bulat dan sisa bagi.',
-        mathExpression: '25 \\div 2 = 12, \\quad \\text{sisa } 1\\quad (\\text{bit LSB})'
-      },
-      {
-        stepNumber: 2,
-        description: 'Bagi hasil bagi sebelumnya (12) dengan 2.',
-        mathExpression: '12 \\div 2 = 6, \\quad \\text{sisa } 0'
-      },
-      {
-        stepNumber: 3,
-        description: 'Bagi hasil bagi (6) dengan 2.',
-        mathExpression: '6 \\div 2 = 3, \\quad \\text{sisa } 0'
-      },
-      {
-        stepNumber: 4,
-        description: 'Bagi hasil bagi (3) dengan 2.',
-        mathExpression: '3 \\div 2 = 1, \\quad \\text{sisa } 1'
-      },
-      {
-        stepNumber: 5,
-        description: 'Bagi hasil bagi terakhir (1) dengan 2.',
-        mathExpression: '1 \\div 2 = 0, \\quad \\text{sisa } 1\\quad (\\text{bit MSB})'
-      },
-      {
-        stepNumber: 6,
-        description: 'Tuliskan seluruh sisa bagi dari langkah terakhir (MSB) ke langkah pertama (LSB).',
-        mathExpression: '25_{10} = 11001_2'
-      }
+      { stepNumber: 1, description: '25 dibagi 2 menghasilkan 12 dengan sisa 1.', mathExpression: '25 \\div 2 = 12 \\quad \\text{sisa } 1' },
+      { stepNumber: 2, description: '12 dibagi 2 menghasilkan 6 dengan sisa 0.', mathExpression: '12 \\div 2 = 6 \\quad \\text{sisa } 0' },
+      { stepNumber: 3, description: '6 dibagi 2 menghasilkan 3 dengan sisa 0.', mathExpression: '6 \\div 2 = 3 \\quad \\text{sisa } 0' },
+      { stepNumber: 4, description: '3 dibagi 2 menghasilkan 1 dengan sisa 1.', mathExpression: '3 \\div 2 = 1 \\quad \\text{sisa } 1' },
+      { stepNumber: 5, description: '1 dibagi 2 menghasilkan 0 dengan sisa 1.', mathExpression: '1 \\div 2 = 0 \\quad \\text{sisa } 1' }
     ],
     finalAnswer: 'Bilangan desimal 25 setara dengan 11001 dalam bilangan biner (11001₂).',
-    verificationOrNote: 'Validasi pembuktian bobot: (1×16) + (1×8) + (0×4) + (0×2) + (1×1) = 16 + 8 + 1 = 25.'
+    verificationOrNote: 'Validasi Pembuktian Bobot: (1×16) + (1×8) + (0×4) + (0×2) + (1×1) = 16 + 8 + 1 = 25 (Terbukti Tepat).'
   };
 
   const specializedTable: SpecializedTable = {
-    title: 'Tabel Konversi Bilangan dan Tabel Kebenaran Gerbang Logika',
-    headers: ['Desimal', 'Biner (8-bit)', 'Heksadesimal', 'Input A, B', 'A AND B', 'A OR B', 'NOT A'],
+    title: 'Tabel Konversi Bilangan Biner dan Tabel Kebenaran Logika',
+    headers: ['Desimal', 'Biner (8-bit)', 'Heksadesimal', 'Input A, B', 'A AND B', 'A OR B'],
     rows: [
-      ['0', '0000 0000', '0x00', '0, 0', '0', '0', '1'],
-      ['1', '0000 0001', '0x01', '0, 1', '0', '1', '1'],
-      ['2', '0000 0010', '0x02', '1, 0', '0', '1', '0'],
-      ['3', '0000 0011', '0x03', '1, 1', '1', '1', '0'],
-      ['25', '0001 1001', '0x19', '-', '-', '-', '-'],
-      ['255', '1111 1111', '0xFF', '-', '-', '-', '-']
+      ['0', '0000 0000', '0x00', '0, 0', '0', '0'],
+      ['1', '0000 0001', '0x01', '0, 1', '0', '1'],
+      ['2', '0000 0010', '0x02', '1, 0', '0', '1'],
+      ['25', '0001 1001', '0x19', '1, 1', '1', '1']
     ],
-    summaryOrInsight: '1 byte tersusun atas 8 bit biner dengan rentang nilai representasi dari 0 hingga 255.'
+    summaryOrInsight: 'Sistem komputasi menggunakan sinyal biner high (1) dan low (0) untuk memproses seluruh data.'
   };
 
   const codeOrPseudocode: CodeBlockInfo = {
@@ -823,27 +784,24 @@ function buildInformaticsAnalysis(context: string): SubjectAwareAnalysis {
     """Mengonversi bilangan bulat positif ke string biner."""
     if n == 0:
         return "0"
-    
     sisa_list = []
     angka = n
     while angka > 0:
         sisa = angka % 2
         sisa_list.append(str(sisa))
         angka = angka // 2
-        
-    # Membalik urutan dari sisa terakhir (MSB) ke pertama (LSB)
     return "".join(reversed(sisa_list))
 
 # Contoh Pengujian
 nilai = 25
 hasil_biner = desimal_ke_biner(nilai)
 print(f"Desimal {nilai} = Biner {hasil_biner}") # Output: 11001`,
-    explanation: 'Algoritma menggunakan loop pembagian bertingkat dengan operasi modulus (%) dan integer division (//).'
+    explanation: 'Algoritma menggunakan loop pembagian bertingkat dengan operator modulo (%) dan pembagian bulat (//).'
   };
 
   return {
     domain: 'INFORMATICS',
-    domainNameId: 'Informatika, Logika Digital & Pemrograman',
+    domainNameId: 'Informatika, Logika Digital & Sistem Bilangan',
     isQuantitative: true,
     requiresFormulas: true,
     requiresStepByStep: true,
@@ -851,49 +809,14 @@ print(f"Desimal {nilai} = Biner {hasil_biner}") # Output: 11001`,
     requiresCode: true,
     confidenceScore: 0.97,
     detectedCharacteristics: [
-      'Representasi bilangan biner, oktal, dan heksadesimal',
-      'Tabel kebenaran logika Boolean (AND, OR, NOT, XOR)',
-      'Algoritma pemrograman dan blok kode terstruktur'
+      'Representasi bilangan biner dan konversi basis 2',
+      'Tabel kebenaran logika Boolean (AND, OR, NOT)',
+      'Algoritma pemrograman terstruktur dengan blok kode Python'
     ],
     coreFormulas,
     workedExample,
     specializedTable,
     codeOrPseudocode
-  };
-}
-
-function buildHumanitiesArtsAnalysis(context: string, subject: string, topic: string): SubjectAwareAnalysis {
-  const isDkv = context.includes('dkv') || context.includes('tipografi') || context.includes('desain');
-
-  return {
-    domain: 'HUMANITIES_ARTS_LANGUAGE',
-    domainNameId: 'Desain Komunikasi Visual, Seni & Humaniora',
-    isQuantitative: false,
-    requiresFormulas: false,
-    requiresStepByStep: false,
-    requiresTables: false,
-    requiresCode: false,
-    confidenceScore: 0.99,
-    detectedCharacteristics: [
-      'Fokus pada penalaran konseptual, estetika, dan komunikasi visual',
-      'TIDAK memaksakan rumus atau angka numerik artifisial',
-      'Menyajikan anatomi visual, hierarki tipografi, dan prinsip komposisi'
-    ],
-    nonNumericGuidance: {
-      artisticPrinciples: [
-        'Anatomi Tipografi: Baseline, Mean line, X-height, Ascender, Descender, dan Cap Height',
-        'Hierarki Visual: Skala ukuran headline, sub-headline, body text, dan caption',
-        'Legibilitas & Keterbacaan: Jarak antarkata (tracking), spasi antarkarakter (kerning), dan jarak antarbaris (leading)',
-        'Harmoni Warna & Kontras: Rasio kontras teks terhadap latar belakang minimal 4.5:1 untuk aksesibilitas'
-      ],
-      conceptualFramework: `Eksplorasi materi "${topic}" berorientasi pada penciptaan pesan visual yang komunikatif, bernilai estetika tinggi, serta memicu empati dan apresiasi peserta didik tanpa membutuhkan kalkulasi angka numerik.`,
-      visualHierarchyGuidelines: [
-        'Focal Point: Menentukan elemen visual utama yang pertama kali dilihat audiens',
-        'Grid System: Menyusun tata letak modular untuk keteraturan informasi',
-        'Negative Space (Ruang Kosong): Memberikan ruang bernapas agar komposisi tidak padat',
-        'Konsistensi Gaya: Penyelarasan gaya ilustrasi, palet warna, dan bobot tipografi'
-      ]
-    }
   };
 }
 
@@ -910,7 +833,206 @@ function buildGenericQuantitativeAnalysis(context: string): SubjectAwareAnalysis
     detectedCharacteristics: [
       'Penyelidikan berbasis pengukuran dan estimasi angka',
       'Penyusunan tabel observasi kuantitatif',
-      'Perhitungan sederhana dengan satuan yang konsisten'
+      'Perhitungan data terapan dengan satuan yang konsisten'
     ]
+  };
+}
+
+// -------------------------------------------------------------
+// DOMAIN-SPECIFIC BUILDERS (KONSEPTUAL / NON-NUMERIK)
+// -------------------------------------------------------------
+
+function buildLanguageAnalysis(context: string, subject: string, topic: string): SubjectAwareAnalysis {
+  const isProsedur = context.includes('prosedur') || topic.toLowerCase().includes('prosedur');
+
+  return {
+    domain: 'HUMANITIES_ARTS_LANGUAGE',
+    domainNameId: 'Bahasa, Sastra & Komunikasi (Non-Numerik)',
+    isQuantitative: false,
+    requiresFormulas: false,
+    requiresStepByStep: false,
+    requiresTables: false,
+    requiresCode: false,
+    confidenceScore: 0.99,
+    detectedCharacteristics: [
+      'Fokus pada pemahaman teks, struktur wacana, dan kaidah kebahasaan',
+      'TIDAK memaksakan rumus atau angka numerik artifisial',
+      'Menekankan 4 kemahiran berbahasa: Menyimak, Berbicara, Membaca, dan Menulis',
+      'Praktik menyusun karya tulis orisinal dan presentasi komunikatif'
+    ],
+    nonNumericGuidance: {
+      conceptualFramework: isProsedur
+        ? `Pembelajaran Teks Prosedur menekankan pemahaman struktur sistematis (Tujuan, Bahan/Alat, Langkah-Langkah Berurutan, dan Penutup) serta kaidah kebahasaan spesifik (kata kerja imperatif, kata penghubung/konjungsi temporal, dan verba material) tanpa melibatkan rumus perhitungan matematis.`
+        : `Pembelajaran materi "${topic}" berfokus pada analisis teks, penemuan ide pokok, interpretasi makna tersirat, dan pengembangan kompetensi komunikasi tertulis serta lisan secara santun dan efektif.`,
+      keyConcepts: isProsedur
+        ? [
+            'Struktur Teks Prosedur: Judul, Tujuan, Alat/Bahan, Langkah-Langkah Bertahap, dan Penegasan Ulang/Penutup',
+            'Kaidah Kebahasaan: Kalimat imperatif (perintah), kata kerja aksi, konjungsi temporal (pertama, selanjutnya, kemudian), dan kalimat persuasif',
+            'Karakteristik Instruksi: Jelas, operasional, logis, dan mudah diikuti oleh pembaca'
+          ]
+        : [
+            'Keterampilan Membaca & Memirsa: Menemukan gagasan utama dan bukti tekstual',
+            'Keterampilan Menulis: Menyusun paragraf kohesif dan koheren dengan ejaan baku (EYD)',
+            'Keterampilan Berbicara: Menyampaikan ide secara runtut dan artikulatif'
+          ],
+      caseStudyOrActivity: isProsedur
+        ? 'Aktivitas Praktik Menulis & Demonstrasi: Peserta didik secara berpasangan merancang teks prosedur bertema "Kiat Sukses Mengatur Waktu Belajar Mandiri" atau "Panduan Mengoperasikan Aplikasi Digital Edukasi", lalu mempraktikkan langkah-langkahnya di hadapan teman sekelas.'
+        : 'Aktivitas Analisis Teks & Diskusi: Peserta didik membaca teks wacana autentik, membedah struktur isi dalam kelompok, dan mempresentasikan hasil simpulan makna teks.'
+    }
+  };
+}
+
+function buildDkvAnalysis(context: string, topic: string): SubjectAwareAnalysis {
+  return {
+    domain: 'HUMANITIES_ARTS_LANGUAGE',
+    domainNameId: 'Desain Komunikasi Visual & Prinsip Tipografi (Non-Numerik)',
+    isQuantitative: false,
+    requiresFormulas: false,
+    requiresStepByStep: false,
+    requiresTables: false,
+    requiresCode: false,
+    confidenceScore: 0.99,
+    detectedCharacteristics: [
+      'Fokus pada penalaran konseptual, estetika rupa, dan komunikasi visual',
+      'TIDAK memaksakan rumus matematika atau kalkulasi angka',
+      'Menganalisis anatomi tipografi, klasifikasi jenis huruf, dan hierarki desain',
+      'Praktik perancangan sketsa tata letak dan apresiasi karya visual (Gallery Walk)'
+    ],
+    nonNumericGuidance: {
+      conceptualFramework: `Eksplorasi materi "${topic}" berorientasi pada penciptaan pesan visual yang komunikatif, bernilai estetika tinggi, serta memiliki keterbacaan (readability & legibility) yang optimal tanpa membutuhkan rumus matematika paksaan.`,
+      keyConcepts: [
+        'Anatomi Tipografi: Baseline, Mean line, X-height, Ascender, Descender, dan Cap Height',
+        'Klasifikasi Huruf: Serif (klasik/formal), Sans Serif (modern/bersih), Script (elegan/personal), dan Display (dekoratif/atraktif)',
+        'Hierarki Visual: Skala perbandingan ukuran headline (fokus utama), sub-headline, body text (isi), dan caption',
+        'Legibilitas & Keterbacaan: Jarak spasi antarkarakter (kerning), spasi kata (tracking), dan spasi antarbaris (leading)',
+        'Prinsip Komposisi: Keseimbangan (balance), kontras (contrast), kesatuan (unity), dan ruang bernapas (negative space)'
+      ],
+      artisticPrinciples: [
+        'Anatomi Huruf: Mengenali proporsi fisik huruf dari baseline hingga cap height',
+        'Hierarki Visual: Mengarahkan pandangan audiens dari informasi terpenting ke detail pendukung',
+        'Harmoni Warna & Kontras: Memastikan rasio kontras teks terhadap latar belakang terbaca dengan jelas',
+        'Kesesuaian Emosi (Mood): Memilih typeface yang selaras dengan pesan komunikasi yang ingin disampaikan'
+      ],
+      caseStudyOrActivity:
+        'Aktivitas Praktik Tipografi: Peserta didik merancang poster tipografi mini yang memadukan 2 keluarga huruf (misal Serif untuk judul dan Sans-Serif untuk teks tubuh), menata hierarki informasi, lalu mengadakan pameran mini karya (Gallery Walk).'
+    }
+  };
+}
+
+function buildEconomicsQualitativeAnalysis(context: string, topic: string): SubjectAwareAnalysis {
+  return {
+    domain: 'ECONOMICS_ACCOUNTING',
+    domainNameId: 'Ekonomi Konseptual & Keputusan Konsumsi (Non-Numerik)',
+    isQuantitative: false,
+    requiresFormulas: false,
+    requiresStepByStep: false,
+    requiresTables: false,
+    requiresCode: false,
+    confidenceScore: 0.98,
+    detectedCharacteristics: [
+      'Fokus pada pemahaman konsep kebutuhan, kelangkaan, dan pilihan keputusan ekonomi',
+      'TIDAK memaksakan perhitungan atau pencatatan jurnal akuntansi',
+      'Menganalisis skala prioritas dan perilaku konsumen bijak',
+      'Pembelajaran berbasis studi kasus kontekstual kehidupan sehari-hari siswa'
+    ],
+    nonNumericGuidance: {
+      conceptualFramework: `Materi "${topic}" mendalami pemahaman bahwa kebutuhan manusia bersifat tidak terbatas sementara alat pemuas kebutuhan bersifat terbatas (kelangkaan). Peserta didik dilatih bersikap rasional dalam menyusun skala prioritas dan mengambil keputusan ekonomi tanpa harus menggunakan rumus hitungan rumit.`,
+      keyConcepts: [
+        'Konsep Kelangkaan (Scarcity): Kondisi di mana sumber daya yang tersedia tidak cukup untuk memenuhi semua kebutuhan manusia',
+        'Hierarki Kebutuhan: Kebutuhan Primer (pokok), Sekunder (pelengkap), dan Tersier (kemewahan)',
+        'Faktor yang Memengaruhi Kebutuhan: Pendapatan, lingkungan sosial, tingkat pendidikan, kemajuan teknologi, dan kondisi alam',
+        'Penyusunan Skala Prioritas: Menentukan urutan pemenuhan kebutuhan dari yang paling mendesak hingga yang dapat ditunda',
+        'Literasi Keuangan Bijak: Membedakan antara "keinginan sesaat" (wants) dan "kebutuhan esensial" (needs)'
+      ],
+      caseStudyOrActivity:
+        'Studi Kasus Pengambilan Keputusan: Peserta didik diberikan skenario uang saku mingguan terbatas dan daftar 10 pengeluaran mendadak. Peserta didik berdiskusi mengelompokkan pos pengeluaran berdasarkan skala prioritas, mendebat alasan keputusan mereka, dan mempresentasikan rencana konsumsi yang paling bijak.'
+    }
+  };
+}
+
+function buildInformaticsQualitativeAnalysis(context: string, topic: string): SubjectAwareAnalysis {
+  return {
+    domain: 'INFORMATICS',
+    domainNameId: 'Informatika & Berpikir Komputasional (Non-Numerik)',
+    isQuantitative: false,
+    requiresFormulas: false,
+    requiresStepByStep: false,
+    requiresTables: false,
+    requiresCode: false,
+    confidenceScore: 0.98,
+    detectedCharacteristics: [
+      'Fokus pada 4 pilar Berpikir Komputasional (Computational Thinking) dan logika pemecahan masalah',
+      'TIDAK memaksakan rumus atau konversi bilangan numerik',
+      'Menggunakan representasi diagram alir (flowchart) dan algoritma langkah terstruktur',
+      'Berorientasi pada pemecahan masalah sehari-hari secara logis, runtut, dan terdekomposisi'
+    ],
+    nonNumericGuidance: {
+      conceptualFramework: `Pembelajaran Berpikir Komputasional pada materi "${topic}" berfokus pada metode menyelesaikan persoalan kompleks secara efektif dan efisien melalui cara berpikir ilmuwan komputer, tanpa harus menggunakan rumus matematika atau hitungan biner rumit.`,
+      keyConcepts: [
+        'Dekomposisi: Memecah masalah besar dan rumit menjadi bagian-bagian kecil yang lebih mudah dikelola',
+        'Pengenalan Pola (Pattern Recognition): Menemukan kesamaan karakteristik atau pola dari masalah yang pernah diselesaikan sebelumnya',
+        'Abstraksi (Abstraction): Memfokuskan perhatian hanya pada informasi yang penting dan mengabaikan detail yang tidak relevan',
+        'Perancangan Algoritma: Menyusun langkah-langkah terurut, logis, dan terarah untuk memecahkan masalah',
+        'Representasi Diagram Alir (Flowchart): Simbol terminator (mulai/selesai), proses (persegi panjang), keputusan (belah ketupat), dan alur panah'
+      ],
+      caseStudyOrActivity:
+        'Aktivitas Logika Terstruktur: Peserta didik menganalisis alur antrean kantin sekolah atau sistem penyortiran sampah, memecahnya menjadi langkah dekomposisi, menyusun flowchart di kertas plano, dan menguji apakah langkah algoritma mereka bebas dari kesalahan logika (debugging langkah).'
+    }
+  };
+}
+
+function buildSocialCivicsAnalysis(context: string, subject: string, topic: string): SubjectAwareAnalysis {
+  return {
+    domain: 'HUMANITIES_ARTS_LANGUAGE',
+    domainNameId: 'Pendidikan Pancasila, Sejarah & Sosial (Non-Numerik)',
+    isQuantitative: false,
+    requiresFormulas: false,
+    requiresStepByStep: false,
+    requiresTables: false,
+    requiresCode: false,
+    confidenceScore: 0.99,
+    detectedCharacteristics: [
+      'Fokus pada penanaman nilai karakter, etika kewargaan, dan telaah sosial-historis',
+      'TIDAK melibatkan angka atau rumus matematika',
+      'Mendorong dialog kritis, musyawarah mufakat, dan sikap toleransi kebinekaan',
+      'Pembelajaran berbasis studi kasus nilai dalam kehidupan bermasyarakat'
+    ],
+    nonNumericGuidance: {
+      conceptualFramework: `Pembelajaran materi "${topic}" menekankan penghayatan nilai-nilai kebangsaan, penalaran kritis terhadap fenomena sosial, serta komitmen menjadi warga negara yang bertanggung jawab, adil, dan berakhlak mulia.`,
+      keyConcepts: [
+        'Nilai-Nilai Luhur: Keadilan, kemanusiaan, persatuan, musyawarah, dan gotong royong',
+        'Kesadaran Hukum & Norma: Hak dan kewajiban warga negara dalam tatanan masyarakat yang tertib',
+        'Penalaran Kritis Sosial: Menganalisis sebab-akibat peristiwa sosial dan menemukan solusi damai',
+        'Refleksi Diri: Menilai komitmen pribadi dalam mempraktikkan kebajikan dalam interaksi harian'
+      ],
+      caseStudyOrActivity:
+        'Aktivitas Simulasi Musyawarah: Peserta didik melakukan simulasi sidang musyawarah penyelesaian konflik kepentingan di lingkungan RT/sekolah, mengutarakan argumen berlandaskan nilai Pancasila, dan menyepakati mufakat bersama.'
+    }
+  };
+}
+
+function buildGenericQualitativeAnalysis(context: string, subject: string, topic: string): SubjectAwareAnalysis {
+  return {
+    domain: 'GENERAL_SCIENCE',
+    domainNameId: 'Literasi Konseptual & Penyelidikan Kualitatif',
+    isQuantitative: false,
+    requiresFormulas: false,
+    requiresStepByStep: false,
+    requiresTables: false,
+    requiresCode: false,
+    confidenceScore: 0.8,
+    detectedCharacteristics: [
+      'Eksplorasi fenomena konseptual, analitis, dan kontekstual',
+      'Pengamatan kualitatif dan diskusi berbasis bukti nyata',
+      'TIDAK memaksakan rumus atau angka numerik artifisial'
+    ],
+    nonNumericGuidance: {
+      conceptualFramework: `Pembelajaran materi "${topic}" menekankan penguatan konsep esensial, diskusi terbimbing, dan penalaran kontekstual yang bermakna bagi peserta didik.`,
+      keyConcepts: [
+        'Pemahaman Konsep Inti materi pembelajaran',
+        'Analisis Hubungan Sebab-Akibat pada fenomena kontekstual',
+        'Penyusunan simpulan berbasis bukti dan refleksi pengalaman belajar'
+      ]
+    }
   };
 }
