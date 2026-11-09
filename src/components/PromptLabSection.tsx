@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ModulAjarFormInput, ModulAjarDocument, PedagogicalPractice } from '../types';
 import { generateCompleteModulAjar } from '../utils/modulAjarGenerator';
 import { exportModulToWord } from '../utils/modulAjarExporter';
+import { buildPromptFromModulAjar } from '../utils/modulAjarPromptBuilder';
 import { SubjectAwareAnalysis } from '../utils/subjectClassifier';
 import { MathRenderer, MixedMathText } from './MathRenderer';
 import {
@@ -29,7 +30,9 @@ import {
   CheckSquare,
   ArrowRight,
   Gamepad2,
-  Loader2
+  Loader2,
+  X,
+  ExternalLink
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useLearningData } from '../context/LearningDataContext';
@@ -74,7 +77,26 @@ export const PromptLabSection: React.FC = () => {
   const [isExportingWord, setIsExportingWord] = useState<boolean>(false);
   const [transferStatus, setTransferStatus] = useState<string>('');
 
+  // State Modal Prompt Modul Ajar
+  const [isPromptModalOpen, setIsPromptModalOpen] = useState<boolean>(false);
+  const [generatedPromptText, setGeneratedPromptText] = useState<string>('');
+  const [promptCopied, setPromptCopied] = useState<boolean>(false);
+
   const { transferToGameStudio, transferToMediaGenerator } = useLearningData();
+
+  const handleOpenPromptModal = () => {
+    if (!generatedDoc) return;
+    const promptStr = buildPromptFromModulAjar(generatedDoc);
+    setGeneratedPromptText(promptStr);
+    setIsPromptModalOpen(true);
+    confetti({ particleCount: 30, spread: 50, origin: { y: 0.6 } });
+  };
+
+  const handleCopyPrompt = () => {
+    navigator.clipboard.writeText(generatedPromptText);
+    setPromptCopied(true);
+    setTimeout(() => setPromptCopied(false), 2500);
+  };
 
   const handleCreateGameFromModul = () => {
     if (!generatedDoc) return;
@@ -727,30 +749,6 @@ export const PromptLabSection: React.FC = () => {
                       {generatedDoc.informasiUmum.topikPembelajaran}
                     </h3>
                   </div>
-
-                  <div className="flex items-center gap-2 shrink-0">
-                    <button
-                      onClick={handleCopyText}
-                      className="px-3 py-1.5 text-xs font-semibold text-slate-300 hover:text-white bg-[#071426] hover:bg-[#122A4E] border border-slate-700 rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer"
-                    >
-                      {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                      <span>{copied ? 'Tersalin' : 'Salin Ringkasan'}</span>
-                    </button>
-
-                    <button
-                      onClick={handleExportWord}
-                      disabled={isExportingWord}
-                      className="px-3.5 py-1.5 text-xs font-semibold text-white bg-[#2979FF] hover:bg-[#1D63D8] rounded-lg flex items-center gap-1.5 transition-colors cursor-pointer shadow-md disabled:opacity-50"
-                      title="Unduh File Word .docx Standar Resmi Pembelajaran Mendalam"
-                    >
-                      {isExportingWord ? (
-                        <Loader2 className="w-3.5 h-3.5 animate-spin text-white" />
-                      ) : (
-                        <Download className="w-3.5 h-3.5" />
-                      )}
-                      <span>{isExportingWord ? 'Menyiapkan Word...' : 'Unduh Word (.docx)'}</span>
-                    </button>
-                  </div>
                 </div>
 
                 {/* LANJUTKAN PENGEMBANGAN PEMBELAJARAN */}
@@ -768,7 +766,7 @@ export const PromptLabSection: React.FC = () => {
                           </span>
                         </h4>
                         <p className="text-[11px] text-slate-300">
-                          Satu modul ajar menjadi sumber data untuk Game Studio dan Generator Media tanpa perlu mengisi ulang parameter.
+                          Satu modul ajar menjadi sumber data untuk Game Studio, Generator Media, dan Prompt AI tanpa perlu mengisi ulang parameter.
                         </p>
                       </div>
                     </div>
@@ -781,7 +779,7 @@ export const PromptLabSection: React.FC = () => {
                     )}
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
                     {/* Tombol 1: Buat Game dari Modul Ini */}
                     <div className="p-3.5 rounded-xl bg-[#071426]/90 border border-[#2979FF]/40 hover:border-[#00E5FF] transition-all flex flex-col justify-between space-y-2.5 group shadow-sm">
                       <div className="space-y-1">
@@ -824,6 +822,29 @@ export const PromptLabSection: React.FC = () => {
                       >
                         <Sparkles className="w-4 h-4" />
                         <span>Buat Media dari Modul Ini</span>
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+
+                    {/* Tombol 3: Generate Prompt dari Modul Ajar */}
+                    <div className="p-3.5 rounded-xl bg-[#071426]/90 border border-purple-500/40 hover:border-purple-400 transition-all flex flex-col justify-between space-y-2.5 group shadow-sm">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2 text-white font-bold text-xs sm:text-sm">
+                          <Sparkles className="w-4 h-4 text-[#FFD166] group-hover:scale-110 transition-transform" />
+                          <span>3. Prompt AI Modul Ajar</span>
+                        </div>
+                        <p className="text-[11px] text-slate-300 leading-relaxed">
+                          Susun prompt AI utuh berstandar Pembelajaran Mendalam untuk dipakai langsung di ChatGPT, Gemini, atau Claude.
+                        </p>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={handleOpenPromptModal}
+                        className="w-full py-2.5 px-3 rounded-lg font-bold text-xs bg-gradient-to-r from-purple-600 to-indigo-600 text-white hover:brightness-110 shadow-lg shadow-purple-500/20 flex items-center justify-center gap-2 transition-all cursor-pointer"
+                      >
+                        <Sparkles className="w-4 h-4 text-[#FFD166]" />
+                        <span>Generate Prompt dari Modul Ajar</span>
                         <ArrowRight className="w-3.5 h-3.5" />
                       </button>
                     </div>
@@ -1423,31 +1444,43 @@ export const PromptLabSection: React.FC = () => {
                     </div>
                   )}
 
-                  {/* BOTTOM ACTION BAR FOR WORD EXPORT */}
+                  {/* BOTTOM ACTION BAR FOR WORD EXPORT & PROMPT GENERATOR */}
                   <div className="mt-8 pt-5 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4 bg-[#071426]/90 p-4 rounded-2xl border border-slate-700/60 shadow-lg">
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-[#2979FF] shrink-0">
                         <FileCheck className="w-5 h-5" />
                       </div>
                       <div>
-                        <p className="text-xs font-bold text-white">Dokumen Siap Dicetak & Digunakan</p>
+                        <p className="text-xs font-bold text-white">Dokumen Pembelajaran Siap Digunakan</p>
                         <p className="text-[11px] text-slate-400">
-                          Format resmi Microsoft Word (.docx) • Kertas A4 • Margin 3 cm / 2,5 cm • Halaman Sampul & Rubrik 5 Kolom
+                          Format resmi Microsoft Word (.docx) & Prompt AI lengkap untuk ChatGPT / Claude
                         </p>
                       </div>
                     </div>
-                    <button
-                      onClick={handleExportWord}
-                      disabled={isExportingWord}
-                      className="w-full sm:w-auto px-4 py-2 text-xs font-bold text-white bg-gradient-to-r from-[#2979FF] to-[#00E5FF] hover:from-[#1D63D8] hover:to-[#00B4D8] rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-blue-500/20 disabled:opacity-50 shrink-0"
-                    >
-                      {isExportingWord ? (
-                        <Loader2 className="w-4 h-4 animate-spin text-white" />
-                      ) : (
-                        <Download className="w-4 h-4 text-white" />
-                      )}
-                      <span>{isExportingWord ? 'Menyusun Dokumen Word...' : 'Unduh Modul Ajar (Word .docx)'}</span>
-                    </button>
+                    <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
+                      <button
+                        type="button"
+                        onClick={handleOpenPromptModal}
+                        className="w-full sm:w-auto px-4 py-2 text-xs font-bold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-purple-500/20 shrink-0"
+                      >
+                        <Sparkles className="w-4 h-4 text-[#FFD166]" />
+                        <span>Generate Prompt dari Modul Ajar</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={handleExportWord}
+                        disabled={isExportingWord}
+                        className="w-full sm:w-auto px-4 py-2 text-xs font-bold text-white bg-gradient-to-r from-[#2979FF] to-[#00E5FF] hover:from-[#1D63D8] hover:to-[#00B4D8] rounded-xl flex items-center justify-center gap-2 transition-all cursor-pointer shadow-lg shadow-blue-500/20 disabled:opacity-50 shrink-0"
+                      >
+                        {isExportingWord ? (
+                          <Loader2 className="w-4 h-4 animate-spin text-white" />
+                        ) : (
+                          <Download className="w-4 h-4 text-white" />
+                        )}
+                        <span>{isExportingWord ? 'Menyusun Dokumen Word...' : 'Unduh Modul Ajar (Word .docx)'}</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1468,6 +1501,111 @@ export const PromptLabSection: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* MODAL PROMPT MODUL AJAR (HASIL GENERATE PROMPT DARI MODUL AJAR) */}
+      {isPromptModalOpen && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 sm:p-5 animate-fade-in">
+          <div className="w-full max-w-4xl max-h-[92vh] bg-[#071426] border border-purple-500/40 rounded-3xl shadow-2xl flex flex-col overflow-hidden">
+            {/* Modal Header */}
+            <div className="px-5 py-4 border-b border-slate-800 bg-[#0B1B31] flex items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-9 h-9 rounded-xl bg-purple-500/20 border border-purple-500/40 flex items-center justify-center text-purple-400 shrink-0">
+                  <Sparkles className="w-5 h-5 text-[#FFD166]" />
+                </div>
+                <div>
+                  <h3 className="text-sm sm:text-base font-bold text-white flex items-center gap-2">
+                    <span>Prompt Modul Ajar Berhasil Dibuat</span>
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800 font-mono font-semibold">
+                      Siap Pakai
+                    </span>
+                  </h3>
+                  <p className="text-[11px] sm:text-xs text-slate-400">
+                    Prompt lengkap disusun dari dokumen modul ajar aktif. Anda dapat mengedit teks sebelum menyalin atau membukanya di ChatGPT.
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsPromptModalOpen(false)}
+                className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
+                title="Tutup"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Modal Body: Active Module Context Tags & Textarea */}
+            <div className="p-4 sm:p-5 overflow-y-auto space-y-3 flex-1">
+              <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 text-[11px]">
+                <span className="px-2.5 py-1 rounded-lg bg-[#0E223D] border border-slate-700 text-slate-300 font-medium">
+                  🏫 {generatedDoc?.informasiUmum.namaSekolah}
+                </span>
+                <span className="px-2.5 py-1 rounded-lg bg-[#0E223D] border border-slate-700 text-slate-300 font-medium">
+                  📚 {generatedDoc?.informasiUmum.mataPelajaran}
+                </span>
+                <span className="px-2.5 py-1 rounded-lg bg-[#0E223D] border border-slate-700 text-[#00E5FF] font-medium">
+                  🎯 {generatedDoc?.informasiUmum.topikPembelajaran}
+                </span>
+                <span className="px-2.5 py-1 rounded-lg bg-[#0E223D] border border-slate-700 text-amber-300 font-medium">
+                  👥 {generatedDoc?.informasiUmum.faseAtauKelas}
+                </span>
+              </div>
+
+              <div className="space-y-1">
+                <div className="flex items-center justify-between text-xs text-slate-400">
+                  <label className="font-semibold text-slate-300">Teks Prompt Lengkap (Dapat Diedit):</label>
+                  <span className="font-mono text-[11px]">{generatedPromptText.length} Karakter</span>
+                </div>
+                <textarea
+                  value={generatedPromptText}
+                  onChange={(e) => setGeneratedPromptText(e.target.value)}
+                  rows={15}
+                  className="w-full p-4 rounded-2xl bg-[#030914] border border-slate-700 text-slate-200 font-mono text-xs leading-relaxed focus:border-purple-400 focus:outline-none resize-y selection:bg-purple-600/40"
+                  placeholder="Menyusun prompt..."
+                />
+                <p className="text-[11px] text-slate-400 italic">
+                  * Catatan: Mengedit teks prompt di atas tidak akan mengubah isi dokumen modul ajar asli yang sedang aktif.
+                </p>
+              </div>
+            </div>
+
+            {/* Modal Footer */}
+            <div className="px-5 py-3.5 border-t border-slate-800 bg-[#0B1B31] flex flex-wrap items-center justify-between gap-3">
+              <div className="text-xs text-slate-400 hidden sm:block">
+                Gunakan prompt ini untuk membuat LKPD, bank soal HOTS, atau skenario interaktif di AI.
+              </div>
+              <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+                <button
+                  type="button"
+                  onClick={() => setIsPromptModalOpen(false)}
+                  className="px-4 py-2 text-xs font-semibold text-slate-300 hover:text-white bg-[#071426] hover:bg-slate-800 border border-slate-700 rounded-xl transition-colors cursor-pointer"
+                >
+                  Tutup
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleCopyPrompt}
+                  className="px-4 py-2 text-xs font-bold text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 rounded-xl flex items-center gap-1.5 transition-all cursor-pointer shadow-md shadow-purple-500/20"
+                >
+                  {promptCopied ? <Check className="w-4 h-4 text-emerald-300" /> : <Copy className="w-4 h-4" />}
+                  <span>{promptCopied ? 'Tersalin!' : 'Salin Prompt'}</span>
+                </button>
+
+                <a
+                  href="https://chatgpt.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 text-xs font-bold text-white bg-[#10A37F] hover:bg-[#0E906F] rounded-xl flex items-center gap-1.5 transition-colors cursor-pointer shadow-md shadow-emerald-600/20"
+                >
+                  <span>Buka di ChatGPT</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

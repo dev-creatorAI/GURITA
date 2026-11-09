@@ -69,11 +69,16 @@ const DEFAULT_GAME_STUDIO_CONFIG: GameStudioConfig = {
   individualPlayerCount: 1,
   individualScoreSystem: '+100 poin per jawaban tepat, bonus kecepatan +20 poin',
   individualRecapDetails: 'Tampilkan persentase ketepatan, predikat gelar peneliti, dan rekomendasi materi yang perlu dipelajari kembali.',
-  teamCount: 4,
-  teamNames: 'Tim Lumba-Lumba, Tim Hiu Cepat, Tim Penyu Bijak, Tim Paus Perkasa',
+  teamCount: 2,
+  teamNamesList: ['Tim 1', 'Tim 2'],
+  teamNames: 'Tim 1, Tim 2',
   membersPerTeam: 4,
+  teamMemberAllocation: 'Otomatis dan seimbang',
+  teamCustomMembers: [4, 4],
+  teamDistributionSystem: 'Acak otomatis',
+  teamCompetitionSystem: 'Bergiliran antar tim',
   turnMechanism: 'Bergantian menjawab per soal secara melingkar (Round Robin)',
-  teamScoreboardFormat: 'Papan peringkat real-time dengan animasi trofi emas, perak, dan perunggu',
+  teamScoreboardFormat: 'Papan peringkat real-time dengan skor masing-masing tim terpisah',
   winnerDetermination: 'Tim dengan akumulasi poin tertinggi di akhir sesi',
   durationMinutes: 10,
   scoreSystem: '+100 poin per jawaban tepat, bonus combo kecepatan +20 poin',
@@ -160,6 +165,57 @@ export const GameStudioSection: React.FC = () => {
   const [lives, setLives] = useState<number>(3);
   const [showFeedback, setShowFeedback] = useState<boolean>(false);
   const [gameFinished, setGameFinished] = useState<boolean>(false);
+
+  // State Interaktif Khusus Mode Tim
+  const [teamScores, setTeamScores] = useState<Record<string, number>>({});
+  const [activeTeamTurnIndex, setActiveTeamTurnIndex] = useState<number>(0);
+  const [lastScoringTeam, setLastScoringTeam] = useState<string | null>(null);
+
+  const activeTeams = config.teamNamesList && config.teamNamesList.length >= 2
+    ? config.teamNamesList
+    : ['Tim 1', 'Tim 2'];
+
+  const handleTeamCountChange = (val: number) => {
+    const newCount = Math.max(2, Math.min(10, val));
+    const currentList = config.teamNamesList && config.teamNamesList.length > 0
+      ? [...config.teamNamesList]
+      : ['Tim 1', 'Tim 2'];
+
+    const newList: string[] = [];
+    const newMembers: number[] = [];
+
+    for (let i = 0; i < newCount; i++) {
+      newList[i] = currentList[i] || `Tim ${i + 1}`;
+      newMembers[i] = config.teamCustomMembers?.[i] || 4;
+    }
+
+    setConfig((prev) => ({
+      ...prev,
+      teamCount: newCount,
+      teamNamesList: newList,
+      teamNames: newList.join(', '),
+      teamCustomMembers: newMembers
+    }));
+  };
+
+  const handleTeamNameChange = (index: number, name: string) => {
+    const list = [...(config.teamNamesList && config.teamNamesList.length > 0 ? config.teamNamesList : ['Tim 1', 'Tim 2'])];
+    list[index] = name;
+    setConfig((prev) => ({
+      ...prev,
+      teamNamesList: list,
+      teamNames: list.join(', ')
+    }));
+  };
+
+  const handleTeamMemberCountChange = (index: number, count: number) => {
+    const members = [...(config.teamCustomMembers || [4, 4])];
+    members[index] = Math.max(1, count);
+    setConfig((prev) => ({
+      ...prev,
+      teamCustomMembers: members
+    }));
+  };
 
   // GENERATOR LOGIC: Synthesizes full tailored prompt for Gemini Canvas and Canva AI
   const handleGeneratePrompt = (e?: React.FormEvent) => {
@@ -362,14 +418,35 @@ ${
 ==================================================
 - Jenis Permainan: ${config.gameType} ${config.customGameTypeDescription ? `(${config.customGameTypeDescription})` : ''}
 - Mode Permainan: ${config.mode}
-${config.mode === 'Tim' ? `- Jumlah Tim: ${config.teamCount || 4} Tim
-- Nama Tim: ${config.teamNames || 'Tim A, Tim B, Tim C, Tim D'}
-- Anggota per Tim: ${config.membersPerTeam || 4} Peserta Didik
-- Mekanisme Giliran: ${config.turnMechanism || 'Bergantian menjawab'}
-- Papan Skor Tim: ${config.teamScoreboardFormat || 'Papan skor bersama dengan indikator tim yang sedang aktif'}
-- Penentuan Pemenang: ${config.winnerDetermination || 'Skor tertinggi saat permainan berakhir'}` : `- Jumlah Pemain: ${config.individualPlayerCount || 1} Pemain
+${
+  config.mode === 'Tim'
+    ? `- Jumlah Tim: ${config.teamCount || 2} Tim
+- Daftar Nama Tim yang Dikonfigurasi: ${(config.teamNamesList && config.teamNamesList.length > 0 ? config.teamNamesList : ['Tim 1', 'Tim 2']).join(', ')}
+- Sistem Alokasi Anggota per Tim: ${
+        config.teamMemberAllocation === 'Ditentukan guru'
+          ? `Ditentukan Guru (${(config.teamNamesList || ['Tim 1', 'Tim 2'])
+              .map((t, i) => `${t}: ${config.teamCustomMembers?.[i] || 4} peserta didik`)
+              .join(', ')})`
+          : 'Otomatis dan seimbang (seluruh peserta didik dibagi merata ke dalam tim)'
+      }
+- Sistem Pembagian Tim: ${config.teamDistributionSystem || 'Acak otomatis'}
+- Sistem Kompetisi: ${config.teamCompetitionSystem || 'Bergiliran antar tim'}
+- Aturan Papan Skor & Logika Tim:
+  * Wajib menampilkan nama-nama tim aktif secara jelas di papan skor (menggunakan nama tim yang diinput guru).
+  * Skor dicatat dan dihitung secara terpisah untuk setiap tim (skor antar tim tidak boleh digabung/tercampur).
+  * Indikator Giliran / Status Aktif: Tampilkan penanda visual jelas tim mana yang sedang aktif bermain atau mendapat giliran menjawab.
+  * Mekanisme Kompetisi yang Diterapkan: ${
+        config.teamCompetitionSystem === 'Semua tim bermain bersamaan'
+          ? 'Semua tim menjawab secara bersamaan atau berebut menekan bel (buzzer); poin langsung ditambahkan ke tim yang menjawab benar tercepat.'
+          : config.teamCompetitionSystem === 'Sistem duel (Head-to-Head)'
+          ? 'Duel langsung 1 vs 1 antar tim dalam bagan turnamen bertahap.'
+          : 'Sistem bergiliran (Round Robin); setiap pertanyaan menjadi giliran bagi tim aktif berikutnya secara berputar teratur.'
+      }
+  * Penentuan Pemenang: Tim dengan akumulasi poin terbanyak dinobatkan sebagai Juara di layar akhir dengan selebrasi khusus.`
+    : `- Jumlah Pemain: ${config.individualPlayerCount || 1} Pemain
 - Sistem Skor Individu: ${config.individualScoreSystem || config.scoreSystem}
-- Rekap Hasil Individu: ${config.individualRecapDetails || 'Statistik skor dan akurasi per pemain'}`}
+- Rekap Hasil Individu: ${config.individualRecapDetails || 'Statistik skor dan akurasi per pemain'}`
+}
 - Jumlah Soal / Tantangan: ${config.questionCount} Butir Soal Bertingkat
 - Tingkat Kesulitan: ${config.difficulty}
 - Estimasi Durasi: ${config.durationMinutes} Menit
@@ -582,6 +659,11 @@ Mohon hasilkan sekarang kode lengkap yang dapat saya jalankan dan mainkan di Gem
     setLives(3);
     setShowFeedback(false);
     setGameFinished(false);
+    setActiveTeamTurnIndex(0);
+    setLastScoringTeam(null);
+    const initialScores: Record<string, number> = {};
+    activeTeams.forEach((t) => { initialScores[t] = 0; });
+    setTeamScores(initialScores);
   };
 
   const handleSelectOption = (index: number) => {
@@ -591,22 +673,38 @@ Mohon hasilkan sekarang kode lengkap yang dapat saya jalankan dan mainkan di Gem
 
     const isCorrect = index === currentQ.correctIndex;
     if (isCorrect) {
-      setScore((prev) => prev + 100);
+      if (config.mode === 'Tim') {
+        const currentActiveTeam = activeTeams[activeTeamTurnIndex % activeTeams.length] || activeTeams[0];
+        setTeamScores((prev) => ({
+          ...prev,
+          [currentActiveTeam]: (prev[currentActiveTeam] || 0) + 100
+        }));
+        setLastScoringTeam(currentActiveTeam);
+      } else {
+        setScore((prev) => prev + 100);
+      }
       confetti({ particleCount: 30, spread: 50, origin: { y: 0.6 } });
     } else {
-      setLives((prev) => {
-        const next = prev - 1;
-        if (next <= 0) {
-          setGameFinished(true);
-        }
-        return next;
-      });
+      setLastScoringTeam(null);
+      if (config.mode === 'Individu') {
+        setLives((prev) => {
+          const next = prev - 1;
+          if (next <= 0) {
+            setGameFinished(true);
+          }
+          return next;
+        });
+      }
     }
   };
 
   const handleNextPlaytest = () => {
     setShowFeedback(false);
     setSelectedOption(null);
+    setLastScoringTeam(null);
+    if (config.mode === 'Tim') {
+      setActiveTeamTurnIndex((prev) => (prev + 1) % activeTeams.length);
+    }
     if (currentQuestionIndex < sampleQuestions.length - 1) {
       setCurrentQuestionIndex((prev) => prev + 1);
     } else {
@@ -622,6 +720,11 @@ Mohon hasilkan sekarang kode lengkap yang dapat saya jalankan dan mainkan di Gem
     setLives(3);
     setShowFeedback(false);
     setGameFinished(false);
+    setActiveTeamTurnIndex(0);
+    setLastScoringTeam(null);
+    const initialScores: Record<string, number> = {};
+    activeTeams.forEach((t) => { initialScores[t] = 0; });
+    setTeamScores(initialScores);
   };
 
   return (
@@ -939,42 +1042,190 @@ Mohon hasilkan sekarang kode lengkap yang dapat saya jalankan dan mainkan di Gem
 
                   {/* Conditional: Mode Tim Details */}
                   {config.mode === 'Tim' && (
-                    <div className="p-3.5 rounded-xl bg-[#071426] border border-[#2979FF]/40 space-y-3 animate-fade-in">
-                      <span className="text-[11px] font-mono font-bold text-[#00E5FF] uppercase block">
-                        Pengaturan Mode Tim
-                      </span>
-                      <div className="grid grid-cols-2 gap-2">
-                        <div className="space-y-1">
-                          <label className="text-slate-300">Jumlah Tim</label>
-                          <input
-                            type="number"
-                            min={2}
-                            max={8}
-                            value={config.teamCount || 4}
-                            onChange={(e) => setConfig({ ...config, teamCount: Number(e.target.value) })}
-                            className="w-full px-2.5 py-1.5 rounded-lg bg-[#0A182B] border border-slate-700 text-slate-200"
-                          />
+                    <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-[#0C1F38] via-[#0E223D] to-[#071426] border-2 border-[#2979FF]/50 space-y-4 animate-fade-in shadow-xl">
+                      <div className="flex items-center justify-between border-b border-[#2979FF]/30 pb-2.5">
+                        <div className="flex items-center gap-2">
+                          <Users className="w-5 h-5 text-[#00E5FF]" />
+                          <h4 className="text-sm font-bold text-white uppercase tracking-wider">
+                            Pengaturan Tim
+                          </h4>
                         </div>
-                        <div className="space-y-1">
-                          <label className="text-slate-300">Anggota per Tim (Opsional)</label>
+                        <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-950 text-blue-300 font-mono border border-blue-800 font-semibold">
+                          Mode Kelompok Aktif
+                        </span>
+                      </div>
+
+                      {/* 1. Jumlah Tim */}
+                      <div className="space-y-2">
+                        <div className="flex items-center justify-between text-xs">
+                          <label className="font-semibold text-slate-200">
+                            1. Jumlah Tim (Minimal 2, Maksimal 10)
+                          </label>
+                          <span className="font-bold text-[#00E5FF] font-mono text-sm">
+                            {config.teamCount || 2} Tim
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-3">
                           <input
-                            type="number"
-                            min={1}
+                            type="range"
+                            min={2}
                             max={10}
-                            value={config.membersPerTeam || 4}
-                            onChange={(e) => setConfig({ ...config, membersPerTeam: Number(e.target.value) })}
-                            className="w-full px-2.5 py-1.5 rounded-lg bg-[#0A182B] border border-slate-700 text-slate-200"
+                            value={config.teamCount || 2}
+                            onChange={(e) => handleTeamCountChange(Number(e.target.value))}
+                            className="flex-1 accent-[#00E5FF] cursor-pointer h-2 bg-[#0A182B] rounded-lg"
                           />
+                          <select
+                            value={config.teamCount || 2}
+                            onChange={(e) => handleTeamCountChange(Number(e.target.value))}
+                            className="px-3 py-1.5 rounded-xl bg-[#071426] border border-slate-700 text-xs font-bold text-white focus:border-[#00E5FF] cursor-pointer"
+                          >
+                            {[2, 3, 4, 5, 6, 7, 8, 9, 10].map((num) => (
+                              <option key={num} value={num}>
+                                {num} Tim
+                              </option>
+                            ))}
+                          </select>
                         </div>
                       </div>
-                      <div className="space-y-1">
-                        <label className="text-slate-300">Nama-Nama Tim</label>
-                        <input
-                          type="text"
-                          value={config.teamNames || ''}
-                          onChange={(e) => setConfig({ ...config, teamNames: e.target.value })}
-                          className="w-full px-2.5 py-1.5 rounded-lg bg-[#0A182B] border border-slate-700 text-slate-200"
-                        />
+
+                      {/* 2. Nama-Nama Tim (Dinamis Sesuai Jumlah Tim) */}
+                      <div className="space-y-2 pt-1 border-t border-slate-800/80">
+                        <div className="flex items-center justify-between">
+                          <label className="text-xs font-semibold text-slate-200">
+                            2. Nama Tim (Dapat Diubah Guru)
+                          </label>
+                          <span className="text-[11px] text-slate-400">
+                            {config.teamCount || 2} Input Nama Tersedia
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                          {Array.from({ length: config.teamCount || 2 }).map((_, idx) => (
+                            <div key={idx} className="space-y-1">
+                              <label className="text-[11px] text-slate-400 flex items-center justify-between">
+                                <span>Nama Tim {idx + 1}</span>
+                                <span className="font-mono text-[10px] text-[#00E5FF]">#Team{idx + 1}</span>
+                              </label>
+                              <input
+                                type="text"
+                                value={config.teamNamesList?.[idx] ?? `Tim ${idx + 1}`}
+                                onChange={(e) => handleTeamNameChange(idx, e.target.value)}
+                                placeholder={`Contoh: Tim ${idx + 1}`}
+                                className="w-full px-3 py-1.5 rounded-xl bg-[#0A182B] border border-slate-700 text-xs text-slate-200 focus:border-[#00E5FF] focus:outline-none"
+                              />
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      {/* 3. Jumlah Anggota per Tim */}
+                      <div className="space-y-2 pt-1 border-t border-slate-800/80">
+                        <label className="text-xs font-semibold text-slate-200 block">
+                          3. Jumlah Anggota per Tim
+                        </label>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                          <button
+                            type="button"
+                            onClick={() => setConfig((prev) => ({ ...prev, teamMemberAllocation: 'Otomatis dan seimbang' }))}
+                            className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                              config.teamMemberAllocation !== 'Ditentukan guru'
+                                ? 'bg-blue-950/70 border-[#00E5FF] text-white shadow-sm ring-1 ring-[#00E5FF]/40'
+                                : 'bg-[#0A182B] border-slate-700 text-slate-300 hover:border-slate-600'
+                            }`}
+                          >
+                            <span className="font-bold block">a. Otomatis dan Seimbang</span>
+                            <span className="text-[11px] text-slate-400">
+                              Sistem membagi peserta didik secara merata ke seluruh tim
+                            </span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => setConfig((prev) => ({ ...prev, teamMemberAllocation: 'Ditentukan guru' }))}
+                            className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer ${
+                              config.teamMemberAllocation === 'Ditentukan guru'
+                                ? 'bg-blue-950/70 border-[#00E5FF] text-white shadow-sm ring-1 ring-[#00E5FF]/40'
+                                : 'bg-[#0A182B] border-slate-700 text-slate-300 hover:border-slate-600'
+                            }`}
+                          >
+                            <span className="font-bold block">b. Ditentukan Guru</span>
+                            <span className="text-[11px] text-slate-400">
+                              Atur jumlah kuota anggota masing-masing tim secara spesifik
+                            </span>
+                          </button>
+                        </div>
+
+                        {/* Jika Ditentukan Guru: Input anggota masing-masing tim */}
+                        {config.teamMemberAllocation === 'Ditentukan guru' && (
+                          <div className="p-3 rounded-xl bg-[#0A182B] border border-slate-800 space-y-2 animate-fade-in mt-2">
+                            <span className="text-[11px] text-[#FFD166] font-semibold block">
+                              Jumlah Anggota Setiap Tim (Dapat Diedit):
+                            </span>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                              {Array.from({ length: config.teamCount || 2 }).map((_, idx) => (
+                                <div key={idx} className="space-y-1">
+                                  <label className="text-[10px] text-slate-400 truncate block">
+                                    {config.teamNamesList?.[idx] || `Tim ${idx + 1}`}
+                                  </label>
+                                  <div className="flex items-center gap-1.5">
+                                    <input
+                                      type="number"
+                                      min={1}
+                                      max={25}
+                                      value={config.teamCustomMembers?.[idx] || 4}
+                                      onChange={(e) => handleTeamMemberCountChange(idx, Number(e.target.value))}
+                                      className="w-full px-2 py-1 rounded-lg bg-[#071426] border border-slate-700 text-xs text-center text-white font-bold"
+                                    />
+                                    <span className="text-[10px] text-slate-400 shrink-0">Siswa</span>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* 4 & 5. Sistem Pembagian Tim & Sistem Kompetisi */}
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 border-t border-slate-800/80">
+                        <div className="space-y-1">
+                          <label className="text-xs font-semibold text-slate-200">
+                            4. Sistem Pembagian Tim
+                          </label>
+                          <select
+                            value={config.teamDistributionSystem || 'Acak otomatis'}
+                            onChange={(e: any) => setConfig((prev) => ({ ...prev, teamDistributionSystem: e.target.value }))}
+                            className="w-full px-3 py-2 rounded-xl bg-[#0A182B] border border-slate-700 text-xs text-slate-200 focus:border-[#00E5FF] focus:outline-none"
+                          >
+                            <option value="Acak otomatis">Acak otomatis</option>
+                            <option value="Guru membagi sendiri">Guru membagi sendiri</option>
+                            <option value="Berdasarkan urutan peserta">Berdasarkan urutan peserta</option>
+                          </select>
+                        </div>
+
+                        <div className="space-y-1">
+                          <label className="text-xs font-semibold text-slate-200">
+                            5. Sistem Kompetisi
+                          </label>
+                          <select
+                            value={config.teamCompetitionSystem || 'Bergiliran antar tim'}
+                            onChange={(e: any) => setConfig((prev) => ({ ...prev, teamCompetitionSystem: e.target.value }))}
+                            className="w-full px-3 py-2 rounded-xl bg-[#0A182B] border border-slate-700 text-xs text-slate-200 focus:border-[#00E5FF] focus:outline-none"
+                          >
+                            <option value="Semua tim bermain bersamaan">Semua tim bermain bersamaan</option>
+                            <option value="Bergiliran antar tim">Bergiliran antar tim</option>
+                            <option value="Sistem duel (Head-to-Head)">Sistem duel (Head-to-Head)</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div className="p-2.5 rounded-xl bg-[#0E223D]/60 border border-[#2979FF]/20 text-[11px] text-slate-300 flex items-center gap-2">
+                        <Info className="w-4 h-4 text-[#00E5FF] shrink-0" />
+                        <span>
+                          {config.teamCompetitionSystem === 'Semua tim bermain bersamaan'
+                            ? 'Mekanisme: Seluruh tim menjawab serentak atau berebut bel (buzzer); poin bertambah pada tim yang menjawab benar tercepat.'
+                            : config.teamCompetitionSystem === 'Sistem duel (Head-to-Head)'
+                            ? 'Mekanisme: Tim bertanding satu lawan satu dalam bagan turnamen bertahap.'
+                            : 'Mekanisme: Setiap tim mendapat giliran bermain secara berputar (round-robin) dengan skor masing-masing dicatat terpisah.'}
+                        </span>
                       </div>
                     </div>
                   )}
@@ -1283,22 +1534,98 @@ Mohon hasilkan sekarang kode lengkap yang dapat saya jalankan dan mainkan di Gem
             </div>
 
             {/* Top Bar Status */}
-            <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-              <div className="flex items-center gap-2 text-xs font-mono font-bold text-[#00E5FF]">
-                <Gamepad2 className="w-4 h-4" />
-                <span className="truncate max-w-[200px] sm:max-w-none">
-                  {playtestPack === 'auto' ? config.gameName : `Playtest: Paket ${playtestPack.toUpperCase()}`}
-                </span>
+            <div className="space-y-3 border-b border-slate-800 pb-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2 text-xs font-mono font-bold text-[#00E5FF]">
+                  <Gamepad2 className="w-4 h-4" />
+                  <span className="truncate max-w-[200px] sm:max-w-none">
+                    {playtestPack === 'auto' ? config.gameName : `Playtest: Paket ${playtestPack.toUpperCase()}`}
+                  </span>
+                </div>
+                <div className="flex items-center gap-3 text-xs font-mono">
+                  <span className="text-slate-400">Soal {currentQuestionIndex + 1}/{sampleQuestions.length}</span>
+                  {config.mode === 'Individu' ? (
+                    <>
+                      <span className="text-[#FFD166] font-bold">Skor: {score}</span>
+                      <span className="text-rose-400">{'❤️'.repeat(lives)}</span>
+                    </>
+                  ) : (
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-blue-950 text-blue-300 border border-blue-800 font-semibold">
+                      Mode Tim ({config.teamCount || 2} Tim)
+                    </span>
+                  )}
+                </div>
               </div>
-              <div className="flex items-center gap-3 text-xs font-mono">
-                <span className="text-slate-400">Soal {currentQuestionIndex + 1}/{sampleQuestions.length}</span>
-                <span className="text-[#FFD166] font-bold">Skor: {score}</span>
-                <span className="text-rose-400">{'❤️'.repeat(lives)}</span>
-              </div>
+
+              {/* Papan Skor Tim Dinamis (Hanya Muncul di Mode Tim) */}
+              {config.mode === 'Tim' && (
+                <div className="space-y-2 pt-2 border-t border-slate-800/80">
+                  <div className="flex flex-wrap items-center justify-between gap-1 text-[11px]">
+                    <span className="font-mono uppercase text-slate-400 font-semibold flex items-center gap-1">
+                      <Users className="w-3.5 h-3.5 text-[#00E5FF]" /> Papan Skor Tim:
+                    </span>
+                    <span className="text-[10px] text-slate-400 font-mono">
+                      Sistem: {config.teamCompetitionSystem || 'Bergiliran antar tim'}
+                    </span>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2">
+                    {activeTeams.map((team, idx) => {
+                      const isActiveTurn =
+                        idx === activeTeamTurnIndex % activeTeams.length &&
+                        config.teamCompetitionSystem !== 'Semua tim bermain bersamaan';
+                      return (
+                        <div
+                          key={idx}
+                          className={`px-2.5 py-1.5 rounded-xl text-xs font-mono transition-all flex items-center gap-1.5 ${
+                            isActiveTurn
+                              ? 'bg-blue-950/90 border-2 border-[#00E5FF] text-white shadow-md shadow-[#00E5FF]/20 ring-1 ring-[#00E5FF]'
+                              : 'bg-[#071426] border border-slate-700 text-slate-300'
+                          }`}
+                        >
+                          <span className="font-semibold text-slate-200">{team}:</span>
+                          <span className="font-bold text-[#FFD166]">{teamScores[team] || 0} Poin</span>
+                          {isActiveTurn && (
+                            <span className="text-[9px] px-1.5 py-0.2 rounded bg-[#00E5FF] text-[#071426] font-extrabold uppercase">
+                              Giliran
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  {lastScoringTeam && (
+                    <div className="p-2 rounded-xl bg-emerald-950/70 border border-emerald-500/40 text-xs text-emerald-300 flex items-center justify-between animate-fade-in">
+                      <span className="flex items-center gap-1.5 font-bold">
+                        <Check className="w-4 h-4 text-emerald-400" />
+                        {lastScoringTeam} Berhasil Menjawab Benar!
+                      </span>
+                      <span className="font-mono text-emerald-200 font-extrabold bg-emerald-900/60 px-2 py-0.5 rounded-lg">
+                        +100 Poin
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
 
             {!gameFinished ? (
               <div className="space-y-6">
+                {/* Penanda Giliran Menjawab Khusus Mode Tim */}
+                {config.mode === 'Tim' &&
+                  config.teamCompetitionSystem !== 'Semua tim bermain bersamaan' &&
+                  !showFeedback && (
+                    <div className="flex items-center justify-between text-xs px-3 py-1.5 rounded-xl bg-[#071426] border border-[#2979FF]/30">
+                      <span className="text-slate-400 flex items-center gap-1.5">
+                        <Clock className="w-3.5 h-3.5 text-[#00E5FF]" /> Giliran Menjawab:
+                      </span>
+                      <span className="font-bold text-[#00E5FF] font-mono">
+                        {activeTeams[activeTeamTurnIndex % activeTeams.length]}
+                      </span>
+                    </div>
+                  )}
+
                 <div className="text-base sm:text-lg font-bold text-white leading-relaxed">
                   <MixedMathText content={currentQ.question} />
                 </div>
@@ -1354,21 +1681,83 @@ Mohon hasilkan sekarang kode lengkap yang dapat saya jalankan dan mainkan di Gem
                 )}
               </div>
             ) : (
-              <div className="text-center py-8 space-y-4 animate-fade-in">
-                <Trophy className="w-14 h-14 text-[#FFD166] mx-auto animate-bounce" />
-                <h3 className="text-2xl font-bold text-white">Sesi Playtest Selesai!</h3>
-                <p className="text-sm text-slate-300">
-                  Total Skor Anda: <strong className="text-[#00E5FF]">{score} Poin</strong>
-                </p>
-                <div className="pt-4">
-                  <button
-                    onClick={handleRestartPlaytest}
-                    className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#2979FF] to-[#00E5FF] text-white font-bold text-xs cursor-pointer"
-                  >
-                    Mainkan Ulang
-                  </button>
+              /* SCREEN SELESAI */
+              config.mode === 'Tim' ? (
+                (() => {
+                  const sortedTeams = [...activeTeams].sort((a, b) => (teamScores[b] || 0) - (teamScores[a] || 0));
+                  const champion = sortedTeams[0];
+                  return (
+                    <div className="text-center py-6 space-y-5 animate-fade-in">
+                      <Trophy className="w-16 h-16 text-[#FFD166] mx-auto animate-bounce" />
+                      <div className="space-y-1">
+                        <h3 className="text-2xl font-bold text-white">Kompetisi Tim Selesai!</h3>
+                        <p className="text-sm text-slate-300">
+                          Pemenang: <strong className="text-[#00E5FF] text-base">{champion}</strong> dengan perolehan <strong className="text-[#FFD166]">{teamScores[champion] || 0} Poin</strong>!
+                        </p>
+                      </div>
+
+                      {/* Leaderboard Table Tim */}
+                      <div className="max-w-md mx-auto p-4 rounded-2xl bg-[#071426] border border-slate-700/80 space-y-2 text-left">
+                        <span className="text-xs font-mono font-bold text-slate-400 uppercase tracking-wider block border-b border-slate-800 pb-1.5">
+                          Peringkat Akhir Tim:
+                        </span>
+                        <div className="space-y-1.5">
+                          {sortedTeams.map((team, idx) => (
+                            <div
+                              key={idx}
+                              className={`p-2.5 rounded-xl flex items-center justify-between text-xs ${
+                                idx === 0
+                                  ? 'bg-amber-950/40 border border-amber-500/50 text-white font-bold'
+                                  : 'bg-[#0A182B] border border-slate-800 text-slate-300'
+                              }`}
+                            >
+                              <div className="flex items-center gap-2">
+                                <span
+                                  className={`w-5 h-5 rounded-full flex items-center justify-center font-mono text-[10px] font-bold ${
+                                    idx === 0 ? 'bg-[#FFD166] text-black' : 'bg-slate-700 text-slate-200'
+                                  }`}
+                                >
+                                  {idx + 1}
+                                </span>
+                                <span>{team}</span>
+                                {idx === 0 && <span className="text-[#FFD166] text-xs">👑 Juara</span>}
+                              </div>
+                              <span className="font-mono font-bold text-[#00E5FF]">
+                                {teamScores[team] || 0} Poin
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div className="pt-2">
+                        <button
+                          onClick={handleRestartPlaytest}
+                          className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#2979FF] to-[#00E5FF] text-white font-bold text-xs cursor-pointer hover:shadow-lg hover:shadow-[#00E5FF]/20 transition-all"
+                        >
+                          Mainkan Ulang Sesi Tim
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })()
+              ) : (
+                <div className="text-center py-8 space-y-4 animate-fade-in">
+                  <Trophy className="w-14 h-14 text-[#FFD166] mx-auto animate-bounce" />
+                  <h3 className="text-2xl font-bold text-white">Sesi Playtest Selesai!</h3>
+                  <p className="text-sm text-slate-300">
+                    Total Skor Anda: <strong className="text-[#00E5FF]">{score} Poin</strong>
+                  </p>
+                  <div className="pt-4">
+                    <button
+                      onClick={handleRestartPlaytest}
+                      className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-[#2979FF] to-[#00E5FF] text-white font-bold text-xs cursor-pointer"
+                    >
+                      Mainkan Ulang
+                    </button>
+                  </div>
                 </div>
-              </div>
+              )
             )}
           </div>
         )}

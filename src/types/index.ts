@@ -102,8 +102,13 @@ export interface GameStudioConfig {
   individualRecapDetails?: string;
   // Tim specific
   teamCount?: number;
+  teamNamesList?: string[];
   teamNames?: string;
   membersPerTeam?: number;
+  teamMemberAllocation?: 'Otomatis dan seimbang' | 'Ditentukan guru';
+  teamCustomMembers?: number[];
+  teamDistributionSystem?: 'Acak otomatis' | 'Guru membagi sendiri' | 'Berdasarkan urutan peserta';
+  teamCompetitionSystem?: 'Semua tim bermain bersamaan' | 'Bergiliran antar tim' | 'Sistem duel (Head-to-Head)';
   turnMechanism?: string;
   teamScoreboardFormat?: string;
   winnerDetermination?: string;
