@@ -32,6 +32,7 @@ export interface SlideItem {
     author: string;
   };
   accentColor: string; // 'cyan' | 'blue' | 'purple' | 'yellow'
+  content?: string;
 }
 
 export interface PresentationDeck {
@@ -61,19 +62,65 @@ export const PRESENTATION_DECKS: PresentationDeck[] = [
             id: 1,
         slideNumber: 1,
         title: 'Benarkah AI Akan Mengubah Cara Guru Mengajar? Peluang dan Tantangannya',
-        subtitle: 'Membedah Peluang, Transformasi Pedagogis, dan Tantangan Etika di Ruang Kelas Modern',
+        subtitle: 'Membedah Peluang, Transformasi Pedagogis, dan Tantangan Etika di Ruang Kelas',
         category: 'Judul & Pertanyaan Pemantik',
         keyIdea: 'Teknologi berkembang pesat, tetapi apakah cara kita mengajar akan tetap sama lima tahun dari sekarang? AI berpotensi mengubah cara guru merancang, melaksanakan, dan mengevaluasi pembelajaran.',
         points: [
+          'Pengertian dan Cara Kerja AI',
           'Peluang pemanfaatan AI dalam dunia pendidikan.',
-          'Transformasi peran dan praktik pedagogis guru.',
           'Tantangan etika dalam penggunaan AI di ruang kelas.'
         ],
         accentColor: 'cyan'
       },
       {
-            id: 2,
+        id: 2,
         slideNumber: 2,
+        title: 'Pengertian Artificial Intelligence (AI)',
+        subtitle: 'Definisi dan Perbedaan Karakteristiknya',
+        category: 'Konsep Dasar AI',
+        keyIdea: 'Artificial Intelligence adalah sistem cerdas peniru kemampuan kognitif manusia yang menggunakan algoritma komputasi untuk memproses data menjadi prediksi, rekomendasi, hingga kreasi konten baru orisinal.',
+        accentColor: 'blue',
+        comparison: {
+          titleLeft: 'AI Tradisional (Diskriminatif)',
+          itemsLeft: [
+            'Membandingkan dan mengelompokkan data yang sudah ada',
+            'Pendeteksi pola klasifikasi dan probabilitas',
+            'Contoh: Filter spam email & deteksi wajah smartphone',
+            'Contoh: Rekomendasi tayangan video YouTube'
+          ],
+          titleRight: 'AI Generatif (Pencipta Baru)',
+          itemsRight: [
+            'Menghasilkan karya baru yang orisinal dari nol',
+            'Bekerja berdasarkan instruksi bahasa alami guru (prompt)',
+            'Contoh: Menulis draf modul ajar & skenario kelas',
+            'Contoh: Media edukasi, materi diferensiasi & kuis'
+          ]
+        },
+        points: [
+          'Secara sederhana: program komputer cerdas peniru kemampuan kognitif manusia (belajar dari pengalaman, pola, dan pemecahan masalah).',
+          'Penerapan guru sehari-hari: Google Gemini (modul & bahan ajar berdiferensiasi), Canva Magic Studio (poster edukasi), dan speech-to-text (evaluasi kelas).'
+        ],
+        content: `**Apa itu Artificial Intelligence?**
+Secara bahasa sederhana, Artificial Intelligence (Kecerdasan Artifisial / AI) adalah program komputer cerdas yang dirancang untuk meniru kemampuan kognitif manusia, seperti belajar dari pengalaman, mengenali pola, memecahkan masalah, dan mengambil kesimpulan.
+
+Secara teknis, AI adalah cabang ilmu komputer (*computer science*) yang menggunakan algoritma matematika dan komputasi statistik untuk memproses data masukan (*input*), mengekstraksi bobot probabilitas, dan menghasilkan luaran (*output*) berupa prediksi, klasifikasi, rekomendasi, atau konten baru.
+
+**Perbedaan Tingkatan AI:**
+1. **Artificial Intelligence (AI):** Payung besar teknologi komputer yang mampu melakukan tugas yang biasanya membutuhkan kecerdasan manusia.
+2. **Machine Learning (ML):** Bagian dari AI di mana sistem belajar otomatis dari kumpulan data tanpa harus diprogram secara kaku aturan demi aturan (*rule-based*).
+3. **Generative AI (Gen-AI):** Bagian mutakhir dari ML (sering menggunakan arsitektur *Transformer* seperti LLM Gemini, GPT, atau Claude) yang tidak hanya menganalisis data, melainkan *mampu menciptakan konten baru* orisinal (teks, gambar, audio, kode, dan skenario pembelajaran) berdasarkan instruksi (*prompt*) yang diberikan pengguna.
+
+**AI Tradisional vs AI Generatif:**
+- *AI Tradisional (Diskriminatif):* Membandingkan dan mengelompokkan data. Contoh: Filter spam email, rekomendasi video YouTube, atau fitur pendeteksi wajah di smartphone.
+- *AI Generatif:* Menghasilkan karya baru dari nol. Contoh: Menulis draf modul ajar, membuat cerita dongeng sejarah interaktif, atau merancang skrip permainan kuis.
+
+**Contoh AI dalam Kehidupan Sehari-hari & Profesi Guru:**
+- *Sehari-hari:* Google Maps (memprediksi rute tercepat), Siri/Google Assistant, dan terjemahan otomatis Google Translate.
+- *Profesi Guru:* Google Gemini / Gemini Canvas (menyusun rencana pembelajaran dan bahan ajar berdiferensiasi), Canva Magic Studio (membuat poster edukasi), dan speech-to-text saat mencatat evaluasi kelas.`
+      },
+      {
+        id: 3,
+        slideNumber: 3,
         title: 'Mitos vs. Realita Peran Guru',
         subtitle: 'AI Bukan Pengganti Guru, Melainkan Teknologi Pendukung Pendidikan',
         category: 'Transformasi Peran Guru',
@@ -101,135 +148,90 @@ export const PRESENTATION_DECKS: PresentationDeck[] = [
         ],
         accentColor: 'blue'
       },
-      {
-            id: 3,
-        slideNumber: 3,
-        title: 'Peluang 1 – AI Generatif: Dari Analisis Data ke Penciptaan Materi Kreatif',
-        subtitle: 'Mengubah Instruksi Menjadi Beragam Konten Pembelajaran',
-        category: 'Peluang Pemanfaatan AI',
-        keyIdea: 'AI Generatif mampu menciptakan konten baru berupa teks, gambar, dan audio berdasarkan pola yang dipelajari dari data. Guru berperan sebagai pengarah dan kurator hasil AI.',
-        cards: [
-          {
-            title: 'AI Tradisional',
-            description: 'Berfokus menganalisis data, mengenali pola, dan membantu pengambilan keputusan berdasarkan informasi yang tersedia.',
-            tag: 'Analisis Data'
-          },
-          {
-            title: 'AI Generatif',
-            description: 'Mampu menghasilkan konten baru seperti teks modul ajar, gambar visual, bahan presentasi, dan audio berdasarkan instruksi pengguna.',
-            tag: 'Kreasi Konten'
-          },
-          {
-            title: 'Interaksi Berbasis Prompt',
-            description: 'Guru memasukkan instruksi yang jelas untuk menghasilkan draf awal pembelajaran, kemudian mengkurasi dan menyempurnakan hasilnya.',
-            tag: 'Prompting'
-          }
-        ],
-        points: [
-          'Menyusun draf modul ajar secara lebih cepat.',
-          'Membuat ringkasan materi yang mudah dipahami siswa.',
-          'Menghasilkan bahan tayang presentasi secara terstruktur.',
-          'Membuat ilustrasi dan media visual pendukung pembelajaran.'
-        ],
-        accentColor: 'purple'
-      },
-      {
-            id: 4,
-        slideNumber: 4,
-        title: 'Peluang 2 – Otomatisasi Tugas Administratif & Asesmen Kelas',
-        subtitle: 'Mengurangi Pekerjaan Berulang dan Mempercepat Evaluasi Pembelajaran',
-        category: 'Efisiensi Kerja Guru',
-        keyIdea: 'AI dapat membantu guru menyelesaikan pekerjaan administratif berulang, mempercepat proses penilaian, dan merancang asesmen yang lebih bervariasi.',
-        cards: [
-          {
-            title: 'Otomatisasi Administrasi',
-            description: 'Membantu membuat dokumen kelas, menyusun laporan, dan mengelola data pengajaran sehingga guru dapat menghemat waktu.',
-            tag: 'Administrasi'
-          },
-          {
-            title: 'Penilaian & Umpan Balik',
-            description: 'Membantu mengoreksi soal pilihan ganda, isian singkat, serta memberikan masukan terhadap draf tulisan atau esai siswa.',
-            tag: 'Asesmen'
-          },
-          {
-            title: 'Evaluasi HOTS',
-            description: 'Mempercepat penyusunan variasi bank soal, kuis interaktif, dan soal Higher Order Thinking Skills sesuai tingkat berpikir siswa.',
-            tag: 'HOTS'
-          }
-        ],
-        points: [
-          'Pembuatan dokumen dan laporan kelas secara lebih efisien.',
-          'Pemberian umpan balik yang lebih cepat dengan pemeriksaan guru.',
-          'Pengembangan variasi soal untuk mengukur kemampuan berpikir tingkat tinggi.',
-          'Hasil penilaian AI tetap harus ditinjau dan diputuskan oleh guru.'
-        ],
-        accentColor: 'yellow'
-      },
-      {
-            id: 5,
-        slideNumber: 5,
-        title: 'Peluang 3 – Pembelajaran Adaptif & Personalisasi Skala Kelas',
-        subtitle: 'Mengakomodasi Perbedaan Kemampuan dan Kecepatan Belajar Siswa',
-        category: 'Pembelajaran Adaptif',
-        keyIdea: 'AI dapat mendukung pembelajaran yang lebih personal dengan membantu menyesuaikan tingkat kesulitan latihan dan menyediakan pendamping belajar sesuai kebutuhan siswa.',
-        cards: [
-          {
-            title: 'Solusi Kelas Multikemampuan',
-            description: 'Membantu guru menghadapi kelas dengan puluhan siswa yang memiliki kecepatan memahami materi dan kebutuhan belajar berbeda.',
-            tag: 'Diferensiasi'
-          },
-          {
-            title: 'Penyesuaian Pembelajaran',
-            description: 'Platform pembelajaran adaptif dapat menganalisis respons siswa dan menyesuaikan tingkat kesulitan latihan sesuai perkembangan masing-masing murid.',
-            tag: 'Adaptif'
-          },
-          {
-            title: 'Tutor Pendamping 24/7',
-            description: 'AI dapat menjadi asisten virtual yang membantu siswa memahami materi dan memecahkan masalah langkah demi langkah di luar jam tatap muka.',
-            tag: 'Tutor Virtual'
-          }
-        ],
-        points: [
-          'Mendukung pembelajaran sesuai kesiapan dan kecepatan belajar siswa.',
-          'Menyediakan latihan dengan tingkat kesulitan yang bervariasi.',
-          'Membantu siswa belajar dan bertanya di luar jam pembelajaran.',
-          'Guru tetap memantau proses dan memastikan arahan AI sesuai tujuan belajar.'
-        ],
-        accentColor: 'cyan'
-      },
-      {
-        id: 6,
-        slideNumber: 6,
-        title: 'Peluang 4 – Analisis Hasil Belajar & Aksesibilitas Pendidikan Inklusif',
-        subtitle: 'Membantu Guru Memahami Kemajuan Siswa dan Mengurangi Hambatan Belajar',
-        category: 'Analisis & Inklusivitas',
-        keyIdea: 'AI dapat membantu membaca pola hasil belajar, mendeteksi kesenjangan belajar, dan menyediakan dukungan aksesibilitas bagi siswa dengan kebutuhan yang beragam.',
-        cards: [
-          {
-            title: 'Learning Analytics',
-            description: 'AI membantu melacak pola nilai dan kemajuan siswa untuk menemukan kesenjangan belajar sejak dini serta memberikan rekomendasi tindak lanjut.',
-            tag: 'Analisis Belajar'
-          },
-          {
-            title: 'Speech-to-Text',
-            description: 'Fitur suara-ke-teks membantu siswa yang mengalami hambatan membaca atau disleksia dalam menyusun tugas dan esai.',
-            tag: 'Aksesibilitas'
-          },
-          {
-            title: 'Penerjemah Bahasa',
-            description: 'Penerjemah instan dan koreksi tata bahasa mendukung kelas multibahasa serta siswa yang sedang mempelajari bahasa kedua.',
-            tag: 'Inklusivitas'
-          }
-        ],
-        points: [
-          'Mendeteksi kesulitan belajar siswa berdasarkan pola hasil evaluasi.',
-          'Membantu guru menentukan kebutuhan pendampingan atau intervensi.',
-          'Mendukung siswa melalui fitur suara-ke-teks dan penerjemahan bahasa.',
-          'Membuka akses pembelajaran bagi siswa dengan latar belakang dan kebutuhan beragam.'
-        ],
-        accentColor: 'blue'
-      },
-      {
+     
+{
+  id: 4,
+  slideNumber: 4,
+  title: 'Cara Kerja AI: Bagaimana AI Bisa Menjawab Pertanyaan?',
+  subtitle: 'Mengenal Cara AI Belajar dan Menghasilkan Jawaban',
+  category: 'Mengenal Kecerdasan Buatan',
+  keyIdea: 'AI belajar dari banyak contoh informasi, mengenali pola, kemudian menggunakan pola tersebut untuk menghasilkan jawaban sesuai perintah atau pertanyaan pengguna.',
+  cards: [
+    {
+      title: 'Belajar dari Data',
+      description: 'AI mempelajari banyak informasi dari buku, artikel, gambar, dan berbagai sumber digital sebagai bahan latihan.',
+      tag: 'Belajar'
+    },
+    {
+      title: 'Mengenali Pola',
+      description: 'AI mempelajari hubungan antara kata, gambar, dan informasi sehingga dapat memahami pola dari pertanyaan yang diberikan.',
+      tag: 'Mengenali'
+    },
+    {
+      title: 'Menghasilkan Jawaban',
+      description: 'Ketika guru memberikan pertanyaan, AI menyusun jawaban berdasarkan pola dan informasi yang telah dipelajarinya.',
+      tag: 'Menjawab'
+    }
+  ],
+  accentColor: 'yellow'
+},
+{
+  id: 5,
+  slideNumber: 5,
+  title: 'Peluang 1 – AI Membantu Memahami Kebutuhan Siswa',
+  subtitle: 'Mengenali Perbedaan Kemampuan dan Kesulitan Belajar',
+  category: 'Pembelajaran Berpusat pada Siswa',
+  keyIdea: 'Setiap siswa memiliki kemampuan dan kesulitan belajar yang berbeda. AI dapat membantu guru mengenali kebutuhan tersebut dan menyiapkan pendampingan yang lebih sesuai.',
+  cards: [
+    {
+      title: 'Mengenali Kesulitan Siswa',
+      description: 'Membantu guru menemukan materi yang sering belum dipahami siswa berdasarkan hasil latihan dan jawaban mereka.',
+      tag: 'Deteksi Kesulitan'
+    },
+    {
+      title: 'Latihan Sesuai Kemampuan',
+      description: 'Membantu membuat latihan dengan tingkat kesulitan berbeda, mulai dari soal mudah hingga soal yang lebih menantang.',
+      tag: 'Latihan Bertahap'
+    },
+    {
+      title: 'Pendamping Belajar',
+      description: 'AI dapat membantu siswa mendapatkan penjelasan tambahan ketika mereka belum memahami materi pelajaran.',
+      tag: 'Belajar Mandiri'
+    }
+  ],
+  accentColor: 'cyan'
+},
+{
+  id: 6,
+  slideNumber: 6,
+  title: 'Peluang 2 – AI Membuat Pembelajaran Lebih Menarik',
+  subtitle: 'Menghadirkan Pengalaman Belajar yang Lebih Kreatif dan Interaktif',
+  category: 'Kreativitas Pembelajaran',
+  keyIdea: 'AI dapat membantu guru menghadirkan pengalaman belajar yang berbeda melalui cerita, simulasi, permainan, dan contoh nyata sehingga siswa lebih tertarik mengikuti pembelajaran.',
+  points: [
+    'Materi yang sulit dapat disampaikan melalui cerita sederhana.',
+    'Siswa dapat belajar melalui contoh dan situasi kehidupan nyata.',
+    'Permainan dan tantangan dapat meningkatkan keterlibatan siswa.',
+    'Guru tetap mengarahkan kegiatan agar sesuai tujuan pembelajaran.'
+  ],
+  accentColor: 'purple'
+},
+{
+  id: 7,
+  slideNumber: 7,
+  title: 'Peluang 3 – AI Membantu Guru Mengembangkan Ide dan Inovasi',
+  subtitle: 'Mengubah Ide Sederhana Menjadi Kegiatan Pembelajaran Bermakna',
+  category: 'Inovasi Pembelajaran',
+  keyIdea: 'AI dapat menjadi teman bertukar pikiran bagi guru untuk menemukan ide baru, mengembangkan kegiatan proyek, dan menghubungkan materi pelajaran dengan kehidupan sehari-hari.',
+  points: [
+    'AI membantu guru menemukan inspirasi pembelajaran baru.',
+    'Materi pelajaran dapat dikembangkan menjadi kegiatan proyek.',
+    'Siswa diajak belajar dari masalah yang ada di lingkungan sekitar.',
+    'Guru memilih dan menyesuaikan ide AI dengan kondisi sekolah.'
+  ],
+  accentColor: 'blue'
+},
+{
         id: 7,
         slideNumber: 7,
         title: 'Tantangan 1 – Kesenjangan Digital & Etika Informasi',
@@ -284,12 +286,6 @@ export const PRESENTATION_DECKS: PresentationDeck[] = [
             description: 'Guru dan siswa perlu berhati-hati agar tidak mengunggah data pribadi maupun informasi sensitif peserta didik ke platform AI publik.',
             tag: 'Perlindungan Data'
           }
-        ],
-        points: [
-          'Dorong siswa menjelaskan proses berpikir, bukan hanya memberikan jawaban akhir.',
-          'Gunakan tugas berbasis analisis, diskusi, presentasi, dan pemecahan masalah.',
-          'Ajarkan etika penggunaan AI dan kejujuran akademik.',
-          'Jangan memasukkan data pribadi atau informasi sensitif siswa ke layanan AI publik.'
         ],
         accentColor: 'yellow'
       },
@@ -469,7 +465,7 @@ export const PRESENTATION_DECKS: PresentationDeck[] = [
       {
         id: 5,
         slideNumber: 5,
-        title: 'Rumus Prompt Efektif GURITA (7P)',
+        title: 'Rumus Prompt Efektif',
         subtitle: 'Formula Praktis yang Mudah Diingat',
         category: 'Formula Prompt',
         keyIdea: 'PERAN + KONTEKS + TUGAS + DATA + BATASAN + FORMAT OUTPUT + KRITERIA KUALITAS.',

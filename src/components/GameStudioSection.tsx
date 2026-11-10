@@ -741,7 +741,7 @@ Mohon hasilkan sekarang kode lengkap yang dapat saya jalankan dan mainkan di Gem
               Generator Prompt Game Interaktif
             </h2>
             <p className="text-base sm:text-lg text-slate-300 leading-relaxed text-balance">
-              Rancang game edukasi berbasis web untuk peserta didik di semua jenjang dengan 22 pilihan mekanisme permainan. Salin prompt lengkap yang dihasilkan dan gunakan langsung di <strong>Gemini Canvas</strong> atau <strong>Canva AI</strong>.
+              Rancang game edukasi berbasis web untuk peserta didik. Salin prompt lengkap yang dihasilkan dan gunakan langsung di <strong>Gemini Canvas</strong> atau <strong>Canva AI</strong>.
             </p>
           </div>
 
@@ -966,7 +966,7 @@ Mohon hasilkan sekarang kode lengkap yang dapat saya jalankan dan mainkan di Gem
                   {/* 8. Jenis Permainan (22 Options) */}
                   <div className="space-y-1">
                     <label className="text-slate-300 font-medium text-[#FFD166]">
-                      8. Jenis Permainan (22 Pilihan)
+                      8. Jenis Permainan
                     </label>
                     <select
                       value={config.gameType}
@@ -977,24 +977,13 @@ Mohon hasilkan sekarang kode lengkap yang dapat saya jalankan dan mainkan di Gem
                       <option value="Spin the Wheel">2. Spin the Wheel (Roda Keberuntungan)</option>
                       <option value="Ular Tangga">3. Ular Tangga</option>
                       <option value="Drag and Drop">4. Drag and Drop</option>
-                      <option value="Memory Game">5. Memory Game (Pembalik Kartu Pasangan)</option>
-                      <option value="Who Wants to Be a Millionaire">6. Who Wants to Be a Millionaire</option>
-                      <option value="Clash of Champions">7. Clash of Champions (Adu Nalar Edukasi)</option>
-                      <option value="RPG Edukasi">8. RPG Edukasi (Petualangan Karakter)</option>
-                      <option value="Adventure Game">9. Adventure Game</option>
-                      <option value="Escape Room">10. Escape Room (Pecahkan Petunjuk)</option>
-                      <option value="Trivia Battle">11. Trivia Battle</option>
-                      <option value="Board Game">12. Board Game</option>
-                      <option value="Puzzle">13. Puzzle</option>
-                      <option value="Tebak Gambar">14. Tebak Gambar</option>
-                      <option value="Susun Kata">15. Susun Kata</option>
-                      <option value="Word Search">16. Word Search (Cari Kata)</option>
-                      <option value="Matching Game">17. Matching Game</option>
-                      <option value="Tower Defense Edukasi">18. Tower Defense Edukasi</option>
-                      <option value="Simulation Game">19. Simulation Game</option>
-                      <option value="Game Berbasis Cerita">20. Game Berbasis Cerita</option>
-                      <option value="Platformer Edukasi">21. Platformer Edukasi</option>
-                      <option value="Pilihan jenis lainnya">22. Pilihan jenis lainnya...</option>
+                      <option value="Who Wants to Be a Millionaire">5. Who Wants to Be a Millionaire</option>
+                      <option value="Clash of Champions">6. Clash of Champions (Adu Nalar Edukasi)</option>
+                      <option value="Susun Kata">7. Susun Kata</option>
+                      <option value="Word Search">8. Word Search (Cari Kata)</option>
+                      <option value="Matching Game">9. Matching Game</option>
+                      <option value="Game Berbasis Cerita">10. Game Berbasis Cerita</option>
+                      <option value="Pilihan jenis lainnya">11. Pilihan jenis lainnya...</option>
                     </select>
                   </div>
 
