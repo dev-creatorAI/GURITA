@@ -56,14 +56,6 @@ export const Hero: React.FC<HeroProps> = ({ onStartExploration, onTryGame }) => 
                 <span>Mulai Eksplorasi</span>
                 <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
               </button>
-
-              <button
-                onClick={onTryGame}
-                className="w-full sm:w-auto px-6 py-3.5 text-sm sm:text-base font-semibold text-slate-200 bg-[#0E223D]/80 border border-[#2979FF]/30 rounded-xl hover:bg-[#122A4E] hover:border-[#00E5FF]/50 active:scale-95 transition-all flex items-center justify-center gap-2.5 cursor-pointer"
-              >
-                <Play className="w-4 h-4 text-[#FFD166] fill-[#FFD166]" />
-                <span>Coba Game Edukasi</span>
-              </button>
             </div>
           </div>
 

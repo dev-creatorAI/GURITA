@@ -94,18 +94,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigateToStudio }) => {
           })}
         </nav>
 
-        {/* Zone 3: 1 Primary Action */}
-        <div className="hidden sm:flex items-center gap-3 shrink-0">
-          <button
-            onClick={onNavigateToStudio}
-            className="flex items-center gap-2 px-4 py-2 text-xs md:text-sm font-semibold text-white bg-gradient-to-r from-[#2979FF] to-[#00E5FF] rounded-xl hover:shadow-lg hover:shadow-[#2979FF]/30 active:scale-95 transition-all whitespace-nowrap shrink-0 cursor-pointer"
-          >
-            <Sparkles className="w-4 h-4 text-[#FFD166]" />
-            <span>Buka Game Studio</span>
-            <ArrowRight className="w-3.5 h-3.5" />
-          </button>
-        </div>
-
         {/* Mobile menu trigger */}
         <div className="flex lg:hidden items-center">
           <button
@@ -162,18 +150,6 @@ export const Navbar: React.FC<NavbarProps> = ({ onNavigateToStudio }) => {
               );
             })}
           </nav>
-          <div className="pt-2">
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                onNavigateToStudio();
-              }}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-[#2979FF] to-[#00E5FF] rounded-xl shadow-md cursor-pointer"
-            >
-              <Sparkles className="w-4 h-4 text-[#FFD166]" />
-              <span>Buka Game Studio</span>
-            </button>
-          </div>
         </div>
       )}
     </header>

@@ -64,17 +64,10 @@ export const PRESENTATION_DECKS: PresentationDeck[] = [
         subtitle: 'Membedah Peluang, Transformasi Pedagogis, dan Tantangan Etika di Ruang Kelas Modern',
         category: 'Judul & Pertanyaan Pemantik',
         keyIdea: 'Teknologi berkembang pesat, tetapi apakah cara kita mengajar akan tetap sama lima tahun dari sekarang? AI berpotensi mengubah cara guru merancang, melaksanakan, dan mengevaluasi pembelajaran.',
-        cards: [
-          {
-            title: 'Pertanyaan Pemantik',
-            description: 'Teknologi berkembang pesat, tetapi apakah cara kita mengajar akan tetap sama 5 tahun dari sekarang? Akankah AI mengubah peran guru di kelas?',
-            tag: 'Mari Berdiskusi'
-          }
-        ],
         points: [
           'Peluang pemanfaatan AI dalam dunia pendidikan.',
           'Transformasi peran dan praktik pedagogis guru.',
-          'Tantangan etika dalam penggunaan AI di ruang kelas modern.'
+          'Tantangan etika dalam penggunaan AI di ruang kelas.'
         ],
         accentColor: 'cyan'
       },
