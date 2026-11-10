@@ -50,464 +50,331 @@ export const PRESENTATION_DECKS: PresentationDeck[] = [
   {
     id: 'materi-1',
     title: 'Mengenal Artificial Intelligence',
-    subtitle: 'Memahami, Memanfaatkan, dan Menggunakan AI secara Bertanggung Jawab',
-    description: 'Panduan fundamental kecerdasan artifisial bagi guru dan pendidik di semua jenjang (PAUD/TK, SD, SMP, SMA, SMK, dan Pendidikan Khusus): prinsip kerja, ragam penerapan, peluang, risiko halusinasi, verifikasi 5 langkah, dan etika profesi.',
-    totalSlides: 19,
+    subtitle: 'Peluang, Tantangan, dan Etika Pemanfaatan AI untuk Pendidik Masa Kini',
+    description: 'Panduan komprehensif kecerdasan artifisial bagi pendidik: mitos vs fakta pergeseran peran guru, 4 alur peluang dan ragam alat AI, mitigasi halusinasi, perlindungan data, hingga prinsip Human-in-the-Loop.',
+    totalSlides: 10,
     estimatedTime: '25 Menit',
     iconName: 'Compass',
     accent: 'cyan',
     slides: [
       {
-        id: 1,
+            id: 1,
         slideNumber: 1,
-        title: 'Mengenal Artificial Intelligence (AI)',
-        subtitle: 'Memahami, Memanfaatkan, dan Menggunakan AI secara Bertanggung Jawab',
-        category: 'Sampul Presentasi',
-        keyIdea: 'AI adalah mitra cerdas untuk memperkaya daya kreasi pendidik, bukan pengganti peran luhur guru.',
+        title: 'Benarkah AI Akan Mengubah Cara Guru Mengajar? Peluang dan Tantangannya',
+        subtitle: 'Membedah Peluang, Transformasi Pedagogis, dan Tantangan Etika di Ruang Kelas Modern',
+        category: 'Judul & Pertanyaan Pemantik',
+        keyIdea: 'Teknologi berkembang pesat, tetapi apakah cara kita mengajar akan tetap sama lima tahun dari sekarang? AI berpotensi mengubah cara guru merancang, melaksanakan, dan mengevaluasi pembelajaran.',
         cards: [
           {
-            title: 'Kreatif',
-            description: 'Melahirkan ide media & skenario pembelajaran aktif lintas jenjang.',
-            tag: 'Pilar 1'
-          },
-          {
-            title: 'Adaptif',
-            description: 'Menjawab keberagaman kebutuhan peserta didik di era digital.',
-            tag: 'Pilar 2'
-          },
-          {
-            title: 'Bertanggung Jawab',
-            description: 'Menegakkan etika, privasi, dan validasi kebenaran fakta.',
-            tag: 'Pilar 3'
+            title: 'Pertanyaan Pemantik',
+            description: 'Teknologi berkembang pesat, tetapi apakah cara kita mengajar akan tetap sama 5 tahun dari sekarang? Akankah AI mengubah peran guru di kelas?',
+            tag: 'Mari Berdiskusi'
           }
+        ],
+        points: [
+          'Peluang pemanfaatan AI dalam dunia pendidikan.',
+          'Transformasi peran dan praktik pedagogis guru.',
+          'Tantangan etika dalam penggunaan AI di ruang kelas modern.'
         ],
         accentColor: 'cyan'
       },
       {
-        id: 2,
+            id: 2,
         slideNumber: 2,
-        title: 'Tujuan Pembelajaran Sesi Ini',
-        subtitle: 'Kompetensi Literasi AI untuk Guru di Semua Jenjang Pendidikan',
-        category: 'Tujuan Belajar',
-        keyIdea: 'Guru memiliki pemahaman konseptual, kepekaan kritis, dan kecakapan praktis dalam mengadopsi AI di lingkungan satuan pendidikan.',
+        title: 'Mitos vs. Realita Peran Guru',
+        subtitle: 'AI Bukan Pengganti Guru, Melainkan Teknologi Pendukung Pendidikan',
+        category: 'Transformasi Peran Guru',
+        keyIdea: 'AI hadir untuk memberdayakan guru dan meringankan pekerjaan rutin. Mesin dapat mengolah pola data, tetapi tidak memiliki kesadaran, empati, atau pemahaman emosional sejati.',
+        comparison: {
+          titleLeft: 'Keterbatasan AI',
+          itemsLeft: [
+            'AI memprediksi kata dan pola berdasarkan data yang dipelajari.',
+            'AI tidak memiliki kesadaran dan empati manusia.',
+            'AI tidak mempunyai pemahaman emosional sejati.',
+            'AI tidak dapat menggantikan keteladanan dan hubungan manusiawi.'
+          ],
+          titleRight: 'Keunggulan Manusia',
+          itemsRight: [
+            'Guru membangun hubungan emosional dengan siswa.',
+            'Guru membimbing karakter dan nilai moral.',
+            'Guru memahami kondisi dan kebutuhan peserta didik.',
+            'Guru menjadi fasilitator dan desainer pengalaman belajar.'
+          ]
+        },
         points: [
-          'Memahami konsep dasar AI dan perbedaannya dengan sistem komputer konvensional.',
-          'Mengenali aneka penerapan AI dalam administrasi, materi ajar, dan asesmen di berbagai jenjang.',
-          'Mengetahui keterbatasan alami AI (halusinasi, bias data, dan kesalahan konteks).',
-          'Mampu memverifikasi keakuratan informasi sebelum disajikan kepada peserta didik.',
-          'Menerapkan etika integritas akademik, perlindungan data pribadi, dan hak cipta.'
+          'AI membantu meringankan beban kerja rutin bagi lebih dari 3,36 juta guru di Indonesia.',
+          'Pergeseran peran: dari penyampai materi satu arah menjadi fasilitator belajar.',
+          'Guru bertransformasi menjadi mentor karakter dan desainer pengalaman kelas.'
         ],
         accentColor: 'blue'
       },
       {
-        id: 3,
+            id: 3,
         slideNumber: 3,
-        title: 'Apa Itu Artificial Intelligence?',
-        subtitle: 'Definisi Sederhana & Dekat dengan Keseharian',
-        category: 'Konsep Dasar',
-        keyIdea: 'AI adalah bidang ilmu komputer yang merancang sistem agar mampu meniru kemampuan kognitif manusia seperti mengenali pola, memecahkan masalah, dan belajar dari pengalaman.',
+        title: 'Peluang 1 – AI Generatif: Dari Analisis Data ke Penciptaan Materi Kreatif',
+        subtitle: 'Mengubah Instruksi Menjadi Beragam Konten Pembelajaran',
+        category: 'Peluang Pemanfaatan AI',
+        keyIdea: 'AI Generatif mampu menciptakan konten baru berupa teks, gambar, dan audio berdasarkan pola yang dipelajari dari data. Guru berperan sebagai pengarah dan kurator hasil AI.',
         cards: [
           {
-            title: 'Analogi Sederhana',
-            description: 'AI ibarat asisten magang yang telah membaca jutaan buku: sangat terampil menyusun kata dan pola, namun tidak memiliki kesadaran emosional dan penalaran moral.',
-            tag: 'Analogi'
+            title: 'AI Tradisional',
+            description: 'Berfokus menganalisis data, mengenali pola, dan membantu pengambilan keputusan berdasarkan informasi yang tersedia.',
+            tag: 'Analisis Data'
           },
           {
-            title: 'Inti Kemampuan',
-            description: 'Bukan "berpikir" seperti otak biologis, melainkan mengenali keteraturan data statistik dalam skala raksasa dengan kecepatan luar biasa.',
-            tag: 'Mekanisme'
+            title: 'AI Generatif',
+            description: 'Mampu menghasilkan konten baru seperti teks modul ajar, gambar visual, bahan presentasi, dan audio berdasarkan instruksi pengguna.',
+            tag: 'Kreasi Konten'
+          },
+          {
+            title: 'Interaksi Berbasis Prompt',
+            description: 'Guru memasukkan instruksi yang jelas untuk menghasilkan draf awal pembelajaran, kemudian mengkurasi dan menyempurnakan hasilnya.',
+            tag: 'Prompting'
           }
+        ],
+        points: [
+          'Menyusun draf modul ajar secara lebih cepat.',
+          'Membuat ringkasan materi yang mudah dipahami siswa.',
+          'Menghasilkan bahan tayang presentasi secara terstruktur.',
+          'Membuat ilustrasi dan media visual pendukung pembelajaran.'
         ],
         accentColor: 'purple'
       },
       {
-        id: 4,
+            id: 4,
         slideNumber: 4,
-        title: 'AI di Sekitar Kita',
-        subtitle: 'Teknologi yang Tanpa Disadari Telah Kita Gunakan',
-        category: 'Penerapan Sehari-hari',
-        keyIdea: 'AI telah lama terintegrasi dalam gawai dan aplikasi yang mendampingi aktivitas harian kita.',
+        title: 'Peluang 2 – Otomatisasi Tugas Administratif & Asesmen Kelas',
+        subtitle: 'Mengurangi Pekerjaan Berulang dan Mempercepat Evaluasi Pembelajaran',
+        category: 'Efisiensi Kerja Guru',
+        keyIdea: 'AI dapat membantu guru menyelesaikan pekerjaan administratif berulang, mempercepat proses penilaian, dan merancang asesmen yang lebih bervariasi.',
         cards: [
           {
-            title: 'Mesin Pencari Informasi',
-            description: 'Pencarian Google memprediksi kata kunci dan menyaring artikel relevan.',
-            tag: 'Search'
+            title: 'Otomatisasi Administrasi',
+            description: 'Membantu membuat dokumen kelas, menyusun laporan, dan mengelola data pengajaran sehingga guru dapat menghemat waktu.',
+            tag: 'Administrasi'
           },
           {
-            title: 'Rekomendasi Video',
-            description: 'Algoritma YouTube & TikTok mempersonalisasi konten sesuai minat tontonan.',
-            tag: 'Streaming'
+            title: 'Penilaian & Umpan Balik',
+            description: 'Membantu mengoreksi soal pilihan ganda, isian singkat, serta memberikan masukan terhadap draf tulisan atau esai siswa.',
+            tag: 'Asesmen'
           },
           {
-            title: 'Penerjemah Bahasa',
-            description: 'Google Translate memahami tata bahasa konteks antarbangsa secara instan.',
-            tag: 'Bahasa'
-          },
-          {
-            title: 'Asisten Virtual & Keyboard',
-            description: 'Siri, Google Assistant, dan fitur predictive text di smartphone.',
-            tag: 'Harian'
-          },
-          {
-            title: 'Pengenalan Wajah & Objek',
-            description: 'Face unlock kamera ponsel dan Google Lens untuk mengenali tanaman/buku.',
-            tag: 'Vision'
-          },
-          {
-            title: 'Pembuatan Konten Otomatis',
-            description: 'Generator teks, ilustrasi grafis, dan pembuat ringkasan otomatis.',
-            tag: 'Generatif'
+            title: 'Evaluasi HOTS',
+            description: 'Mempercepat penyusunan variasi bank soal, kuis interaktif, dan soal Higher Order Thinking Skills sesuai tingkat berpikir siswa.',
+            tag: 'HOTS'
           }
+        ],
+        points: [
+          'Pembuatan dokumen dan laporan kelas secara lebih efisien.',
+          'Pemberian umpan balik yang lebih cepat dengan pemeriksaan guru.',
+          'Pengembangan variasi soal untuk mengukur kemampuan berpikir tingkat tinggi.',
+          'Hasil penilaian AI tetap harus ditinjau dan diputuskan oleh guru.'
         ],
         accentColor: 'yellow'
       },
       {
-        id: 5,
+            id: 5,
         slideNumber: 5,
-        title: 'Mengenal Jenis-Jenis AI',
-        subtitle: 'Klasifikasi Sederhana Berdasarkan Fungsinya',
-        category: 'Klasifikasi AI',
-        keyIdea: 'Membedakan AI analitis tradisional dengan AI generatif modern membantu guru menentukan alat yang tepat.',
+        title: 'Peluang 3 – Pembelajaran Adaptif & Personalisasi Skala Kelas',
+        subtitle: 'Mengakomodasi Perbedaan Kemampuan dan Kecepatan Belajar Siswa',
+        category: 'Pembelajaran Adaptif',
+        keyIdea: 'AI dapat mendukung pembelajaran yang lebih personal dengan membantu menyesuaikan tingkat kesulitan latihan dan menyediakan pendamping belajar sesuai kebutuhan siswa.',
         cards: [
           {
-            title: 'AI Prediktif & Klasifikasi',
-            description: 'Menganalisis data lampau untuk mengelompokkan atau menebak tren. Contoh: filter spam email, deteksi presensi wajah murid, prediksi cuaca.',
-            tag: 'AI Tradisional'
+            title: 'Solusi Kelas Multikemampuan',
+            description: 'Membantu guru menghadapi kelas dengan puluhan siswa yang memiliki kecepatan memahami materi dan kebutuhan belajar berbeda.',
+            tag: 'Diferensiasi'
           },
           {
-            title: 'Generative AI (AI Generatif)',
-            description: 'Menciptakan karya atau konten baru yang belum pernah ada sebelumnya berdasarkan prompt. Contoh: teks modul ajar, poster, kuis, kode pemrograman.',
-            tag: 'AI Generatif'
+            title: 'Penyesuaian Pembelajaran',
+            description: 'Platform pembelajaran adaptif dapat menganalisis respons siswa dan menyesuaikan tingkat kesulitan latihan sesuai perkembangan masing-masing murid.',
+            tag: 'Adaptif'
           },
           {
-            title: 'AI Berbasis Aturan (Rule-Based)',
-            description: 'Bekerja mengikuti alur logika baku IF-THEN yang telah diprogram manusia. Contoh: kalkulator otomatis dan sistem penentu kelulusan administrasi.',
-            tag: 'Sistem Pakar'
+            title: 'Tutor Pendamping 24/7',
+            description: 'AI dapat menjadi asisten virtual yang membantu siswa memahami materi dan memecahkan masalah langkah demi langkah di luar jam tatap muka.',
+            tag: 'Tutor Virtual'
           }
+        ],
+        points: [
+          'Mendukung pembelajaran sesuai kesiapan dan kecepatan belajar siswa.',
+          'Menyediakan latihan dengan tingkat kesulitan yang bervariasi.',
+          'Membantu siswa belajar dan bertanya di luar jam pembelajaran.',
+          'Guru tetap memantau proses dan memastikan arahan AI sesuai tujuan belajar.'
         ],
         accentColor: 'cyan'
       },
       {
         id: 6,
         slideNumber: 6,
-        title: 'Bagaimana AI Bekerja?',
-        subtitle: 'Alur Pemrosesan dari Masukan hingga Validasi Manusia',
-        category: 'Arsitektur Kerja',
-        keyIdea: 'AI memproses masukan melalui jaringan bobot matematis, tetapi keputusan akhir selalu berada di tangan guru.',
-        diagram: {
-          steps: [
-            {
-              number: '01',
-              title: 'Masukan (Input/Prompt)',
-              desc: 'Guru memberikan instruksi, konteks, materi ajar satuan pendidikan, batasan, dan format yang diinginkan.'
-            },
-            {
-              number: '02',
-              title: 'Pemrosesan Model AI',
-              desc: 'Model AI memecah teks menjadi token, mencocokkan pola bahasa statistik, dan merangkai probabilitas kata.'
-            },
-            {
-              number: '03',
-              title: 'Keluaran (Output)',
-              desc: 'Sistem menghasilkan draf teks, butir soal, ide permainan, atau kode tampilan.'
-            },
-            {
-              number: '04',
-              title: 'Pemeriksaan Guru (Human-in-the-Loop)',
-              desc: 'Guru membaca kritis, memverifikasi fakta kurikulum, dan menyesuaikan dengan psikologi peserta didik.',
-              isHuman: true
-            }
-          ],
-          note: 'Catatan: Diagram ini merupakan gambaran fungsional pembelajaran mesin dan bukan satu-satunya arsitektur seluruh ragam AI.'
-        },
+        title: 'Peluang 4 – Analisis Hasil Belajar & Aksesibilitas Pendidikan Inklusif',
+        subtitle: 'Membantu Guru Memahami Kemajuan Siswa dan Mengurangi Hambatan Belajar',
+        category: 'Analisis & Inklusivitas',
+        keyIdea: 'AI dapat membantu membaca pola hasil belajar, mendeteksi kesenjangan belajar, dan menyediakan dukungan aksesibilitas bagi siswa dengan kebutuhan yang beragam.',
+        cards: [
+          {
+            title: 'Learning Analytics',
+            description: 'AI membantu melacak pola nilai dan kemajuan siswa untuk menemukan kesenjangan belajar sejak dini serta memberikan rekomendasi tindak lanjut.',
+            tag: 'Analisis Belajar'
+          },
+          {
+            title: 'Speech-to-Text',
+            description: 'Fitur suara-ke-teks membantu siswa yang mengalami hambatan membaca atau disleksia dalam menyusun tugas dan esai.',
+            tag: 'Aksesibilitas'
+          },
+          {
+            title: 'Penerjemah Bahasa',
+            description: 'Penerjemah instan dan koreksi tata bahasa mendukung kelas multibahasa serta siswa yang sedang mempelajari bahasa kedua.',
+            tag: 'Inklusivitas'
+          }
+        ],
+        points: [
+          'Mendeteksi kesulitan belajar siswa berdasarkan pola hasil evaluasi.',
+          'Membantu guru menentukan kebutuhan pendampingan atau intervensi.',
+          'Mendukung siswa melalui fitur suara-ke-teks dan penerjemahan bahasa.',
+          'Membuka akses pembelajaran bagi siswa dengan latar belakang dan kebutuhan beragam.'
+        ],
         accentColor: 'blue'
       },
       {
         id: 7,
         slideNumber: 7,
-        title: 'Apa Itu AI Generatif?',
-        subtitle: 'Kekuatan Menciptakan Beragam Format Konten Baru',
-        category: 'Generative AI',
-        keyIdea: 'AI Generatif mampu mengombinasikan konsep-konsep pengetahuan menjadi wujud baru sesuai gaya dan nada yang diminta.',
+        title: 'Tantangan 1 – Kesenjangan Digital & Etika Informasi',
+        subtitle: 'Memahami Risiko Akses Teknologi, Halusinasi, dan Bias AI',
+        category: 'Tantangan Pemanfaatan AI',
+        keyIdea: 'Pemanfaatan AI perlu memperhatikan ketimpangan akses teknologi dan risiko informasi yang salah atau bias. Guru harus melakukan verifikasi sebelum menggunakan hasil AI dalam pembelajaran.',
         cards: [
           {
-            title: 'Teks Pendidikan',
-            description: 'Menulis draf narasi studi kasus, analogi sains sederhana, cerita edukatif anak, dan rubrik asesmen.',
-            tag: 'Text Generation'
+            title: 'Kesenjangan Akses (Digital Divide)',
+            description: 'Ketimpangan fasilitas perangkat teknologi dan konektivitas internet antarsekolah maupun antardaerah dapat membatasi kesempatan belajar.',
+            tag: 'Akses Digital'
           },
           {
-            title: 'Visual & Infografis',
-            description: 'Merancang tata letak poster, tata warna edukasi, diagram alur, dan inspirasi ilustrasi belajar.',
-            tag: 'Visual Assets'
+            title: 'Halusinasi AI',
+            description: 'AI generatif dapat menghasilkan informasi yang salah, tidak akurat, atau menyesatkan meskipun disampaikan dengan bahasa yang meyakinkan.',
+            tag: 'Verifikasi Fakta'
           },
           {
-            title: 'Struktur Permainan & Kode',
-            description: 'Menyusun bank soal terstruktur, aturan kuis, dan formula interaktif untuk web game.',
-            tag: 'Logic & Code'
-          },
-          {
-            title: 'Audio & Penuturan Narasi',
-            description: 'Mengonversi naskah menjadi rekaman suara penjelasan materi yang ramah bagi peserta didik.',
-            tag: 'Voice & Speech'
+            title: 'Bias Data Pelatihan',
+            description: 'Keluaran AI berpotensi merefleksikan prasangka atau ketidakadilan yang terdapat dalam data historis yang digunakan untuk melatih sistem.',
+            tag: 'Etika Informasi'
           }
+        ],
+        points: [
+          'Periksa kembali fakta dan informasi yang dihasilkan AI.',
+          'Bandingkan informasi dengan sumber yang tepercaya.',
+          'Waspadai bias dan ketidakadilan dalam keluaran AI.',
+          'Sesuaikan pemanfaatan AI dengan kondisi fasilitas dan akses teknologi sekolah.'
         ],
         accentColor: 'purple'
       },
       {
         id: 8,
         slideNumber: 8,
-        title: 'AI untuk Membantu Pekerjaan Guru',
-        subtitle: 'Katalog Dokumen & Media yang Dapat Didampingi AI',
-        category: 'Penerapan Praktis',
-        keyIdea: 'AI memangkas waktu kerja administratif rutin agar guru memiliki lebih banyak energi untuk mendampingi peserta didik secara personal.',
+        title: 'Tantangan 2 – Ketergantungan Berlebih & Integritas Akademik',
+        subtitle: 'Menjaga Kejujuran Akademik dan Kemampuan Berpikir Kritis Siswa',
+        category: 'Integritas Akademik',
+        keyIdea: 'Penggunaan AI tanpa pendampingan dapat mendorong perilaku menyalin jawaban, mengurangi proses berpikir mandiri, dan menimbulkan risiko terhadap privasi data siswa.',
         cards: [
-          { title: 'Modul Ajar / RPP', description: 'Menyusun rancangan pembelajaran berbasis Capaian Pembelajaran lintas fase.', tag: 'Administrasi' },
-          { title: 'Bahan Ajar Bertingkat', description: 'Membuat bacaan dengan variasi kosakata untuk murid cepat dan yang butuh bimbingan.', tag: 'Diferensiasi' },
-          { title: 'LKPD Interaktif', description: 'Lembar kerja observasi, penyelidikan sains, atau lembar diskusi kelompok.', tag: 'Aktivitas' },
-          { title: 'Slide Presentasi', description: 'Rangkuman poin inti materi yang terstruktur dengan hierarki jelas.', tag: 'Media' },
-          { title: 'Asesmen & Kisi-Kisi', description: 'Membuat butir soal bergradasi dari pemahaman dasar (LOTS) ke penalaran (HOTS).', tag: 'Evaluasi' },
-          { title: 'Rubrik Penilaian 1-4', description: 'Kriteria deskripsi performa autentik yang obyektif dan mudah dipahami murid.', tag: 'Asesmen' },
-          { title: 'Poster Edukasi', description: 'Media visual pesan motivasi belajar atau ringkasan materi pelajaran.', tag: 'Visual' },
-          { title: 'Permainan Edukasi', description: 'Kuis tebak kata, petualangan cerita, hingga turnamen kelas.', tag: 'Gamifikasi' }
+          {
+            title: 'Penyalahgunaan Tugas & Plagiarisme',
+            description: 'Siswa berisiko sekadar menyalin atau copy-paste jawaban yang dibuat AI tanpa memahami konsep dan proses penyelesaian tugas.',
+            tag: 'Integritas'
+          },
+          {
+            title: 'Pengikisan Berpikir Kritis',
+            description: 'Ketergantungan terhadap jawaban instan dapat mengurangi daya analisis mandiri dan kemampuan pemecahan masalah siswa.',
+            tag: 'Critical Thinking'
+          },
+          {
+            title: 'Privasi Data Siswa',
+            description: 'Guru dan siswa perlu berhati-hati agar tidak mengunggah data pribadi maupun informasi sensitif peserta didik ke platform AI publik.',
+            tag: 'Perlindungan Data'
+          }
         ],
-        accentColor: 'cyan'
+        points: [
+          'Dorong siswa menjelaskan proses berpikir, bukan hanya memberikan jawaban akhir.',
+          'Gunakan tugas berbasis analisis, diskusi, presentasi, dan pemecahan masalah.',
+          'Ajarkan etika penggunaan AI dan kejujuran akademik.',
+          'Jangan memasukkan data pribadi atau informasi sensitif siswa ke layanan AI publik.'
+        ],
+        accentColor: 'yellow'
       },
       {
         id: 9,
         slideNumber: 9,
-        title: 'AI dalam Perencanaan Pembelajaran',
-        subtitle: 'Brainstorming Ide & Strategi Pembelajaran Aktif',
-        category: 'Perencanaan',
-        keyIdea: 'Gunakan AI sebagai mitra curah pendapat (*brainstorming partner*) untuk menemukan ide apersepsi dan analogi segar.',
-        points: [
-          'Mengembangkan pertanyaan pemantik yang memicu rasa penasaran peserta didik di awal kelas.',
-          'Menghubungkan topik abstrak dengan peristiwa nyata di sekitar lingkungan kehidupan siswa.',
-          'Merumuskan variasi skenario berbasis masalah (PBL) atau proyek (PjBL) yang realistis dan kontekstual.',
-          'Menyiapkan rencana cadangan (*Plan B*) jika fasilitas laboratorium atau gawai sedang terkendala.'
+        title: 'Solusi – Pengawasan Pendidik (Human-in-the-Loop) & Literasi AI',
+        subtitle: 'AI Membantu, Guru Tetap Menentukan',
+        category: 'Solusi & Strategi',
+        keyIdea: 'AI adalah alat bantu, bukan pengambil keputusan akhir. Guru harus mengkurasi hasil AI, membangun literasi AI siswa, dan menjaga hubungan sosial-emosional dalam pembelajaran.',
+        diagram: {
+          steps: [
+            {
+              number: '1',
+              title: 'Input Prompt',
+              desc: 'Guru memberikan instruksi dan konteks pembelajaran kepada AI.',
+              isHuman: true
+            },
+            {
+              number: '2',
+              title: 'Output AI',
+              desc: 'AI menghasilkan draf materi, ide, informasi, atau aktivitas pembelajaran.',
+              isHuman: false
+            },
+            {
+              number: '3',
+              title: 'Validasi Guru',
+              desc: 'Guru memeriksa akurasi, menyesuaikan konteks, dan menyaring hasil AI secara etis.',
+              isHuman: true
+            },
+            {
+              number: '4',
+              title: 'Pembelajaran Kelas',
+              desc: 'Hasil yang telah dikurasi digunakan untuk mendukung pembelajaran yang bermakna dan manusiawi.',
+              isHuman: true
+            }
+          ],
+          note: 'Human-in-the-Loop: Guru tetap menjadi pengawas, kurator, dan penentu keputusan akhir dalam pemanfaatan AI.'
+        },
+        cards: [
+          {
+            title: 'Guru sebagai Penentu',
+            description: 'Seluruh hasil AI wajib dikurasi, diperiksa akurasinya, dan disaring oleh pendidik sebelum diberikan kepada siswa.',
+            tag: 'Human-in-the-Loop'
+          },
+          {
+            title: 'Membangun Literasi AI',
+            description: 'Siswa perlu memahami cara kerja AI, keterbatasannya, dan etika penggunaan teknologi secara bertanggung jawab untuk persiapan karier masa depan.',
+            tag: 'Literasi AI'
+          },
+          {
+            title: 'Hubungan Sosial-Emosional',
+            description: 'Interaksi manusiawi, empati, bimbingan, dan diskusi tatap muka tetap menjadi fondasi utama ruang kelas.',
+            tag: 'Sentuhan Manusia'
+          }
         ],
-        accentColor: 'blue'
+        accentColor: 'cyan'
       },
       {
         id: 10,
         slideNumber: 10,
-        title: 'AI untuk Media Pembelajaran',
-        subtitle: 'Menghidupkan Ruang Kelas dengan Format Visual & Naratif',
-        category: 'Media Pembelajaran',
-        keyIdea: 'Mengubah konsep buku teks yang kaku menjadi infografis, komik narasi, dan tantangan teka-teki yang menyenangkan.',
-        cards: [
-          {
-            title: 'Infografis Ringkas',
-            description: 'Merangkum rantai makanan, siklus alam, atau garis waktu sejarah dalam bagan alur yang bersih.',
-            tag: 'Infografis'
-          },
-          {
-            title: 'Cerita Edukasi & Roleplay',
-            description: 'Membuat cerita pendek kontekstual di mana murid berperan sebagai pemecah masalah.',
-            tag: 'Storytelling'
-          },
-          {
-            title: 'Game & Kuis Interaktif',
-            description: 'Merancang format roda keberuntungan, ular tangga konsep, dan teka-teki logika kelompok.',
-            tag: 'Game Builder'
-          }
-        ],
-        accentColor: 'yellow'
-      },
-      {
-        id: 11,
-        slideNumber: 11,
-        title: 'Peluang Besar AI dalam Pendidikan',
-        subtitle: 'Mengapa Guru Abad ke-21 Perlu Menguasai AI?',
-        category: 'Peluang & Manfaat',
-        keyIdea: 'AI bukan sekadar alat otomatisasi, melainkan akselerator pedagogis yang memperluas jangkauan kreativitas pendidik.',
-        points: [
-          'Efisiensi Waktu: Mengurangi beban pengetikan format perangkat ajar hingga 60%.',
-          'Kreativitas Tak Terbatas: Menemukan ratusan ide ice breaking dan analogi dalam hitungan menit.',
-          'Personalisasi Belajar: Membantu menyiapkan bahan remedi dan pengayaan secara spesifik.',
-          'Mendorong Kelas Aktif: Menghadirkan gamifikasi dan simulasi yang disukai generasi digital.',
-          'Penguatan Literasi Kritis: Menjadi bahan diskusi kelas tentang cara membedakan fakta vs opini buatan mesin.'
-        ],
-        accentColor: 'cyan'
-      },
-      {
-        id: 12,
-        slideNumber: 12,
-        title: 'AI Bukan Pengganti Guru!',
-        subtitle: 'Sentuhan Kemanusiaan yang Tak Tergantikan',
-        category: 'Refleksi Filosofis',
-        keyIdea: 'Pendidikan sejatinya adalah proses pembentukan karakter, empati, dan teladan kemanusiaan yang hanya bisa dilakukan oleh guru sejati.',
-        comparison: {
-          titleLeft: 'Apa yang Bisa Dilakukan AI',
-          itemsLeft: [
-            'Memproses ribuan teks referensi seketika',
-            'Menghasilkan draf materi dan butir pertanyaan',
-            'Memberikan alternatif ide secara cepat',
-            'Menjalankan logika pemformatan dokumen baku'
-          ],
-          titleRight: 'Kekuatan Mutlak Guru Manusia',
-          itemsRight: [
-            'Membaca tatapan mata murid yang sedang bersedih',
-            'Memberikan pelukan semangat dan motivasi moral',
-            'Menilai kejujuran dan kematangan sikap anak didik',
-            'Mengambil keputusan etis & kebijaksanaan pedagogis'
-          ]
-        },
-        accentColor: 'purple'
-      },
-      {
-        id: 13,
-        slideNumber: 13,
-        title: 'Keterbatasan & Risiko AI',
-        subtitle: 'Waspadai Jebakan Algoritma di Balik Jawaban Meyakinkan',
-        category: 'Keterbatasan AI',
-        keyIdea: 'AI tidak memiliki pemahaman makna sesungguhnya, melainkan memprediksi kata berdasarkan probabilitas statistik.',
-        cards: [
-          {
-            title: 'Halusinasi AI',
-            description: 'AI dapat mengarang fakta, tokoh sejarah, rumus, atau pasal hukum dengan nada kalimat yang sangat meyakinkan.',
-            tag: 'Halusinasi'
-          },
-          {
-            title: 'Bias Data & Stereotip',
-            description: 'Keluaran AI merefleksikan prasangka data internet masa lalu yang mungkin tidak adil bagi kelompok tertentu.',
-            tag: 'Bias'
-          },
-          {
-            title: 'Informasi Kedaluwarsa',
-            description: 'Model memiliki batas pemotongan data pelatihan sehingga belum tentu mengetahui regulasi kurikulum terbaru.',
-            tag: 'Outdated'
-          },
-          {
-            title: 'Kelemahan Konteks Lokal',
-            description: 'AI global terkadang kurang peka terhadap kearifan budaya daerah dan kurikulum nasional Indonesia.',
-            tag: 'Konteks'
-          }
-        ],
-        accentColor: 'yellow'
-      },
-      {
-        id: 14,
-        slideNumber: 14,
-        title: 'Mengapa Hasil AI Wajib Diverifikasi?',
-        subtitle: 'Prinsip Kritis Sebelum Membagikan Konten ke Murid',
-        category: 'Verifikasi Fakta',
-        keyIdea: 'Kredibilitas profesional guru dipertaruhkan setiap kali membagikan lembar belajar di ruang kelas.',
-        cards: [
-          {
-            title: 'Risiko Fatal Jika Lalai',
-            description: 'Peserta didik menyerap miskonsepsi sains atau fakta sejarah yang salah, yang sulit diperbaiki di kemudian hari.',
-            tag: 'Dampak Murid'
-          },
-          {
-            title: 'Prinsip Kehati-hatian',
-            description: 'Perlakukan setiap hasil AI sebagai "draf mentah pertama" yang selalu memerlukan kurasi dan pemeriksaan ulang oleh guru.',
-            tag: 'Sikap Guru'
-          }
-        ],
-        accentColor: 'blue'
-      },
-      {
-        id: 15,
-        slideNumber: 15,
-        title: '5 Langkah Praktis Verifikasi Hasil AI',
-        subtitle: 'Prosedur Cepat Memastikan Keabsahan Materi Ajar',
-        category: 'Metode Verifikasi',
-        keyIdea: 'Gunakan alur 5 langkah sistematis sebelum lembar belajar dicetak atau ditayangkan.',
-        points: [
-          '1. Periksa Klaim Utama: Garis bawahi angka, nama tokoh, tanggal, dan istilah teknis.',
-          '2. Cari Sumber Primer: Cek buku teks resmi Kemendikbudristek, jurnal ilmiah, atau ensiklopedia resmi.',
-          '3. Bandingkan Sumber: Konfirmasi minimal pada satu sumber tepercaya lain yang independen.',
-          '4. Periksa Tanggal & Konteks: Pastikan regulasi atau kurikulum masih berlaku pada jenjang yang diampu.',
-          '5. Koreksi atau Hapus: Jika sebuah klaim tidak dapat dibuktikan kebenarannya, buang segera.'
-        ],
-        accentColor: 'cyan'
-      },
-      {
-        id: 16,
-        slideNumber: 16,
-        title: 'Etika Penggunaan AI dalam Pendidikan',
-        subtitle: 'Menjaga Integritas, Privasi, dan Tanggung Jawab',
-        category: 'Etika & Kebijakan',
-        keyIdea: 'Pemanfaatan teknologi harus senantiasa berpijak pada prinsip etis yang melindungi martabat peserta didik.',
-        cards: [
-          {
-            title: 'Kejujuran & Transparansi',
-            description: 'Terbuka saat memanfaatkan AI sebagai alat bantu perancang dan ajarkan murid etika atribusi.',
-            tag: 'Integritas'
-          },
-          {
-            title: 'Perlindungan Data Pribadi',
-            description: 'DILARANG keras mengunggah NIK, foto wajah murid, rekam medis, atau nilai pribadi ke prompt AI publik.',
-            tag: 'Privasi Murid'
-          },
-          {
-            title: 'Hak Cipta & Orisinalitas',
-            description: 'Hormati karya pencipta asli dan sertakan kredit sumber rujukan utama.',
-            tag: 'Hak Cipta'
-          },
-          {
-            title: 'Pengawasan Manusia (Accountability)',
-            description: 'Guru adalah penanggung jawab penuh materi ajar di kelas, bukan aplikasi AI.',
-            tag: 'Tanggung Jawab'
-          }
-        ],
-        accentColor: 'purple'
-      },
-      {
-        id: 17,
-        slideNumber: 17,
-        title: 'Contoh Praktik yang Aman vs Berisiko',
-        subtitle: 'Panduan Praktis di Lingkungan Satuan Pendidikan',
-        category: 'Studi Komparasi',
-        keyIdea: 'Kenali batasan jelas antara pemanfaatan yang produktif dengan tindakan yang membahayakan privasi dan kualitas belajar.',
-        comparison: {
-          titleLeft: 'Praktik Aman & Bertanggung Jawab',
-          itemsLeft: [
-            'Meminta ide variasi kegiatan eksperimen sains atau proyek',
-            'Menyusun draf soal dengan Capaian Pembelajaran umum',
-            'Menggunakan data anonim tanpa identitas siswa',
-            'Memeriksa kembali kesesuaian jawaban dengan buku teks resmi'
-          ],
-          titleRight: 'Praktik Berisiko (Hindari)',
-          itemsRight: [
-            'Mengunggah data pribadi dan rapor murid ke layanan AI publik',
-            'Menyalin-menempel mentah soal tanpa membaca isinya',
-            'Menjadikan AI sebagai penilai mutlak karakter murid',
-            'Membiarkan murid menggunakan AI tanpa panduan etika'
-          ]
-        },
-        accentColor: 'yellow'
-      },
-      {
-        id: 18,
-        slideNumber: 18,
-        title: 'Ringkasan: 5 Pesan Utama Mengenal AI',
-        subtitle: 'Rangkuman Esensial Modul 1',
-        category: 'Rangkuman',
-        keyIdea: 'Pegang lima prinsip ini sebagai panduan melangkah bersama kecerdasan artifisial di sekolah.',
-        points: [
-          '1. AI adalah alat pengungkit produktivitas dan kreativitas guru, bukan pengambil keputusan pedagogis.',
-          '2. Kualitas masukan menentukan kualitas keluaran (Garbage In, Garbage Out).',
-          '3. Verifikasi fakta adalah kewajiban mutlak sebelum menyebarkan materi ajar.',
-          '4. Jaga kerahasiaan dan privasi data murid dengan tidak memasukkan data sensitif.',
-          '5. Keriangan belajar murid lahir dari interaksi manusiawi yang tulus bersama guru yang inspiratif.'
-        ],
-        accentColor: 'cyan'
-      },
-      {
-        id: 19,
-        slideNumber: 19,
-        title: 'Penutup: Kompas Guru Riang',
-        subtitle: 'Melangkah Bersama Menghidupkan Pembelajaran',
-        category: 'Inspirasi Penutup',
-        keyIdea: '"Gunakan AI untuk memperkuat kreativitas dan profesionalisme guru, bukan untuk menggantikan tanggung jawab manusia."',
+        title: 'Penutup & Refleksi Aksi Nyata',
+        subtitle: 'Teknologi Berkembang, Sentuhan Guru Tetap Menjadi Cahaya Pendidikan',
+        category: 'Penutup & Refleksi',
+        keyIdea: 'Teknologi dapat membantu memperkuat proses pendidikan, tetapi empati, keteladanan, dan semangat belajar yang ditularkan guru tetap menjadi bagian penting yang tidak tergantikan.',
         quote: {
           text: 'Teknologi akan terus berevolusi dengan kecepatan tinggi. Namun hangatnya senyum guru, empati bimbingan, dan nyala semangat belajar yang ditularkan di ruang kelas akan selalu menjadi lentera sejati bagi generasi penerus bangsa.',
-          author: 'GURITA — Guru Kreatif, Teknologi Adaptif, Siswa Inspiratif.'
+          author: 'Pesan untuk Pendidik'
         },
+        points: [
+          'Mulai memanfaatkan AI dari satu kebutuhan pembelajaran yang sederhana.',
+          'Periksa dan evaluasi hasil AI sebelum digunakan.',
+          'Gunakan teknologi untuk memperkuat kreativitas dan kualitas pembelajaran.',
+          'Tetap utamakan empati, karakter, dan hubungan manusiawi antara guru dan siswa.'
+        ],
         accentColor: 'cyan'
       }
-    ]
+    ],
   },
   {
     id: 'materi-2',

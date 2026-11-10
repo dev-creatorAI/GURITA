@@ -458,7 +458,7 @@ function buildMainDocumentSection(doc: ModulAjarDocument) {
   // ==========================================
   // BAGIAN I. INFORMASI UMUM
   // ==========================================
-  children.push(createHeading1('BAGIAN I. INFORMASI UMUM'));
+  children.push(createHeading1('INFORMASI UMUM'));
 
   const col1Width = 2600;
   const col2Width = PRINTABLE_WIDTH_DXA - col1Width; // 6188 dxa
@@ -500,7 +500,7 @@ function buildMainDocumentSection(doc: ModulAjarDocument) {
   // ==========================================
   // BAGIAN II. IDENTIFIKASI DAN DESAIN PEMBELAJARAN
   // ==========================================
-  children.push(createHeading1('BAGIAN II. IDENTIFIKASI DAN DESAIN PEMBELAJARAN'));
+  children.push(createHeading1('IDENTIFIKASI DAN DESAIN PEMBELAJARAN'));
 
   // 1. Identifikasi Peserta Didik
   children.push(createHeading2('1. Identifikasi Karakteristik & Kesiapan Peserta Didik'));
@@ -682,7 +682,7 @@ function buildMainDocumentSection(doc: ModulAjarDocument) {
   // ==========================================
   // BAGIAN III. LANGKAH-LANGKAH PEMBELAJARAN (TABEL 5 KOLOM)
   // ==========================================
-  children.push(createHeading1('BAGIAN III. LANGKAH-LANGKAH PEMBELAJARAN'));
+  children.push(createHeading1('LANGKAH-LANGKAH PEMBELAJARAN'));
   children.push(createParagraph(doc.langkahPembelajaran.asumsiWaktuText, { bold: true, color: COLOR_ACCENT_BLUE }));
 
   // Proportional Column Widths for 5 Columns on A4 Portrait:
@@ -760,7 +760,7 @@ function buildMainDocumentSection(doc: ModulAjarDocument) {
   // ==========================================
   // BAGIAN IV. ASESMEN PEMBELAJARAN
   // ==========================================
-  children.push(createHeading1('BAGIAN IV. ASESMEN PEMBELAJARAN'));
+  children.push(createHeading1('ASESMEN PEMBELAJARAN'));
 
   // Asesmen Tripartit Table
   const asmRows = [
@@ -871,7 +871,7 @@ function buildMainDocumentSection(doc: ModulAjarDocument) {
   // ==========================================
   // BAGIAN V. ALAT DAN SUMBER BELAJAR
   // ==========================================
-  children.push(createHeading1('BAGIAN V. ALAT DAN SUMBER BELAJAR'));
+  children.push(createHeading1('ALAT DAN SUMBER BELAJAR'));
   children.push(createParagraph('Alat dan Bahan Praktik:', { bold: true }));
   doc.alatDanSumberBelajar.alatDanBahan.forEach((a) => children.push(createBullet(a)));
 
@@ -893,7 +893,7 @@ function buildMainDocumentSection(doc: ModulAjarDocument) {
   // ==========================================
   // BAGIAN VI. REFLEKSI GURU DAN PESERTA DIDIK
   // ==========================================
-  children.push(createHeading1('BAGIAN VI. REFLEKSI GURU & PESERTA DIDIK'));
+  children.push(createHeading1('REFLEKSI GURU & PESERTA DIDIK'));
 
   children.push(createParagraph('Pertanyaan Refleksi Peserta Didik:', { bold: true, color: COLOR_ACCENT_BLUE }));
   doc.refleksi.refleksiPesertaDidik.forEach((rf) => children.push(createBullet(rf)));
@@ -908,7 +908,7 @@ function buildMainDocumentSection(doc: ModulAjarDocument) {
     const sa = doc.subjectAwareAnalysis;
     children.push(
       createHeading1(
-        `BAGIAN VII. LAMPIRAN MATEMATIKA, RUMUS & DATA (${(sa.domainNameId || 'Subject-Aware').toUpperCase()})`
+        `LAMPIRAN MATEMATIKA, RUMUS & DATA (${(sa.domainNameId || 'Subject-Aware').toUpperCase()})`
       )
     );
 
@@ -1032,8 +1032,8 @@ function buildMainDocumentSection(doc: ModulAjarDocument) {
   children.push(
     createHeading1(
       doc.subjectAwareAnalysis && doc.subjectAwareAnalysis.isQuantitative
-        ? 'BAGIAN VIII. PENGESAHAN DOKUMEN'
-        : 'BAGIAN VII. PENGESAHAN DOKUMEN'
+        ? ''
+        : ''
     )
   );
 

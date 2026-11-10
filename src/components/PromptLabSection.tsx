@@ -594,7 +594,27 @@ export const PromptLabSection: React.FC = () => {
                       type="text"
                       required
                       value={formInput.subject}
-                      onChange={(e) => setFormInput({ ...formInput, subject: e.target.value })}
+                      onChange={(e) => {
+                        const newSub = e.target.value;
+                        const isMath = newSub.toLowerCase().includes('matematika') || newSub.toLowerCase().includes('aljabar');
+                        const hasStaleMath =
+                          (formInput.studentCharacteristics || '').includes('aritmatika') ||
+                          (formInput.studentCharacteristics || '').includes('simbolik aljabar');
+                        if (!isMath && hasStaleMath) {
+                          setFormInput({
+                            ...formInput,
+                            subject: newSub,
+                            studentCharacteristics: '',
+                            priorKnowledge: '',
+                            specialLearningNeeds: '',
+                            facilitiesAndTools: (formInput.facilitiesAndTools || '').includes('timbangan peraga')
+                              ? ''
+                              : formInput.facilitiesAndTools
+                          });
+                        } else {
+                          setFormInput({ ...formInput, subject: newSub });
+                        }
+                      }}
                       placeholder="Matematika, Fisika, DKV, dll."
                       className="w-full px-3 py-2 rounded-xl bg-[#071426] border border-slate-700 text-slate-200 focus:border-[#00E5FF] focus:outline-none"
                     />

@@ -243,13 +243,34 @@ export function classifySubject(
 
   // 7. KIMIA
   if (subLower.includes('kimia')) {
-    const isQualitativeChemistry = ['alat laboratorium', 'keselamatan kerja', 'pencemaran lingkungan'].some((k) =>
-      topicLower.includes(k)
-    );
-    if (isQualitativeChemistry) {
-      return buildGenericQualitativeAnalysis(combined, subject, topic);
+    const isQuantitativeChemistry = [
+      'molaritas',
+      'molalitas',
+      'stoikiometri',
+      'konsentrasi larutan',
+      'konsentrasi',
+      'hitung',
+      'kalkulasi',
+      'ph asam basa',
+      'perhitungan ph',
+      'termokimia hitung',
+      'entalpi reaksi',
+      'laju reaksi hitung',
+      'kesetimbangan kimia hitung',
+      'tetapan kesetimbangan',
+      'hukum faraday',
+      'elektrolisis hitung',
+      'titrasi hitung',
+      'massa molar',
+      'mr',
+      'ar'
+    ].some((k) => topicLower.includes(k));
+
+    if (isQuantitativeChemistry) {
+      return buildChemistryAnalysis(combined);
     }
-    return buildChemistryAnalysis(combined);
+    // Jika materi/topik konseptual (struktur atom, ikatan kimia, tabel periodik, sifat materi, kimia hijau, dsb)
+    return buildChemistryQualitativeAnalysis(combined, topic);
   }
 
   // 8. MATEMATIKA
@@ -503,6 +524,17 @@ function buildPhysicsAnalysis(context: string): SubjectAwareAnalysis {
         { symbol: 'v', meaning: 'Kecepatan gerak benda', unit: 'm/s' },
         { symbol: 's', meaning: 'Jarak tempuh lintasan', unit: 'meter (m)' },
         { symbol: 't', meaning: 'Waktu tempuh perjalanan', unit: 'sekon (s)' }
+      ]
+    },
+    {
+      name: 'Persamaan Percepatan Rata-Rata (GLBB)',
+      latex: 'a = \\frac{\\Delta v}{\\Delta t} = \\frac{v_t - v_0}{t}',
+      textFallback: 'a = Δv / Δt = (vt - v0) / t',
+      variables: [
+        { symbol: 'a', meaning: 'Percepatan gerak benda', unit: 'm/s²' },
+        { symbol: 'v_t', meaning: 'Kecepatan akhir benda', unit: 'm/s' },
+        { symbol: 'v_0', meaning: 'Kecepatan awal benda', unit: 'm/s' },
+        { symbol: 't', meaning: 'Selang waktu gerak', unit: 'sekon (s)' }
       ]
     },
     {
@@ -842,8 +874,67 @@ function buildGenericQuantitativeAnalysis(context: string): SubjectAwareAnalysis
 // DOMAIN-SPECIFIC BUILDERS (KONSEPTUAL / NON-NUMERIK)
 // -------------------------------------------------------------
 
+function buildChemistryQualitativeAnalysis(context: string, topic: string): SubjectAwareAnalysis {
+  return {
+    domain: 'CHEMISTRY',
+    domainNameId: 'Kimia Konseptual & Struktur Materi (Non-Numerik)',
+    isQuantitative: false,
+    requiresFormulas: false,
+    requiresStepByStep: false,
+    requiresTables: false,
+    requiresCode: false,
+    confidenceScore: 0.98,
+    detectedCharacteristics: [
+      'Fokus pada pemahaman konsep struktur mikroskopis materi dan sifat kimiawi',
+      'TIDAK memaksakan perhitungan kuantitatif atau rumus stoikiometri',
+      'Menekankan pemodelan partikel (atom, molekul, ion) dan interaksi kimiawi',
+      'Pembelajaran berbasis visualisasi konseptual dan investigasi fenomena materi'
+    ],
+    nonNumericGuidance: {
+      conceptualFramework: `Pembelajaran materi "${topic}" berorientasi pada pemahaman konsep esensial struktur mikroskopis materi, sifat periodik, atau interaksi partikel tanpa beban perhitungan matematis yang tidak relevan.`,
+      keyConcepts: [
+        'Konsep Inti Materi: Partikel penyusun, konfigurasi elektron, atau interaksi kimiawi',
+        'Hubungan Struktur dan Sifat: Menghubungkan struktur mikroskopis dengan fenomena makroskopis yang teramati',
+        'Model & Representasi Visual: Penggunaan diagram partikel dan analogi konkret dalam kehidupan sehari-hari'
+      ],
+      caseStudyOrActivity:
+        'Aktivitas Investigasi Visual: Peserta didik membuat pemodelan struktur materi dengan media visual/sederhana, mendiskusikan karakteristiknya dalam kelompok, dan mempresentasikan hubungan struktur tersebut dengan fenomena kontekstual.'
+    }
+  };
+}
+
 function buildLanguageAnalysis(context: string, subject: string, topic: string): SubjectAwareAnalysis {
   const isProsedur = context.includes('prosedur') || topic.toLowerCase().includes('prosedur');
+  const isEksplanasi = context.includes('eksplanasi') || topic.toLowerCase().includes('eksplanasi');
+
+  let conceptualFramework = `Pembelajaran materi "${topic}" berfokus pada analisis teks, penemuan ide pokok, interpretasi makna wacana, dan pengembangan kompetensi komunikasi tertulis serta lisan secara santun dan efektif tanpa memaksakan rumus matematis.`;
+  let keyConcepts = [
+    'Keterampilan Membaca & Memirsa: Menemukan gagasan utama dan bukti tekstual',
+    'Keterampilan Menulis: Menyusun paragraf kohesif dan koheren dengan ejaan baku (EYD)',
+    'Keterampilan Berbicara: Menyampaikan ide secara runtut dan artikulatif'
+  ];
+  let caseStudyOrActivity = 'Aktivitas Analisis Teks & Diskusi: Peserta didik membaca teks wacana autentik, membedah struktur isi dalam kelompok, dan mempresentasikan hasil simpulan makna teks.';
+
+  if (isEksplanasi) {
+    conceptualFramework = `Pembelajaran Teks Eksplanasi pada materi "${topic}" berfokus pada penjelasan ilmiah mengenai proses terjadinya fenomena alam, sosial, atau budaya secara runtut berdasarkan hubungan sebab-akibat (kausalitas) dan kronologis faktual, tanpa memaksakan rumus atau angka matematika artifisial.`;
+    keyConcepts = [
+      'Struktur Teks Eksplanasi: Pernyataan Umum (Identifikasi Fenomena), Rangkaian Kejadian / Deretan Penjelas (Kausalitas & Kronologis), dan Interpretasi / Ulasan (Kesimpulan Faktual)',
+      'Kaidah Kebahasaan Kausalitas: Konjungsi sebab-akibat (sebab, karena, akibatnya, sehingga, menimbulkan, memicu)',
+      'Kaidah Kebahasaan Kronologis: Konjungsi temporal (kemudian, setelah itu, lalu, pada awalnya, akhirnya)',
+      'Karakteristik Wacana: Berorientasi pada fakta ilmiah objektif, penggunaan kata kerja pasif dan verba relasional, serta peristilahan teknis kontekstual'
+    ];
+    caseStudyOrActivity =
+      'Aktivitas Penulisan Eksplanasi Ilmiah: Peserta didik menyelidiki fenomena nyata (misal terjadinya siklus air, gempa bumi, atau proses pembentukan pelangi), memetakan alur sebab-akibat ke dalam kerangka 3 bagian teks eksplanasi, menyusun draf teks utuh dengan bahasa baku, lalu saling memberikan ulasan sejawat (peer-review).';
+  } else if (isProsedur) {
+    conceptualFramework = `Pembelajaran Teks Prosedur menekankan pemahaman struktur sistematis (Tujuan, Bahan/Alat, Langkah-Langkah Berurutan, dan Penutup) serta kaidah kebahasaan spesifik (kata kerja imperatif, kata penghubung/konjungsi temporal, dan verba material) tanpa melibatkan rumus perhitungan matematis.`;
+    keyConcepts = [
+      'Struktur Teks Prosedur: Judul, Tujuan, Alat/Bahan, Langkah-Langkah Bertahap, dan Penegasan Ulang/Penutup',
+      'Kaidah Kebahasaan: Kalimat imperatif (perintah), kata kerja aksi, konjungsi temporal (pertama, selanjutnya, kemudian), dan kalimat persuasif',
+      'Karakteristik Instruksi: Jelas, operasional, logis, dan mudah diikuti oleh pembaca'
+    ];
+    caseStudyOrActivity =
+      'Aktivitas Praktik Menulis & Demonstrasi: Peserta didik secara berpasangan merancang teks prosedur bertema "Kiat Sukses Mengatur Waktu Belajar Mandiri" atau "Panduan Mengoperasikan Aplikasi Digital Edukasi", lalu mempraktikkan langkah-langkahnya di hadapan teman sekelas.';
+  }
 
   return {
     domain: 'HUMANITIES_ARTS_LANGUAGE',
@@ -858,26 +949,12 @@ function buildLanguageAnalysis(context: string, subject: string, topic: string):
       'Fokus pada pemahaman teks, struktur wacana, dan kaidah kebahasaan',
       'TIDAK memaksakan rumus atau angka numerik artifisial',
       'Menekankan 4 kemahiran berbahasa: Menyimak, Berbicara, Membaca, dan Menulis',
-      'Praktik menyusun karya tulis orisinal dan presentasi komunikatif'
+      'Praktik menyusun karya tulis orisinal dan telaah bukti tekstual'
     ],
     nonNumericGuidance: {
-      conceptualFramework: isProsedur
-        ? `Pembelajaran Teks Prosedur menekankan pemahaman struktur sistematis (Tujuan, Bahan/Alat, Langkah-Langkah Berurutan, dan Penutup) serta kaidah kebahasaan spesifik (kata kerja imperatif, kata penghubung/konjungsi temporal, dan verba material) tanpa melibatkan rumus perhitungan matematis.`
-        : `Pembelajaran materi "${topic}" berfokus pada analisis teks, penemuan ide pokok, interpretasi makna tersirat, dan pengembangan kompetensi komunikasi tertulis serta lisan secara santun dan efektif.`,
-      keyConcepts: isProsedur
-        ? [
-            'Struktur Teks Prosedur: Judul, Tujuan, Alat/Bahan, Langkah-Langkah Bertahap, dan Penegasan Ulang/Penutup',
-            'Kaidah Kebahasaan: Kalimat imperatif (perintah), kata kerja aksi, konjungsi temporal (pertama, selanjutnya, kemudian), dan kalimat persuasif',
-            'Karakteristik Instruksi: Jelas, operasional, logis, dan mudah diikuti oleh pembaca'
-          ]
-        : [
-            'Keterampilan Membaca & Memirsa: Menemukan gagasan utama dan bukti tekstual',
-            'Keterampilan Menulis: Menyusun paragraf kohesif dan koheren dengan ejaan baku (EYD)',
-            'Keterampilan Berbicara: Menyampaikan ide secara runtut dan artikulatif'
-          ],
-      caseStudyOrActivity: isProsedur
-        ? 'Aktivitas Praktik Menulis & Demonstrasi: Peserta didik secara berpasangan merancang teks prosedur bertema "Kiat Sukses Mengatur Waktu Belajar Mandiri" atau "Panduan Mengoperasikan Aplikasi Digital Edukasi", lalu mempraktikkan langkah-langkahnya di hadapan teman sekelas.'
-        : 'Aktivitas Analisis Teks & Diskusi: Peserta didik membaca teks wacana autentik, membedah struktur isi dalam kelompok, dan mempresentasikan hasil simpulan makna teks.'
+      conceptualFramework,
+      keyConcepts,
+      caseStudyOrActivity
     }
   };
 }

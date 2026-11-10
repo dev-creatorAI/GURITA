@@ -1,5 +1,6 @@
 import { ModulAjarFormInput, ModulAjarDocument, LearningStepRow } from '../types';
 import { classifySubject, SubjectAwareAnalysis } from './subjectClassifier';
+import { buildDynamicIdentifikasiPesertaDidik } from './identifikasiPesertaDidikGenerator';
 
 /**
  * Dynamic selector for Profil Lulusan dimensions based on the 8 official dimensions:
@@ -559,6 +560,9 @@ export function generateCompleteModulAjar(input: ModulAjarFormInput): ModulAjarD
     sumatifKunci = `Rubrik Penilaian Unjuk Kerja: Menilai ketepatan analisis konsep, kualitas argumen/produk, keterpaduan struktur kerja, dan kejelasan komunikasi presentasi.`;
   }
 
+  // Identifikasi Karakteristik & Kebutuhan Peserta Didik (Dynamic & Subject-Aware)
+  const identifikasiPesertaDidik = buildDynamicIdentifikasiPesertaDidik(input, analysis);
+
   return {
     informasiUmum: {
       namaSekolah: input.schoolName,
@@ -570,27 +574,12 @@ export function generateCompleteModulAjar(input: ModulAjarFormInput): ModulAjarD
       topikPembelajaran: input.topic,
       alokasiWaktu: input.timeAllocation,
       saranaDanPrasarana: input.facilitiesAndTools || 'Ruang kelas nyaman, proyektor/layar digital, papan tulis, LKPD cetak, dan gawai untuk referensi belajar.',
-      sasaranPesertaDidik: input.studentCharacteristics || 'Peserta didik reguler dengan keberagaman kesiapan belajar (variasi kecepatan pemahaman) yang antusias terhadap kerja kolaboratif.'
+      sasaranPesertaDidik:
+        identifikasiPesertaDidik.karakteristikPesertaDidik ||
+        'Peserta didik reguler dengan keberagaman kesiapan belajar (variasi kecepatan pemahaman) yang antusias terhadap kerja kolaboratif.'
     },
     identifikasiDanDesain: {
-      identifikasiPesertaDidik: {
-        karakteristikPesertaDidik: input.studentCharacteristics || 'Sebagian besar peserta didik antusias dengan aktivitas kelompok dan media interaktif, membutuhkan stimulasi kontekstual agar konsep abstrak mudah dipahami.',
-        pengetahuanAwal: input.priorKnowledge || `Peserta didik telah mengenal konsep dasar prasyarat terkait "${input.topic}" dari jenjang atau materi sebelumnya.`,
-        minatDanMotivasi: 'Memiliki motivasi tinggi ketika pembelajaran menghadirkan aktivitas hands-on, media visual, dan kesempatan berdialog aktif.',
-        minatDanKebutuhanBelajar: input.specialLearningNeeds || 'Memerlukan scaffolding bertahap (bimbingan guru berjenjang) bagi siswa yang membutuhkan waktu lebih, serta tantangan analisis kontekstual bagi siswa berkemampuan tinggi.',
-        kesiapanBelajar: 'Terdapat 3 kelompok kesiapan belajar: 30% membutuhkan pendampingan terbimbing, 50% mampu belajar mandiri reguler, dan 20% siap untuk proyek pengayaan.',
-        kebutuhanBelajar: input.specialLearningNeeds || (analysis.isQuantitative
-          ? 'Memerlukan lembar kerja bertahap (step-by-step math scaffolding) dan latihan kalkulasi terstruktur.'
-          : 'Memerlukan lembar kerja berbasis studi kasus nyata, contoh karya visual, dan panduan diskusi kelompok.'),
-        karakteristikMateri: analysis.isQuantitative
-          ? 'Materi bersifat kuantitatif, logis-matematis, dan membutuhkan ketelitian pemaknaan variabel rumus serta operasi hitung bertahap.'
-          : 'Materi bersifat konseptual, analitis, dan mengutamakan penalaran kritis, pemahaman makna wacana, atau ekspresi karya kreatif.',
-        potensiMiskonsepsi: analysis.isQuantitative
-          ? 'Potensi kekeliruan dalam substitusi angka ke variabel rumus, kelalaian penulisan satuan, atau kesalahan operasi tanda aritmatika.'
-          : 'Potensi menyederhanakan konsep tanpa melihat konteks utuh atau keliru membedakan gagasan utama dengan detail pendukung.',
-        dukunganDanDiferensiasi: 'Diferensiasi konten disediakan lewat tingkat kompleksitas kasus/soal; diferensiasi proses melalui pendampingan terbimbing bagi kelompok yang membutuhkan bimbingan intensif.',
-        catatanAsumsi: 'Catatan Guru: Analisis karakteristik ini disusun sebagai kerangka awal dan akan disesuaikan dengan observasi nyata di kelas.'
-      },
+      identifikasiPesertaDidik,
       identifikasiMataPelajaran: {
         mataPelajaran: input.subject,
         materi: input.materi,
